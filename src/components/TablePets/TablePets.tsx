@@ -12,28 +12,6 @@ function TablePets({ listOfPets }: PetList) {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPets = listOfPets!.slice(indexOfFirstItem, indexOfLastItem);
 
-  const data = currentPets.map((pet: Pet) => (
-    <tr key={pet.id}>
-      <td>{pet.id}</td>
-      <td>{pet.nombre}</td>
-      <td>{pet.edad}</td>
-      <td>{pet.tipo}</td>
-      <td>{pet.raza}</td>
-      <td>{pet.sexo}</td>
-      <td>{pet.fecNac}</td>
-      <td className="d-flex justify-content-center">
-        <button
-          className={`btn btn-success m-1`}
-          onClick={() => handleOpenModal(pet.id)} // Pasamos el id de la mascota al hacer clic
-        >
-          📋
-        </button>
-        <button className={`btn btn-warning m-1`}>✏️</button>
-        <button className={`btn btn-danger m-1`}>✖️</button>
-      </td>
-    </tr>
-  ));
-
   const emptyTable = (
     <tr>
       <td colSpan={8}>No existen datos</td>
@@ -80,6 +58,47 @@ function TablePets({ listOfPets }: PetList) {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+
+  const data = currentPets.map((pet: Pet) => (
+    <tr key={pet.id}>
+      <td>{pet.id}</td>
+      <td>{pet.nombre}</td>
+      <td>{pet.edad}</td>
+      <td>{pet.tipo}</td>
+      <td>{pet.raza}</td>
+      <td>{pet.sexo}</td>
+      <td>{pet.fecNac}</td>
+      <td className="d-flex justify-content-center">
+        <button
+          className={`btn btn-success m-1`}
+          onClick={() => handleOpenModal(pet.id)} // Pasamos el id de la mascota al hacer clic
+        >
+          📋
+        </button>
+        <button className={`btn btn-warning m-1`}>✏️</button>
+        <button className={`btn btn-danger m-1`}>✖️</button>
+      </td>
+    </tr>
+  ));
+  const paginationButtons = (
+    <div className={`d-flex col justify-content-center mt-3`}>
+      <button
+        className="btn btn-primary"
+        onClick={handleClickPrevPage}
+        disabled={currentPage === 1 || !listOfPets!.length}
+      >
+        Anterior
+      </button>
+      {generatePaginationButtons()}
+      <button
+        className="btn btn-primary"
+        onClick={handleClickNextPage}
+        disabled={currentPage === totalPages || !listOfPets!.length}
+      >
+        Siguiente
+      </button>
+    </div>
+  );
   return (
     <div className="container-fluid">
       <div className="row justify-content-center">
@@ -103,24 +122,7 @@ function TablePets({ listOfPets }: PetList) {
           </div>
         </div>
       </div>
-      <div className={`d-flex col justify-content-center mt-3`}>
-        <button
-          className="btn btn-primary"
-          onClick={handleClickPrevPage}
-          disabled={currentPage === 1 || !listOfPets!.length}
-        >
-          Anterior
-        </button>
-        {generatePaginationButtons()}
-        <button
-          className="btn btn-primary"
-          onClick={handleClickNextPage}
-          disabled={currentPage === totalPages || !listOfPets!.length}
-        >
-          Siguiente
-        </button>
-      </div>
-
+      {paginationButtons}
       {
         <ModalHistoryClinic
           showModal={showModal}

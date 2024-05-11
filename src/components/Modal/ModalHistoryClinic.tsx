@@ -5,7 +5,7 @@ function ModalHistoryClinic({ showModal, onClose, petInfo }) {
 
   useEffect(() => {
     setShow(showModal);
-    console.log("PET INFO MODAL: ", petInfo);
+    // console.log("PET INFO MODAL: ", petInfo);
   }, [showModal]);
 
   const handleClose = () => {

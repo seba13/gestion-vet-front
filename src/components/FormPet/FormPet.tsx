@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavbarDashboard } from "../Nabvar/Navbar";
 import styles from "./FormPet.module.css";
+import Alert from "../Alert/Alert";
 
 export default function FormPet() {
   // Estados para los valores del formulario
@@ -10,7 +11,8 @@ export default function FormPet() {
     gender: "",
     diagnosis: "",
   });
-
+  const [formErrors, setFormErrors] = useState<object | null>(null);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
   // Función para manejar cambios en los campos del formulario
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -23,8 +25,30 @@ export default function FormPet() {
   // Función para manejar el envío del formulario
   const handleSubmit = (event: any) => {
     event.preventDefault();
+    let errors: Array<string> = [];
     // Aquí puedes agregar la lógica para enviar los datos del formulario
     console.log(formData);
+    if (formData.name.trim() === "") {
+      console.error("Error falta campo nombre.");
+      errors.push("Falta campo nombre.");
+    }
+    if (formData.gender.trim() === "") {
+      console.error("Error falta campo genero.");
+      errors.push("Falta campo genero.");
+    }
+    if (formData.diagnosis.trim() === "") {
+      console.error("Error falta campo diagnostico.");
+      errors.push("Falta campo diagnostico.");
+    }
+    if (formData.age.trim() === "") {
+      console.error("Error falta campo edad.");
+      errors.push("Falta campo edad.");
+    }
+    setFormErrors({
+      typeOfAlert: "danger",
+      errors: errors,
+    });
+    setShowAlert(true);
     // Limpia el formulario después del envío
     setFormData({
       name: "",
@@ -33,13 +57,18 @@ export default function FormPet() {
       diagnosis: "",
     });
   };
-
+  const onCloseAlert = () => {
+    setShowAlert(false);
+  };
   return (
     <>
       <NavbarDashboard
         inputComponent={null}
         handleInput={null}
       ></NavbarDashboard>
+      {showAlert && (
+        <Alert alertProperties={formErrors} handlerCloseAlert={onCloseAlert} />
+      )}
       <div className={`d-flex justify-content-center align-items-center`}>
         <form onSubmit={handleSubmit} className={`${styles.patientForm}`}>
           <div className="mb-3">
@@ -54,7 +83,6 @@ export default function FormPet() {
               value={formData.name}
               onChange={handleInputChange}
               placeholder="Nombre del paciente"
-              required
             />
           </div>
           <div className="mb-3">
@@ -69,7 +97,6 @@ export default function FormPet() {
               value={formData.age}
               onChange={handleInputChange}
               placeholder="Edad del paciente"
-              required
             />
           </div>
           <div className="mb-3">
@@ -82,7 +109,6 @@ export default function FormPet() {
               name="gender"
               value={formData.gender}
               onChange={handleInputChange}
-              required
             >
               <option value="">Seleccionar género</option>
               <option value="male">Masculino</option>
@@ -101,7 +127,6 @@ export default function FormPet() {
               value={formData.diagnosis}
               onChange={handleInputChange}
               placeholder="Diagnóstico del paciente"
-              required
             />
           </div>
           <button type="submit" className="btn btn-primary">

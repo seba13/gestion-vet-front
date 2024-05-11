@@ -1,0 +1,21 @@
+.fadeOut {
+  animation: fadeOut ease-out 2s 2s; /* Animación fadeOut con duración de 2.5 segundos y un retraso de 2 segundos */
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
