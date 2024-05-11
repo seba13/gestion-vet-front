@@ -36,8 +36,11 @@ export default function FormPet() {
 
   return (
     <>
-      <NavbarDashboard></NavbarDashboard>
-      <div className={`${styles.centerContainer}`}>
+      <NavbarDashboard
+        inputComponent={null}
+        handleInput={null}
+      ></NavbarDashboard>
+      <div className={`d-flex justify-content-center align-items-center`}>
         <form onSubmit={handleSubmit} className={`${styles.patientForm}`}>
           <div className="mb-3">
             <label htmlFor="name" className="form-label">

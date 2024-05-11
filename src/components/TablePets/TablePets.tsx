@@ -1,11 +1,44 @@
 import { useState } from "react";
 import { PetList, Pet } from "../../interfaces/Pet";
+import ModalHistoryClinic from "../Modal/ModalHistoryClinic";
 
 function TablePets({ listOfPets }: PetList) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [showModal, setShowModal] = useState<boolean>(false); // Estado para controlar la visibilidad del modal
   const itemsPerPage = 10;
   const totalPages = Math.ceil(listOfPets!.length / itemsPerPage);
+  const [petInformation, setPetInformation] = useState<any | null>(null);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentPets = listOfPets!.slice(indexOfFirstItem, indexOfLastItem);
 
+  const data = currentPets.map((pet: Pet) => (
+    <tr key={pet.id}>
+      <td>{pet.id}</td>
+      <td>{pet.nombre}</td>
+      <td>{pet.edad}</td>
+      <td>{pet.tipo}</td>
+      <td>{pet.raza}</td>
+      <td>{pet.sexo}</td>
+      <td>{pet.fecNac}</td>
+      <td className="d-flex justify-content-center">
+        <button
+          className={`btn btn-success m-1`}
+          onClick={() => handleOpenModal(pet.id)} // Pasamos el id de la mascota al hacer clic
+        >
+          📋
+        </button>
+        <button className={`btn btn-warning m-1`}>✏️</button>
+        <button className={`btn btn-danger m-1`}>✖️</button>
+      </td>
+    </tr>
+  ));
+
+  const emptyTable = (
+    <tr>
+      <td colSpan={8}>No existen datos</td>
+    </tr>
+  );
   const handleClickPage = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -36,33 +69,17 @@ function TablePets({ listOfPets }: PetList) {
     return buttons;
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentPets = listOfPets!.slice(indexOfFirstItem, indexOfLastItem);
+  const handleOpenModal = (petId: number) => {
+    const [filteredPet] = listOfPets!.filter((pet) => {
+      return pet.id === petId;
+    });
+    setPetInformation(filteredPet);
+    setShowModal(true);
+  };
 
-  const data = currentPets.map((pet: Pet) => (
-    <tr key={pet.id}>
-      <td>{pet.id}</td>
-      <td>{pet.nombre}</td>
-      <td>{pet.edad}</td>
-      <td>{pet.tipo}</td>
-      <td>{pet.raza}</td>
-      <td>{pet.sexo}</td>
-      <td>{pet.fecNac}</td>
-      <td className="d-flex justify-content-center">
-        <button className={`btn btn-success m-1`}>📋</button>
-        <button className={`btn btn-warning m-1`}>✏️</button>
-        <button className={`btn btn-danger m-1`}>✖️</button>
-      </td>
-    </tr>
-  ));
-
-  const emptyTable = (
-    <tr>
-      <td colSpan={8}>No existen datos</td>
-    </tr>
-  );
-
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
   return (
     <div className="container-fluid">
       <div className="row justify-content-center">
@@ -103,6 +120,14 @@ function TablePets({ listOfPets }: PetList) {
           Siguiente
         </button>
       </div>
+
+      {
+        <ModalHistoryClinic
+          showModal={showModal}
+          onClose={handleCloseModal}
+          petInfo={petInformation}
+        />
+      }
     </div>
   );
 }

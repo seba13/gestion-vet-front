@@ -27,8 +27,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <NavbarDashboard />
-      <InputSearch returnValue={handleReturnValue} />
+      <NavbarDashboard inputComponent={InputSearch} handleInput={handleReturnValue} />
       <TablePets listOfPets={filteredPets} />
     </>
   );

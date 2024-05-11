@@ -1,10 +1,4 @@
-.centerContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
 
-.patientForm {
-  width: 300px; /* Puedes ajustar el ancho según tus necesidades */
+nav{
+  height: 80px;
 }
