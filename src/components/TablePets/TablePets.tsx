@@ -107,7 +107,7 @@ function TablePets({ listOfPets }: PetList) {
         <button
           className="btn btn-primary"
           onClick={handleClickPrevPage}
-          disabled={currentPage === 1}
+          disabled={currentPage === 1 || !listOfPets!.length}
         >
           Anterior
         </button>
@@ -115,7 +115,7 @@ function TablePets({ listOfPets }: PetList) {
         <button
           className="btn btn-primary"
           onClick={handleClickNextPage}
-          disabled={currentPage === totalPages}
+          disabled={currentPage === totalPages || !listOfPets!.length}
         >
           Siguiente
         </button>
