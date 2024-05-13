@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
 import styles from "./Nabbar.module.css";
@@ -7,7 +7,11 @@ export const NavbarDashboard = ({ inputComponent: Component, handleInput }) => {
   // Renombré inputComponent a Component para seguir la convención de nombres de componentes con mayúscula inicial
   const authContext = useContext(AuthContext)!;
   const { logout } = authContext;
-
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    navigate("/");
+    logout();
+  };
   return (
     <>
       <nav
@@ -41,17 +45,27 @@ export const NavbarDashboard = ({ inputComponent: Component, handleInput }) => {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to={"/registrar-paciente"} className="nav-link">
+                <NavLink to={"/mascotas"} className="nav-link active">
                   <div>
                     <span>
                       <i></i>
                     </span>
-                    <span>Ingresar paciente</span>
+                    <span>Ver mascotas</span>
                   </div>
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to={"/"} className="nav-link" onClick={logout}>
+                <NavLink to={"/nueva-mascota"} className="nav-link">
+                  <div>
+                    <span>
+                      <i></i>
+                    </span>
+                    <span>Nueva mascota</span>
+                  </div>
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to={"/"} className="nav-link" onClick={handleLogout}>
                   <div>
                     <span>
                       <i></i>
@@ -60,50 +74,8 @@ export const NavbarDashboard = ({ inputComponent: Component, handleInput }) => {
                   </div>
                 </NavLink>
               </li>
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  id="navbarDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Dropdown
-                </a>
-                <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Another action
-                    </a>
-                  </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Something else here
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link disabled"
-                  href="#"
-                  tabIndex={-1}
-                  aria-disabled="true"
-                >
-                  Disabled
-                </a>
-              </li>
             </ul>
-            {Component ? <Component returnValue={handleInput} /> : null}
+            {/* {Component ? <Component returnValue={handleInput} /> : null} */}
           </div>
         </div>
       </nav>

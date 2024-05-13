@@ -62,10 +62,6 @@ export default function FormPet() {
   };
   return (
     <>
-      <NavbarDashboard
-        inputComponent={null}
-        handleInput={null}
-      ></NavbarDashboard>
       {showAlert && (
         <Alert alertProperties={formErrors} handlerCloseAlert={onCloseAlert} />
       )}

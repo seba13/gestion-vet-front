@@ -1,7 +1,8 @@
 export interface AuthenticateUser {
-  sessionInfo: any | null;
-  usuario: string | null;
-  isLogged: boolean | null;
+  nombreUsuario: string | null;
+  idUsuario: string | null;
+  idEmpleado: string | null;
+  token: string | null;
   handleChangeSession: () => void;
   logout: () => void;
   validateSession: () => Promise<boolean>;

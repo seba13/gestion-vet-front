@@ -4,53 +4,76 @@ import { AuthenticateUser } from "../interfaces/authenticateUser";
 export const AuthContext = createContext<AuthenticateUser | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [sessionInfo, setSessionInfo] = useState<any | null>(null);
-  const [usuario, setUsuario] = useState<string | null>(null);
-  const [isLogged, setIsLogged] = useState<boolean | null>(null);
-
+  const [nombreUsuario, setNombreUsuario] = useState<string | null>(null);
+  const [idUsuario, setIdUsuario] = useState<string | null>(null);
+  const [idEmpleado, setIdEmpleado] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   useEffect(() => {
     const storageData = localStorage.getItem("session-info");
     if (storageData) {
       const parsedData = JSON.parse(storageData);
-      setUsuario(parsedData.username);
-      setIsLogged(parsedData.isLogged);
+      setNombreUsuario(parsedData.usuario.nombreUsuario);
+      setIdEmpleado(parsedData.usuario.idEmpleado);
+      setIdUsuario(parsedData.usuario.idUsuario);
+      setToken(parsedData.token);
       // console.log(sessionInfo)
     }
-  }, [sessionInfo]); // Solo se ejecuta una vez al montar el componente
+  }, [token]); // Solo se ejecuta una vez al montar el componente
 
   const handleChangeSession = useMemo(
     () => () => {
       const storageData = localStorage.getItem("session-info");
       if (storageData) {
         const parsedData = JSON.parse(storageData);
-        setSessionInfo(parsedData);
+        setToken(parsedData.token!);
       }
     },
     []
   );
+  // const handleChangeToken = useMemo(
+  //   () => () => {
+  //     console.log("entra en handleChangeToken");
 
+  //     if (cookies.get("cookie-token")) {
+  //       console.log("se setea token de cookie");
+  //       setToken(cookies.get("cookie-token"));
+  //     }
+  //   },
+  //   []
+  // );
   useEffect(() => {
     handleChangeSession();
   }, [handleChangeSession]); // Se ejecuta cada vez que handleChangeSession cambia
 
   const validateSession = () => {
-    return sessionInfo ? sessionInfo.isLogged : false;
+    return new Promise<boolean>((resolve) => {
+      if (!token) {
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+    });
   };
 
   const logout = () => {
     localStorage.removeItem("session-info");
-    setSessionInfo(null);
-    window.location.reload();
+    setIdEmpleado(null);
+    setIdUsuario(null);
+    setNombreUsuario(null);
+    setToken(null);
+    // // window.location.reload();
+    // navigate("/");
   };
 
   return (
     <AuthContext.Provider
       value={{
         validateSession,
-        sessionInfo,
         handleChangeSession,
-        usuario,
-        isLogged,
+        nombreUsuario,
+        idEmpleado,
+        idUsuario,
+        token,
         logout,
       }}
     >
