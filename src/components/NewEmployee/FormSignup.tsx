@@ -126,12 +126,12 @@ function FormSignup() {
     if (myErrors.length === 0) {
       handleApiRequest(formData)
         .then((result: any) => {
-          console.log("API RESPONSE: ", result);
+          // console.log("API RESPONSE: ", result);
           if (result.success === false) {
-            console.log(result);
+            // console.log(result);
             setFormErrors({
               typeOf: "danger",
-              messages: ["Error empleado ya existe ❌."],
+              messages: [`${result.message} ❌.`],
             });
           } else {
             setFormErrors({
@@ -140,9 +140,6 @@ function FormSignup() {
             });
           }
 
-          // setShowAlert(true);
-          // setConfirmarFormulario(false);
-          // setFormData(initialFormData);
         })
         .finally(() => {
           setShowAlert(true);

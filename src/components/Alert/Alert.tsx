@@ -22,7 +22,7 @@ function Alert({ alertProperties, handlerCloseAlert }) {
       {alertProperties.messages.map((message: string, index: number) => {
         return (
           <p key={`alerta-${index + 1}`} className="text-center">
-            {index + 1}) - [{message}]
+            #{index + 1} - {message}
           </p>
         );
       })}
