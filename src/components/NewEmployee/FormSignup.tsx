@@ -8,12 +8,12 @@ const initialFormData: IFormEmployee = {
   password: "",
   direccion: "",
   dv: "",
-  rut: 0,
+  rut: "",
   email: "",
   nombre: "",
   nombreUsuario: "",
   sexo: "",
-  telefono: 0,
+  telefono: "",
 };
 function FormSignup() {
   const [formData, setFormData] = useState<IFormEmployee>(initialFormData);
@@ -139,7 +139,6 @@ function FormSignup() {
               messages: ["Empleado registrado con exito! ✅."],
             });
           }
-
         })
         .finally(() => {
           setShowAlert(true);
@@ -332,7 +331,7 @@ function FormSignup() {
               type="reset"
               className="btn btn-warning d-flex w-50 justify-content-center"
               onClick={() => {
-                setFormData({} as IFormEmployee);
+                setFormData(initialFormData);
               }}
             >
               Limpiar
