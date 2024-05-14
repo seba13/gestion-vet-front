@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function ModalHistoryClinic({ showModal, onClose, petInfo }) {
+function ModalHistoryClinic({ showModal, onClose, modalContent }) {
   const [show, setShow] = useState(showModal);
 
   useEffect(() => {
@@ -28,18 +28,14 @@ function ModalHistoryClinic({ showModal, onClose, petInfo }) {
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">
-                  Historial clinico N°{petInfo.id}
-                </h5>
+                <h5 className="modal-title">{modalContent.title}</h5>
                 <button
                   type="button"
                   className="btn-close"
                   onClick={handleClose}
                 ></button>
               </div>
-              <div className="modal-body">
-                Informacion sobre la mascota qla aca Nombre: {petInfo.nombre}
-              </div>
+              <div className="modal-body">{modalContent.body}</div>
               <div className="modal-footer">
                 <button
                   type="button"

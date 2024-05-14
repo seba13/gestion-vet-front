@@ -45,6 +45,16 @@ export const NavbarDashboard = ({ inputComponent: Component, handleInput }) => {
                 </NavLink>
               </li>
               <li className="nav-item">
+                <NavLink to={"/dueños"} className="nav-link">
+                  <div>
+                    <span>
+                      <i></i>
+                    </span>
+                    <span>Ver dueños</span>
+                  </div>
+                </NavLink>
+              </li>
+              <li className="nav-item">
                 <NavLink to={"/mascotas"} className="nav-link active">
                   <div>
                     <span>
@@ -61,6 +71,16 @@ export const NavbarDashboard = ({ inputComponent: Component, handleInput }) => {
                       <i></i>
                     </span>
                     <span>Nueva mascota</span>
+                  </div>
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to={"/nuevo-empleado"} className="nav-link">
+                  <div>
+                    <span>
+                      <i></i>
+                    </span>
+                    <span>Nueva empleado</span>
                   </div>
                 </NavLink>
               </li>

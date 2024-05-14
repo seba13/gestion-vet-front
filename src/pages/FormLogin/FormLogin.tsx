@@ -5,12 +5,11 @@ import { AuthContext } from "../../context/AuthContext";
 export default function FormLogin() {
   const [userCredentials, setUserCredentials] = useState<object | null>(null);
   const { handleChangeSession } = useContext(AuthContext)!;
-  const apiUrl = "http://localhost:80";
   const navigate = useNavigate();
 
   useEffect(() => {
     if (userCredentials) {
-      fetch(`${apiUrl}/auth/login`, {
+      fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

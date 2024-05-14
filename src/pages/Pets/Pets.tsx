@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import TablePets from "../../components/TablePets/TablePets";
+import TablePets from "../../components/Tables/TablePets";
 import data from "../../example.json";
 import { Pet } from "../../interfaces/Pet";
 import InputSearch from "../../components/InputSearch/InputSearch";

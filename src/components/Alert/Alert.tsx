@@ -11,16 +11,20 @@ function Alert({ alertProperties, handlerCloseAlert }) {
     }, 3900);
 
     return () => clearTimeout(timer); // Limpia el temporizador al desmontar el componente
-  }, []); // El efecto se ejecuta solo una vez al montar el componente
+  }, [handlerCloseAlert, alertProperties]); // El efecto se ejecuta solo una vez al montar el componente
 
   // Renderiza el alert solo si es visible
   return visible ? (
     <div
-      className={`w-25 alert alert-${alertProperties.typeOfAlert} ${styles.fadeOut} mx-auto`}
+      className={`w-25 alert alert-${alertProperties.typeOf} ${styles.fadeOut} mx-auto`}
       role="alert"
     >
-      {alertProperties.errors.map((error: string) => {
-        return <p className="text-center">* {error} *</p>;
+      {alertProperties.messages.map((message: string, index: number) => {
+        return (
+          <p key={`alerta-${index + 1}`} className="text-center">
+            {index + 1}) - [{message}]
+          </p>
+        );
       })}
     </div>
   ) : null;

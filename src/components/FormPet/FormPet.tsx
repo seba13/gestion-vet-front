@@ -45,8 +45,8 @@ export default function FormPet() {
       errors.push("Falta campo edad.");
     }
     setFormErrors({
-      typeOfAlert: "danger",
-      errors: errors,
+      typeOf: "danger",
+      messages: errors,
     });
     setShowAlert(true);
     // Limpia el formulario después del envío

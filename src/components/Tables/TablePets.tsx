@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { PetList, Pet } from "../../interfaces/Pet";
-import ModalHistoryClinic from "../Modal/ModalHistoryClinic";
+import Modal from "../Modal/Modal";
 
 function TablePets({ listOfPets }: PetList) {
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState<boolean>(false); // Estado para controlar la visibilidad del modal
   const itemsPerPage = 10;
   const totalPages = Math.ceil(listOfPets!.length / itemsPerPage);
-  const [petInformation, setPetInformation] = useState<any | null>(null);
+  // const [petInformation, setPetInformation] = useState<any | null>(null);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPets = listOfPets!.slice(indexOfFirstItem, indexOfLastItem);
@@ -48,10 +48,10 @@ function TablePets({ listOfPets }: PetList) {
   };
 
   const handleOpenModal = (petId: number) => {
-    const [filteredPet] = listOfPets!.filter((pet) => {
-      return pet.id === petId;
-    });
-    setPetInformation(filteredPet);
+    // const [filteredPet] = listOfPets!.filter((pet) => {
+    //   return pet.id === petId;
+    // });
+    // setPetInformation(filteredPet);
     setShowModal(true);
   };
 
@@ -124,10 +124,10 @@ function TablePets({ listOfPets }: PetList) {
       </div>
       {paginationButtons}
       {
-        <ModalHistoryClinic
+        <Modal
           showModal={showModal}
           onClose={handleCloseModal}
-          petInfo={petInformation}
+          modalContent={{title: "Mi modal reutilizable", body: "ola ola khaces"}}
         />
       }
     </div>
