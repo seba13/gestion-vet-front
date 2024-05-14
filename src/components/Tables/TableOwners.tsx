@@ -1,8 +1,34 @@
 import { useState } from "react";
 import Modal from "../Modal/Modal";
-
-function TableOwners() {
+import { IOwner } from "../../interfaces/Owners";
+function TableOwners({ listOfOwners }: any) {
   const [showModal, setShowModal] = useState<boolean>(false); // Estado para controlar la visibilidad del modal
+
+  const data = listOfOwners.map((owner: IOwner, index: number) => {
+    return (
+      <tr key={index} style={{ textTransform: "capitalize" }}>
+        <td>
+          {owner.rut}-{owner.dv}
+        </td>
+        <td>
+          {owner.nombre} {owner.apellidoPaterno} {owner.apellidoMaterno}
+        </td>
+        <td>{owner.direccion}</td>
+        <td>{owner.telefono}</td>
+        <td>{owner.email}</td>
+        <td>{owner.sexo === "m" ? "femenino" : "masculino"}</td>
+        <td>{owner.fechaNacimiento}</td>
+        <td className="d-flex justify-content-center">
+          <button
+            className={`btn btn-success m-1`}
+            onClick={() => handleOpenModal()} // Pasamos el id de la mascota al hacer clic
+          >
+            📋Ver mascotas
+          </button>
+        </td>
+      </tr>
+    );
+  });
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -22,26 +48,15 @@ function TableOwners() {
                   <tr>
                     <th>RUT</th>
                     <th>Nombre completo</th>
-                    <th>Direccion</th>
                     <th>Telefono</th>
+                    <th>Direccion</th>
                     <th>Correo</th>
-                    <th>Ultima visita</th>
+                    <th>Genero</th>
+                    <th>Fec Nacimiento</th>
                     <th>Operaciones</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>19449843-8</td>
-                    <td>fabian niclous</td>
-                    <td>victoria 526 nueva aurora</td>
-                    <td>956551422</td>
-                    <td>fniclous97@gmail.com</td>
-                    <td>2024-05-27</td>
-                    <td>
-                      <button onClick={handleOpenModal}>Ver mascotas🐶</button>
-                    </td>
-                  </tr>
-                </tbody>
+                <tbody>{data}</tbody>
               </table>
               {
                 <Modal
