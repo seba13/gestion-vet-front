@@ -1,9 +1,54 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../Modal/Modal";
 import { IOwner } from "../../interfaces/Owners";
-function TableOwners({ listOfOwners }: any) {
-  const [showModal, setShowModal] = useState<boolean>(false); // Estado para controlar la visibilidad del modal
+import { PetList } from "../../interfaces/Pet";
+import { HttpMethods } from "../../interfaces/httpMethods";
 
+type rut = string;
+const handleApiRequest: any = (rutParam: rut) => {
+  // /titular-mascota/rut/:RUT/mascotas
+  return fetch(
+    `${import.meta.env.VITE_API_URL}/titular-mascota/rut/${rutParam}/mascotas`,
+    {
+      method: HttpMethods.GET,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .then((data: any) => {
+      return data;
+    })
+    .catch((error) => {
+      // Maneja los errores
+      console.error("ACA Error:", error.message);
+    });
+};
+const initialTableData: IOwner[] = [];
+function TableOwners({ listOfOwners }: any) {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showModal, setShowModal] = useState<boolean>(false); // Estado para controlar la visibilidad del modal
+  const [modalBody, setModalBody] = useState({
+    title: "Lista de mascotas",
+    body: "perriasdasdto, un gatito, un cocodrilo",
+  });
+  const [petsOwner, setPetsOwner] = useState<IOwner[]>(initialTableData);
+  // Llama fetchData con los datos que necesites enviar
+  useEffect(() => {
+    handleApiRequest()
+      .then((result: any) => {
+        setPetsOwner(result.data);
+      })
+      .catch(() => {
+        throw new Error("Error en hook");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
   const data = listOfOwners.map((owner: IOwner, index: number) => {
     return (
       <tr key={index} style={{ textTransform: "capitalize" }}>
@@ -62,10 +107,7 @@ function TableOwners({ listOfOwners }: any) {
                 <Modal
                   showModal={showModal}
                   onClose={handleCloseModal}
-                  modalContent={{
-                    title: "Lista de mascotas",
-                    body: "perrito, un gatito, un cocodrilo",
-                  }}
+                  modalContent={modalBody}
                 />
               }
             </div>
