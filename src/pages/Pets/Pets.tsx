@@ -1,30 +1,49 @@
+// export default Pets;
 import { useState, useEffect } from "react";
 import TablePets from "../../components/Tables/TablePets";
-import data from "../../example.json";
+import useCustomFetch from "../../hooks/useCustomFetch";
+import { HttpMethods } from "../../interfaces/httpMethods";
 import { Pet } from "../../interfaces/Pet";
-import InputSearch from "../../components/InputSearch/InputSearch";
+const handleApiRequest: any = () => {
+  return fetch(`${import.meta.env.VITE_API_URL}/mascotas`, {
+    method: HttpMethods.GET,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data: any) => {
+      return data;
+    })
+    .catch((error) => {
+      // Maneja los errores
+      console.error("ACA Error:", error.message);
+    });
+};
 function Pets() {
-  const [listOfPets, setListOfPets] = useState<Pet[]>([]);
-  const [filteredPets, setFilteredPets] = useState<Pet[]>([]);
+  const [listOfPets, setListOfPets] = useState<Array<Pet>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
+  // Llama fetchData con los datos que necesites enviar
   useEffect(() => {
-    setListOfPets(data.mascotas as Pet[]);
-    setFilteredPets(data.mascotas as Pet[]);
+    handleApiRequest()
+      .then((result: any) => {
+        setListOfPets(result.data);
+      })
+      .catch(() => {
+        throw new Error("Error en hook");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+    console.log(listOfPets);
   }, []);
-
-  const handleReturnValue = (searchValue: string) => {
-    if (searchValue === "") {
-      setFilteredPets(listOfPets);
-    } else {
-      const filtered = listOfPets.filter((pet) =>
-        pet.nombre.toLowerCase().includes(searchValue.toLowerCase())
-      );
-      setFilteredPets(filtered);
-    }
-  };
   return (
     <>
-      <TablePets listOfPets={filteredPets} />
+      {loading && <div>Cargando...</div>}
+      {listOfPets && <TablePets listOfPets={listOfPets}></TablePets>}
     </>
   );
 }

@@ -12,6 +12,7 @@ function TablePets({ listOfPets }: PetList) {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPets = listOfPets!.slice(indexOfFirstItem, indexOfLastItem);
 
+  //
   const emptyTable = (
     <tr>
       <td colSpan={8}>No existen datos</td>
@@ -47,7 +48,7 @@ function TablePets({ listOfPets }: PetList) {
     return buttons;
   };
 
-  const handleOpenModal = (petId: number) => {
+  const handleOpenModal = () => {
     // const [filteredPet] = listOfPets!.filter((pet) => {
     //   return pet.id === petId;
     // });
@@ -60,18 +61,17 @@ function TablePets({ listOfPets }: PetList) {
   };
 
   const data = currentPets.map((pet: Pet) => (
-    <tr key={pet.id}>
-      <td>{pet.id}</td>
-      <td>{pet.nombre}</td>
-      <td>{pet.edad}</td>
-      <td>{pet.tipo}</td>
-      <td>{pet.raza}</td>
-      <td>{pet.sexo}</td>
-      <td>{pet.fecNac}</td>
+    <tr key={pet.idMascota} style={{ textTransform: "capitalize" }}>
+      <td>{pet.idMascota}</td>
+      <td>{pet.nombreMascota}</td>
+      <td>{pet.edadMascota}</td>
+      <td>{pet.especie}</td>
+      <td>{pet.raza === "undefined" ? pet.raza : "desconocida"}</td>
+      <td>{pet.genero}</td>
       <td className="d-flex justify-content-center">
         <button
           className={`btn btn-success m-1`}
-          onClick={() => handleOpenModal(pet.id)} // Pasamos el id de la mascota al hacer clic
+          onClick={() => handleOpenModal()} // Pasamos el id de la mascota al hacer clic
         >
           📋
         </button>
@@ -110,10 +110,9 @@ function TablePets({ listOfPets }: PetList) {
                   <th>N°ID</th>
                   <th>Nombre</th>
                   <th>Edad</th>
-                  <th>Tipo</th>
+                  <th>Especie</th>
                   <th>Raza</th>
-                  <th>Sexo</th>
-                  <th>Fecha nacimiento</th>
+                  <th>Genero</th>
                   <th>Operaciones</th>
                 </tr>
               </thead>
@@ -127,7 +126,10 @@ function TablePets({ listOfPets }: PetList) {
         <Modal
           showModal={showModal}
           onClose={handleCloseModal}
-          modalContent={{title: "Mi modal reutilizable", body: "ola ola khaces"}}
+          modalContent={{
+            title: "Mi modal reutilizable",
+            body: "ola ola khaces",
+          }}
         />
       }
     </div>

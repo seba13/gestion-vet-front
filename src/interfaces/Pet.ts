@@ -1,11 +1,11 @@
 export interface Pet {
-  id: number;
-  nombre: string;
-  edad: number;
-  tipo: string;
+  idMascota: number;
+  nombreMascota: string;
+  edadMascota: number;
+  especie: string;
   raza: string;
-  sexo: string;
-  fecNac: string;
+  genero: string;
+  fecNac?: string;
 }
 
 export interface PetList {
