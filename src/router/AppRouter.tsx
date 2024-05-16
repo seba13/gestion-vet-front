@@ -4,30 +4,16 @@ import FormLogin from "../pages/FormLogin/FormLogin";
 import NotFound from "../pages/NotFound/NotFound";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import { AuthContext } from "../context/AuthContext";
-import FormPet from "../pages/FormNewPatient/FormNewPatient";
+import FormPet from "../pages/NewPet/NewPet";
 import { ProtectedRoute } from "../components/ProtectedRoute/ProtectedRoute";
 import Pets from "../pages/Pets/Pets";
 import Owners from "../pages/Owners/Owners";
 import SignupEmployee from "../pages/SignupEmployee/SignupEmployee";
+import NewPet from "../pages/NewPet/NewPet";
 
 export default function AppRouter() {
   const authContext = useContext(AuthContext)!;
   const { token } = authContext;
-
-  //   return (
-  //     <Router>
-  //       <Routes>
-  //         <Route path="/" element={!token && <FormLogin />}>
-  //           <Route index element={<Dashboard />} />
-  //           <Route path="registrar-paciente" element={<FormPet />} />
-  //           <Route path="salir" />
-  //           <Route path="*" element={<NotFound />} />
-  //         </Route>
-  //       </Routes>
-  //     </Router>
-  //   );
-  // }
-
   const router = createBrowserRouter([
     {
       path: "/",
@@ -46,7 +32,7 @@ export default function AppRouter() {
           path: "/nueva-mascota",
           element: (
             <ProtectedRoute id={2}>
-              <FormPet></FormPet>
+              <NewPet></NewPet>
             </ProtectedRoute>
           ),
         },

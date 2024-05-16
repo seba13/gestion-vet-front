@@ -1,18 +1,15 @@
 import { useState } from "react";
-import { PetList, Pet } from "../../interfaces/Pet";
+import { Pet, PetList } from "../../interfaces/Pet";
 import Modal from "../Modal/Modal";
 
-function TablePets({ listOfPets }: PetList) {
+function TablePets({ pets }: PetList) {
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState<boolean>(false); // Estado para controlar la visibilidad del modal
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(listOfPets!.length / itemsPerPage);
-  // const [petInformation, setPetInformation] = useState<any | null>(null);
+  const totalPages = Math.ceil(pets!.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentPets = listOfPets!.slice(indexOfFirstItem, indexOfLastItem);
-
-  //
+  const currentPets = pets!.slice(indexOfFirstItem, indexOfLastItem);
   const emptyTable = (
     <tr>
       <td colSpan={8}>No existen datos</td>
@@ -49,7 +46,7 @@ function TablePets({ listOfPets }: PetList) {
   };
 
   const handleOpenModal = () => {
-    // const [filteredPet] = listOfPets!.filter((pet) => {
+    // const [filteredPet] = pets!.filter((pet) => {
     //   return pet.id === petId;
     // });
     // setPetInformation(filteredPet);
@@ -60,7 +57,7 @@ function TablePets({ listOfPets }: PetList) {
     setShowModal(false);
   };
 
-  const data = currentPets.map((pet: Pet) => (
+  const dataTable = currentPets.map((pet: Pet) => (
     <tr key={pet.idMascota} style={{ textTransform: "capitalize" }}>
       <td>{pet.idMascota}</td>
       <td>{pet.nombreMascota}</td>
@@ -85,7 +82,7 @@ function TablePets({ listOfPets }: PetList) {
       <button
         className="btn btn-primary"
         onClick={handleClickPrevPage}
-        disabled={currentPage === 1 || !listOfPets!.length}
+        disabled={currentPage === 1 || !pets!.length}
       >
         Anterior
       </button>
@@ -93,7 +90,7 @@ function TablePets({ listOfPets }: PetList) {
       <button
         className="btn btn-primary"
         onClick={handleClickNextPage}
-        disabled={currentPage === totalPages || !listOfPets!.length}
+        disabled={currentPage === totalPages || !pets!.length}
       >
         Siguiente
       </button>
@@ -116,7 +113,7 @@ function TablePets({ listOfPets }: PetList) {
                   <th>Operaciones</th>
                 </tr>
               </thead>
-              <tbody>{listOfPets!.length ? data : emptyTable}</tbody>
+              <tbody>{pets!.length ? dataTable : emptyTable}</tbody>
             </table>
           </div>
         </div>

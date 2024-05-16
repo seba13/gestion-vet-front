@@ -1,49 +1,37 @@
-// export default Pets;
 import { useState, useEffect } from "react";
 import TablePets from "../../components/Tables/TablePets";
-import useCustomFetch from "../../hooks/useCustomFetch";
-import { HttpMethods } from "../../interfaces/httpMethods";
+import useFetch from "../../hooks/useFetch";
 import { Pet } from "../../interfaces/Pet";
-const handleApiRequest: any = () => {
-  return fetch(`${import.meta.env.VITE_API_URL}/mascotas`, {
-    method: HttpMethods.GET,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data: any) => {
-      return data;
-    })
-    .catch((error) => {
-      // Maneja los errores
-      console.error("ACA Error:", error.message);
-    });
-};
-function Pets() {
-  const [listOfPets, setListOfPets] = useState<Array<Pet>>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+import { HttpMethods } from "../../interfaces/httpMethods";
 
-  // Llama fetchData con los datos que necesites enviar
+function Pets() {
+  const { data, loading, error } = useFetch(
+    `${import.meta.env.VITE_API_URL}/mascotas`,
+    {
+      method: HttpMethods.GET,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const [petsData, setPetsData] = useState<Pet[]>([]);
+
   useEffect(() => {
-    handleApiRequest()
-      .then((result: any) => {
-        setListOfPets(result.data);
-      })
-      .catch(() => {
-        throw new Error("Error en hook");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-    console.log(listOfPets);
-  }, []);
+    if (data && data.data) {
+      console.log(data);
+      setPetsData(data.data);
+    }
+    if (error) {
+      console.error("Error: ", error);
+    }
+  }, [loading, error]);
+
   return (
     <>
-      {loading && <div>Cargando...</div>}
-      {listOfPets && <TablePets listOfPets={listOfPets}></TablePets>}
+      {loading && <p>Cargando datos...</p>}
+      {error && <p>Error al cargar la información: {error}</p>}
+      {!error && !loading && <TablePets pets={petsData} />}
     </>
   );
 }

@@ -9,5 +9,5 @@ export interface Pet {
 }
 
 export interface PetList {
-  listOfPets: Pet[] | null;
+  pets: Pet[] | null;
 }
