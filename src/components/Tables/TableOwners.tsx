@@ -1,21 +1,13 @@
-import { useEffect, useState } from "react";
-import Modal from "../Modal/Modal";
+// import { useState } from "react";
 import { IOwner } from "../../interfaces/Owners";
-import { PetList } from "../../interfaces/Pet";
-import { HttpMethods } from "../../interfaces/httpMethods";
-
-type rut = string;
-
-const initialTableData: IOwner[] = [];
-function TableOwners({ owners }: any) {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [showModal, setShowModal] = useState<boolean>(false); // Estado para controlar la visibilidad del modal
-  const [modalBody, setModalBody] = useState({
-    title: "Lista de mascotas",
-    body: "perriasdasdto, un gatito, un cocodrilo",
-  });
-  const [petsOwner, setPetsOwner] = useState<IOwner[]>(initialTableData);
-
+// import ModalListPets from "../Modal/ModalListPets";
+// type rut = string;
+function TableOwners({ owners, onClickButton }: any) {
+  // const [showModal, setShowModal] = useState<boolean>(false); // Estado para controlar la visibilidad del modal
+  // const [modalBody, setModalBody] = useState({});
+  const handleReturnPetId = (rut: string) => {
+    onClickButton(rut);
+  };
   const data = owners.map((owner: IOwner, index: number) => {
     return (
       <tr key={index} style={{ textTransform: "capitalize" }}>
@@ -33,7 +25,7 @@ function TableOwners({ owners }: any) {
         <td className="d-flex justify-content-center">
           <button
             className={`btn btn-success m-1`}
-            onClick={() => handleOpenModal()} // Pasamos el id de la mascota al hacer clic
+            onClick={() => handleReturnPetId(owner.rut.toString())} // Pasamos el id de la mascota al hacer clic
           >
             📋Ver mascotas
           </button>
@@ -42,13 +34,17 @@ function TableOwners({ owners }: any) {
     );
   });
 
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
+  // const handleOpenModal = (rut: string) => {
+  //   //pasar los id de las mascotas primero
+  //   setModalBody({
+  //     body: [{ nombre: "asdasd", idMascota: "123123123123" }],
+  //   });
+  //   setShowModal(true);
+  // };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
+  // const handleCloseModal = () => {
+  //   setShowModal(false);
+  // };
   return (
     <>
       <div className="container-fluid">
@@ -70,13 +66,13 @@ function TableOwners({ owners }: any) {
                 </thead>
                 <tbody>{data}</tbody>
               </table>
-              {
-                <Modal
+              {/* {
+                <ModalListPets
                   showModal={showModal}
                   onClose={handleCloseModal}
                   modalContent={modalBody}
                 />
-              }
+              } */}
             </div>
           </div>
         </div>
