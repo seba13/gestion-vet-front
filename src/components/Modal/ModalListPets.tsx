@@ -39,7 +39,7 @@ function ModalListPets({ showModal, onClose, modalContent }) {
                       {pet.nombreMascota} - {pet.especie} - {pet.raza}
                       <button className="btn btn-primary">
                         <NavLink
-                          to={`${import.meta.env.VITE_APP_BASE_URL}/mascota/${
+                          to={`${import.meta.env.VITE_APP_BASE_URL}/mascota/ver/${
                             pet.idMascota
                           }`}
                         >

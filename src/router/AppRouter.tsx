@@ -10,6 +10,7 @@ import Pets from "../pages/Pets/Pets";
 import Owners from "../pages/Owners/Owners";
 import SignupEmployee from "../pages/SignupEmployee/SignupEmployee";
 import NewPet from "../pages/NewPet/NewPet";
+import PetProfile from "../pages/Owners/PetProfile";
 
 export default function AppRouter() {
   const authContext = useContext(AuthContext)!;
@@ -49,6 +50,14 @@ export default function AppRouter() {
           element: (
             <ProtectedRoute id={4}>
               <SignupEmployee></SignupEmployee>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/mascota/ver/:idMascota",
+          element: (
+            <ProtectedRoute id={5}>
+              <PetProfile></PetProfile>
             </ProtectedRoute>
           ),
         },
