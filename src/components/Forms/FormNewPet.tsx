@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./FormPet.module.css";
+import styles from "./styles/FormPet.module.css";
 import Alert from "../Alert/Alert";
 import { IFormNewPet } from "../../interfaces/formNewPet";
 const formInitialData: IFormNewPet = {

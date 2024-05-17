@@ -85,6 +85,16 @@ export const NavbarDashboard = ({ inputComponent: Component, handleInput }) => {
                 </NavLink>
               </li>
               <li className="nav-item">
+                <NavLink to={"/registrar/titular-mascota"} className="nav-link">
+                  <div>
+                    <span>
+                      <i></i>
+                    </span>
+                    <span>Registrar dueño mascota</span>
+                  </div>
+                </NavLink>
+              </li>
+              <li className="nav-item">
                 <NavLink to={"/"} className="nav-link" onClick={handleLogout}>
                   <div>
                     <span>

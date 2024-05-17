@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Login from "../../components/FormLogin/FormLogin";
+import Login from "../../components/Forms/FormLogin";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 export default function FormLogin() {

@@ -1,4 +1,4 @@
-import FormSignup from "../../components/NewEmployee/FormSignup";
+import FormSignup from "../../components/Forms/FormSignup";
 
 function SignupEmployee() {
   return <FormSignup />;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function ModalHistoryClinic({ showModal, onClose, modalContent }) {
+function ModalPetProfile({ showModal, onClose, modalContent }) {
   const [show, setShow] = useState(showModal);
 
   useEffect(() => {
@@ -53,4 +53,4 @@ function ModalHistoryClinic({ showModal, onClose, modalContent }) {
   );
 }
 
-export default ModalHistoryClinic;
+export default ModalPetProfile;

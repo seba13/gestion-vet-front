@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Pet, PetList } from "../../interfaces/Pet";
-import Modal from "../Modal/Modal";
+import Modal from "../Modal/ModalPetProfile";
 
 function TablePets({ pets }: PetList) {
   const [currentPage, setCurrentPage] = useState(1);

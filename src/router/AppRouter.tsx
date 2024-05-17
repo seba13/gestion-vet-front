@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useContext } from "react";
-import FormLogin from "../pages/FormLogin/FormLogin";
+import FormLogin from "../pages/Forms/FormLogin";
 import NotFound from "../pages/NotFound/NotFound";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import { AuthContext } from "../context/AuthContext";
@@ -11,6 +11,7 @@ import Owners from "../pages/Owners/Owners";
 import SignupEmployee from "../pages/SignupEmployee/SignupEmployee";
 import NewPet from "../pages/NewPet/NewPet";
 import PetProfile from "../pages/Owners/PetProfile";
+import SignupNewClient from "../pages/SignupNewClient/SignupNewClient";
 
 export default function AppRouter() {
   const authContext = useContext(AuthContext)!;
@@ -58,6 +59,14 @@ export default function AppRouter() {
           element: (
             <ProtectedRoute id={5}>
               <PetProfile></PetProfile>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/registrar/titular-mascota",
+          element: (
+            <ProtectedRoute id={6}>
+              <SignupNewClient></SignupNewClient>
             </ProtectedRoute>
           ),
         },

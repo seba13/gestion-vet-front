@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import FormNewPet from "../../components/NewPet/FormNewPet";
+import FormNewPet from "../../components/Forms/FormNewPet";
 import { IFormNewPet } from "../../interfaces/formNewPet";
 import Alert from "../../components/Alert/Alert";
 
