@@ -102,7 +102,7 @@ function FormUpdateClient({ actualOwner, showModal }: any) {
         } else {
           setFormErrors({
             typeOf: "success",
-            messages: ["Mascota actualizada con éxito! ✅."],
+            messages: ["Persona actualizada con éxito! ✅."],
           });
           setShowAlert(true);
         }
