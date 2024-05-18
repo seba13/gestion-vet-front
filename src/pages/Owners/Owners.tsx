@@ -3,21 +3,10 @@ import TableOwners from "../../components/Tables/TableOwners";
 import { HttpMethods } from "../../interfaces/httpMethods";
 import { IOwner } from "../../interfaces/Owners";
 import useFetch from "../../hooks/useFetch";
-import ModalListPets from "../../components/Forms/Lists/ListPets";
-import { PetList } from "../../interfaces/Pet";
-import FormUpdateClient from "../../components/Forms/FormUpdateClient";
 
 function Owners() {
   const [ownersData, setOwnersData] = useState<IOwner[]>([]);
   const [selectedOwner, setSelectedOwner] = useState(""); // Guarda el propietario seleccionado para mostrar en el modal
-  // const [showModal, setShowModal] = useState(false);
-  // const [modalContent, setModalContent] = useState<PetList>({ pets: [] });
-  const [isLoading, setIsLoading] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [showModalEditOwner, setShowModalEditOwner] = useState({
-    show: false,
-    content: {},
-  });
   const { data, error, loading } = useFetch(
     `${import.meta.env.VITE_API_URL}/titulares-mascota`,
     {
@@ -38,7 +27,13 @@ function Owners() {
   }, [loading, error]);
 
   return (
-    <>{!loading && !error && data && <TableOwners owners={ownersData} />}</>
+    <>
+      {loading && <p className="p text-center">Cargando datos....</p>}
+      {!loading && !data && (
+        <p className="p text-center">Al parecer hubo un error..</p>
+      )}
+      {!loading && !error && data && <TableOwners owners={ownersData} />}
+    </>
   );
 }
 

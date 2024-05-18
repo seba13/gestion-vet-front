@@ -64,7 +64,18 @@ export const NavbarDashboard = ({ inputComponent: Component, handleInput }) => {
                         <span>
                           <i></i>
                         </span>
-                        <span>Nueva empleado</span>
+                        <span>Nuevo empleado</span>
+                      </div>
+                    </NavLink>
+                  </li>
+                  <li className="dropdown-item">
+                    {" "}
+                    <NavLink to={"/actualizar-empleado"} className="nav-link">
+                      <div>
+                        <span>
+                          <i></i>
+                        </span>
+                        <span>Actualizar empleado</span>
                       </div>
                     </NavLink>
                   </li>

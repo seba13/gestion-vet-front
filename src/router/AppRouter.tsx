@@ -4,14 +4,14 @@ import FormLogin from "../pages/Forms/FormLogin";
 import NotFound from "../pages/NotFound/NotFound";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import { AuthContext } from "../context/AuthContext";
-import FormPet from "../pages/NewPet/NewPet";
 import { ProtectedRoute } from "../components/ProtectedRoute/ProtectedRoute";
 import Pets from "../pages/Pets/Pets";
 import Owners from "../pages/Owners/Owners";
-import SignupEmployee from "../pages/SignupEmployee/SignupEmployee";
+import SignupEmployee from "../pages/Employees/SignupEmployee";
 import NewPet from "../pages/NewPet/NewPet";
 import PetProfile from "../pages/Owners/PetProfile";
 import SignupNewClient from "../pages/SignupNewClient/SignupNewClient";
+import UpdateEmployee from "../pages/Employees/UpdateEmployee";
 
 export default function AppRouter() {
   const authContext = useContext(AuthContext)!;
@@ -55,9 +55,17 @@ export default function AppRouter() {
           ),
         },
         {
-          path: "/mascota/ver/:idMascota",
+          path: "/actualizar-empleado",
           element: (
             <ProtectedRoute id={5}>
+              <UpdateEmployee></UpdateEmployee>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/mascota/ver/:idMascota",
+          element: (
+            <ProtectedRoute id={6}>
               <PetProfile></PetProfile>
             </ProtectedRoute>
           ),
@@ -65,7 +73,7 @@ export default function AppRouter() {
         {
           path: "/registrar/titular-mascota",
           element: (
-            <ProtectedRoute id={6}>
+            <ProtectedRoute id={7}>
               <SignupNewClient></SignupNewClient>
             </ProtectedRoute>
           ),
