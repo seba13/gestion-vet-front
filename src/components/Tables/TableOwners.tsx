@@ -125,6 +125,11 @@ function TableOwners({ owners }: any) {
     setShowModal({ show: false, content: {} });
   };
 
+  const parseDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
+  };
+
   const dataTable = currentOwners.map((owner: IOwner, index: number) => (
     <tr key={index} style={{ textTransform: "capitalize" }}>
       <td>
@@ -133,7 +138,7 @@ function TableOwners({ owners }: any) {
       <td>{owner.nombre}</td>
       <td>{owner.apellidoPaterno}</td>
       <td>{owner.apellidoMaterno}</td>
-      <td>{owner.fechaNacimiento}</td>
+      <td>{parseDate(owner.fechaNacimiento)}</td>
       <td>{owner.telefono}</td>
       <td>{owner.sexo}</td>
       <td>{owner.email}</td>
