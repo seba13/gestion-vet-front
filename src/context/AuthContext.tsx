@@ -1,13 +1,16 @@
 import React, { createContext, useEffect, useMemo, useState } from "react";
 import { AuthenticateUser } from "../interfaces/authenticateUser";
 
-export const AuthContext = createContext<AuthenticateUser | null>(null);
+export const AuthContext = createContext<AuthenticateUser>(
+  {} as AuthenticateUser
+);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [nombreUsuario, setNombreUsuario] = useState<string | null>(null);
   const [idUsuario, setIdUsuario] = useState<string | null>(null);
   const [idEmpleado, setIdEmpleado] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+
   useEffect(() => {
     const storageData = localStorage.getItem("session-info");
     if (storageData) {
@@ -61,8 +64,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIdUsuario(null);
     setNombreUsuario(null);
     setToken(null);
-    // // window.location.reload();
-    // navigate("/");
   };
 
   return (

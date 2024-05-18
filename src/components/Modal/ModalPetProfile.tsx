@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function ModalPetProfile({ showModal, onClose, modalContent }) {
+function ModalComponent({ showModal, onClose, modalContent }) {
   const [show, setShow] = useState(showModal);
 
   useEffect(() => {
@@ -14,11 +14,7 @@ function ModalPetProfile({ showModal, onClose, modalContent }) {
   };
   return (
     <>
-      {/* <button className="btn btn-primary" onClick={handleShow}>
-        Abrir Modal
-      </button> */}
-
-      {show && (
+      {show.show && (
         <div
           className="modal"
           tabIndex={-1}
@@ -53,4 +49,4 @@ function ModalPetProfile({ showModal, onClose, modalContent }) {
   );
 }
 
-export default ModalPetProfile;
+export default ModalComponent;

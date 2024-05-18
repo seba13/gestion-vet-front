@@ -4,8 +4,7 @@ import { useContext } from "react";
 import styles from "./Nabbar.module.css";
 
 export const NavbarDashboard = ({ inputComponent: Component, handleInput }) => {
-  const authContext = useContext(AuthContext);
-  const { logout } = authContext;
+  const { logout, nombreUsuario } = useContext(AuthContext!);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -53,6 +52,7 @@ export const NavbarDashboard = ({ inputComponent: Component, handleInput }) => {
                   role="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
+                  style={{ display: nombreUsuario !== "admin" ? "" : "none" }}
                 >
                   Empleados
                 </a>

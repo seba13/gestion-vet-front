@@ -1,15 +1,19 @@
 import { useState } from "react";
 import { Pet, PetList } from "../../interfaces/Pet";
-import Modal from "../Modal/ModalPetProfile";
+
+import FormUpdatePet from "../Forms/FormUpdatePet";
+import ModalComponent from "../Modal/ModalPetProfile";
 
 function TablePets({ pets }: PetList) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [showModal, setShowModal] = useState<boolean>(false); // Estado para controlar la visibilidad del modal
   const itemsPerPage = 10;
   const totalPages = Math.ceil(pets!.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPets = pets!.slice(indexOfFirstItem, indexOfLastItem);
+  const [showModal, setShowModal] = useState({ show: false, content: {} });
+  const [isEditing, setIsEditing] = useState(false);
+
   const emptyTable = (
     <tr>
       <td colSpan={8}>No existen datos</td>
@@ -44,39 +48,69 @@ function TablePets({ pets }: PetList) {
     }
     return buttons;
   };
-
-  const handleOpenModal = () => {
-    // const [filteredPet] = pets!.filter((pet) => {
-    //   return pet.id === petId;
-    // });
-    // setPetInformation(filteredPet);
-    setShowModal(true);
+  const handlerModalFormUpdate = (event: any) => {
+    // para cerrar el modal
+    setIsEditing(!isEditing);
+    setShowModal({ show: event, content: {} });
   };
+  const handleOpenModal = (type: any, idParam?: string) => {
+    console.log("opening modal: ", type);
+    if (type === "edit") {
+      setIsEditing(!isEditing);
+      const filter = currentPets.filter((pet: Pet) => {
+        return pet.idMascota.toString() === idParam;
+      });
 
+      setShowModal({
+        show: !showModal.show,
+        content: {
+          title: `Editando mascota: ${filter[0].nombreMascota}`,
+          body: (
+            <FormUpdatePet
+              actualPet={filter}
+              showModal={handlerModalFormUpdate}
+            />
+          ),
+        },
+      });
+    }
+
+    if (type === "profile") {
+      setShowModal({
+        show: !showModal.show,
+        content: { title: "Pet profile", body: "pet profile" },
+      });
+    }
+  };
   const handleCloseModal = () => {
-    setShowModal(false);
+    setShowModal({ show: false, content: {} });
   };
 
-  const dataTable = currentPets.map((pet: Pet) => (
-    <tr key={pet.idMascota} style={{ textTransform: "capitalize" }}>
+  const dataTable = currentPets.map((pet: Pet, index) => (
+    <tr key={index} style={{ textTransform: "capitalize" }}>
       <td>{pet.idMascota}</td>
-      <td>{pet.nombreMascota}</td>
-      <td>{pet.edadMascota}</td>
-      <td>{pet.especie}</td>
-      <td>{pet.raza === "undefined" ? pet.raza : "desconocida"}</td>
+      <td>p{pet.nombreMascota}</td>
+      <td>pet.edadMascota</td>
+      <td>pet.especie</td>
+      <td>{pet.raza ? pet.raza : "desconocida"}</td>
       <td>{pet.genero}</td>
       <td className="d-flex justify-content-center">
         <button
           className={`btn btn-success m-1`}
-          onClick={() => handleOpenModal()} // Pasamos el id de la mascota al hacer clic
+          onClick={() => handleOpenModal("profile")}
         >
           📋
         </button>
-        <button className={`btn btn-warning m-1`}>✏️</button>
-        <button className={`btn btn-danger m-1`}>✖️</button>
+        <button
+          className={`btn btn-warning m-1`}
+          onClick={() => handleOpenModal("edit", pet.idMascota.toString())}
+        >
+          ✏️
+        </button>
       </td>
     </tr>
   ));
+
   const paginationButtons = (
     <div className={`d-flex col justify-content-center mt-3`}>
       <button
@@ -96,6 +130,7 @@ function TablePets({ pets }: PetList) {
       </button>
     </div>
   );
+
   return (
     <div className="container-fluid">
       <div className="row justify-content-center">
@@ -120,13 +155,10 @@ function TablePets({ pets }: PetList) {
       </div>
       {paginationButtons}
       {
-        <Modal
+        <ModalComponent
           showModal={showModal}
           onClose={handleCloseModal}
-          modalContent={{
-            title: "Mi modal reutilizable",
-            body: "ola ola khaces",
-          }}
+          modalContent={showModal.content}
         />
       }
     </div>
