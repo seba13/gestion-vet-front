@@ -90,8 +90,8 @@ function TablePets({ pets }: PetList) {
     <tr key={index} style={{ textTransform: "capitalize" }}>
       <td>{pet.idMascota}</td>
       <td>p{pet.nombreMascota}</td>
-      <td>pet.edadMascota</td>
-      <td>pet.especie</td>
+      <td>{pet.edadMascota}</td>
+      <td>{pet.especie}</td>
       <td>{pet.raza ? pet.raza : "desconocida"}</td>
       <td>{pet.genero}</td>
       <td className="d-flex justify-content-center">
