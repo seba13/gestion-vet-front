@@ -266,6 +266,7 @@ import ListPets from "../Forms/Lists/ListPets";
 import { HttpMethods } from "../../interfaces/httpMethods";
 import { error } from "console";
 import { NavLink } from "react-router-dom";
+import FormUpdateClient from "../Forms/FormUpdateClient";
 
 function TableOwners({ owners }: any) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -321,26 +322,25 @@ function TableOwners({ owners }: any) {
   };
   const handleOpenModal = async (type: any, idParam: IOwner) => {
     console.log("opening modal: ", type);
-    // if (type === "editProfile") {
-    //   setIsEditing(!isEditing);
-    //   const filter = currentOwners.filter((owner: IOwner) => {
-    //     return owner.idPersona === idParam;
-    //   });
-
-    //   setShowModal({
-    //     show: !showModal.show,
-    //     content: {
-    //       title: `Editando mascota: ${filter[0].nombreMascota}`,
-    //       body: (
-    //         <FormUpdatePet
-    //           actualPet={filter}
-    //           showModal={handlerModalFormUpdate}
-    //         />
-    //       ),
-    //     },
-    //   });
-    // }
-    // esta muestra la lista de mascotas
+    if (type === "editProfile") {
+      setIsEditing(!isEditing);
+      const filter = currentOwners.filter((owner: IOwner) => {
+        return owner.idPersona === idParam.idPersona;
+      });
+      console.log(filter);
+      setShowModal({
+        show: !showModal.show,
+        content: {
+          title: `Editando perfil`,
+          body: (
+            <FormUpdateClient
+              actualOwner={filter}
+              showModal={handlerModalFormUpdate}
+            />
+          ),
+        },
+      });
+    }
     if (type === "petList") {
       const results = await fetch(
         `${

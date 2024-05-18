@@ -1,35 +1,44 @@
 import { useState } from "react";
 import Alert from "../Alert/Alert";
 import { IOwner } from "../../interfaces/Owners";
-// Función para manejar cambios en los campos del formulario
-const handleApiRequest: any = (requestBody: any) => {
-  return fetch(`${import.meta.env.VITE_API_URL}/mascota`, {
+import { Form } from "react-router-dom";
+
+const handleApiRequest = (requestBody: any) => {
+  // {
+  //   "idPersona": "6ac11a28-59ce-46e7-a95c-d3f47511d500",
+  //   "nombre": "Ana",
+  //   "apellidoPaterno": "Rodriguez",
+  //   "apellidoMaterno": "Rodriguez",
+  //   "fechaNacimiento": "1990-01-01",
+  //   "rut": 9828745,
+  //   "dv": "k",
+  //   "sexo": "M",
+  //   "telefono": 97878451,
+  //   "direccion": "calle 1",
+  //   "email": "ana@ana123.cl"
+  // }
+  console.log(requestBody);
+  return fetch(`${import.meta.env.VITE_API_URL}/persona`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(requestBody),
   })
-    .then((response) => {
-      return response.json();
-    })
+    .then((response) => response.json())
     .then((data: any) => {
       console.log("DATA:", data);
       return data;
     })
     .catch((error) => {
-      // Maneja los errores
-      console.error("ACA Error:", error.message);
+      console.error("Error:", error.message);
     });
 };
 
 function FormUpdateClient({ actualOwner, showModal }: any) {
-  console.log("ACTUAL PET: ", actualOwner);
   const [formData, setFormData] = useState<IOwner>(actualOwner[0]);
   const [formErrors, setFormErrors] = useState<object | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
-  const [confirmarFormulario, setConfirmarFormulario] =
-    useState<boolean>(false);
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -40,61 +49,40 @@ function FormUpdateClient({ actualOwner, showModal }: any) {
       [name]: value,
     });
   };
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { checked } = event.target;
-    setConfirmarFormulario(checked);
-  };
 
-  // Función para manejar el envío del formulario
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     let errors: Array<string> = [];
-    if (!confirmarFormulario) {
-      console.error("Debes confirmar el formulario.");
-      errors.push("Debes confirmar el formulario.");
-    }
-    // Aquí puedes agregar la lógica para enviar los datos del formulario
+
     if (formData.nombre.trim() === "") {
-      console.error("Error falta campo nombre.");
       errors.push("Falta campo nombre.");
     }
-
-    if (formData.apellidoMaterno.toString().trim() === "") {
-      console.error("Error falta campo edad.");
-      errors.push("Falta campo edad.");
-    }
     if (formData.apellidoMaterno.trim() === "") {
-      console.error("Error falta campo especie.");
-      errors.push("Falta campo especie.");
+      errors.push("Falta campo apellido materno.");
     }
-
+    if (formData.apellidoPaterno.trim() === "") {
+      errors.push("Falta campo apellido paterno.");
+    }
     if (formData.rut.toString().trim() === "") {
-      console.error("Error falta campo raza.");
-      errors.push("Falta campo raza.");
+      errors.push("Falta campo RUT.");
     }
-    if (formData.dv.toString().trim() === "") {
-      console.error("Error falta campo genero.");
-      errors.push("Falta campo genero.");
+    if (formData.dv.trim() === "") {
+      errors.push("Falta campo DV.");
     }
     if (formData.direccion.trim() === "") {
-      console.error("Error falta campo especie.");
-      errors.push("Falta campo especie.");
+      errors.push("Falta campo dirección.");
     }
     if (formData.email.trim() === "") {
-      console.error("Error falta campo especie.");
-      errors.push("Falta campo especie.");
+      errors.push("Falta campo correo.");
     }
     if (formData.fechaNacimiento.trim() === "") {
-      console.error("Error falta campo especie.");
-      errors.push("Falta campo especie.");
+      errors.push("Falta campo fecha de nacimiento.");
     }
     if (formData.sexo.trim() === "") {
-      console.error("Error falta campo especie.");
-      errors.push("Falta campo especie.");
+      errors.push("Falta campo sexo.");
     }
     if (formData.telefono.toString().trim() === "") {
-      console.error("Error falta campo especie.");
-      errors.push("Falta campo especie.");
+      errors.push("Falta campo teléfono.");
     }
 
     if (errors.length > 0) {
@@ -103,11 +91,10 @@ function FormUpdateClient({ actualOwner, showModal }: any) {
         messages: errors,
       });
       setShowAlert(true);
-    } else if (errors.length === 0) {
+    } else {
+      console.log(formData);
       handleApiRequest(formData).then((result: any) => {
-        // console.log("API RESPONSE: ", result);
         if (result.success === false) {
-          // console.log(result);
           setFormErrors({
             typeOf: "danger",
             messages: [`${result.message} ❌.`],
@@ -115,22 +102,16 @@ function FormUpdateClient({ actualOwner, showModal }: any) {
         } else {
           setFormErrors({
             typeOf: "success",
-            messages: ["Mascota actualizada con exito! ✅."],
+            messages: ["Mascota actualizada con éxito! ✅."],
           });
           setShowAlert(true);
         }
       });
-      // .finally(() => {
-      //   setFormErrors(null);
-      //   setShowAlert(false);
-      //   setConfirmarFormulario(false);
-      // });
-      // Cerrar el modal
+
       setTimeout(() => {
         showModal(false);
         setFormErrors(null);
         setShowAlert(false);
-        setConfirmarFormulario(false);
         setFormData({
           apellidoMaterno: "",
           apellidoPaterno: "",
@@ -148,127 +129,186 @@ function FormUpdateClient({ actualOwner, showModal }: any) {
       }, 3500);
     }
   };
+
   const onCloseAlert = () => {
     setShowAlert(false);
     setFormErrors(null);
   };
+
   return (
     <>
       {showAlert && (
         <Alert alertProperties={formErrors} handlerCloseAlert={onCloseAlert} />
       )}
-      <div className={`d-flex justify-content-center align-items-center`}>
-        <form onSubmit={handleSubmit} className="">
-          <div className="gap-3">
-            <div className="mb-3">
-              <label htmlFor="idMascota">#ID: </label>
+      <div className="d-flex justify-content-center align-items-center">
+        <form onSubmit={handleSubmit} className="w-100">
+          <div className="row">
+            <div className="col-md-6 mb-3 ">
+              <label htmlFor="rut" className="form-label">
+                RUT:
+              </label>
+              <input
+                type="text"
+                className="form-control w-100"
+                id="rut"
+                name="rut"
+                value={formData.rut}
+                onChange={handleInputChange}
+                placeholder="Rut"
+              />
+            </div>
+            <div className="col-md-6 mb-3">
+              <label htmlFor="dv" className="form-label">
+                DV:
+              </label>
+              <input
+                type="text"
+                className="form-control w-25"
+                id="dv"
+                name="dv"
+                value={formData.dv}
+                onChange={handleInputChange}
+                placeholder="DV"
+              />
+            </div>
+          </div>
 
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <label htmlFor="nombre" className="form-label">
+                Nombres:
+              </label>
               <input
                 type="text"
                 className="form-control"
-                id="idPersona"
-                name="idPersona"
-                value={formData.idPersona}
+                id="nombre"
+                name="nombre"
+                value={formData.nombre}
                 onChange={handleInputChange}
-                placeholder="Id persona aqui"
-                disabled
+                placeholder="Nombres"
               />
             </div>
-            <div className="d-flex flex-column">
-              <div className="d-flex gap-3">
-                <div className="mb-3">
-                  <label htmlFor="nombre">Nombres:</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="nombre"
-                    name="nombre"
-                    value={formData.nombre}
-                    onChange={handleInputChange}
-                    placeholder="Apellido paterno"
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="apellidoPaterno">Paterno:</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="apellidoPaterno"
-                    name="apellidoPaterno"
-                    value={formData.apellidoPaterno}
-                    onChange={handleInputChange}
-                    placeholder="Apellido paterno"
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="especie">Materno:</label>
-
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="apellidoMaterno"
-                    name="apellidoMaterno"
-                    value={formData.apellidoMaterno}
-                    onChange={handleInputChange}
-                    placeholder="Apellido materno"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="fechaNacimiento">Nacimiento:</label>
-
-                <input
-                  type="date"
-                  className="form-control"
-                  id="fechaNacimiento"
-                  name="fechaNacimiento"
-                  value={formData.fechaNacimiento}
-                  onChange={handleInputChange}
-                  placeholder="Nacimiento"
-                />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="sexo">Sexo:</label>
-
-                <select
-                  className="form-select"
-                  id="sexo"
-                  name="sexo"
-                  value={formData.sexo}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Seleccionar sexo</option>
-                  <option value="m">Masculino</option>
-                  <option value="f">Femenino</option>
-                  <option value="o">Otro</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div className="d-flex justify-content-center mt-2">
-            <label className="" htmlFor="confirmarForm">
-              Confirmar cambios:{" "}
+            <div className="col-md-6 mb-3">
+              <label htmlFor="apellidoPaterno" className="form-label">
+                Apellido Paterno:
+              </label>
               <input
-                type="checkbox"
-                id="confirmarForm"
-                name="confirmarForm"
-                checked={confirmarFormulario}
-                onChange={handleCheckboxChange}
+                type="text"
+                className="form-control"
+                id="apellidoPaterno"
+                name="apellidoPaterno"
+                value={formData.apellidoPaterno}
+                onChange={handleInputChange}
+                placeholder="Apellido paterno"
               />
-            </label>
+            </div>
           </div>
-          <div className="d-flex justify-content-center gap-5 mt-3">
-            <button
-              type="submit"
-              className="btn btn-primary d-flex w-50 justify-content-center"
-            >
-              Actualizar mascota
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <label htmlFor="apellidoMaterno" className="form-label">
+                Apellido Materno:
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="apellidoMaterno"
+                name="apellidoMaterno"
+                value={formData.apellidoMaterno}
+                onChange={handleInputChange}
+                placeholder="Apellido materno"
+              />
+            </div>
+
+            <div className="col-md-6 mb-3">
+              <label htmlFor="fechaNacimiento" className="form-label">
+                Fecha de Nacimiento:
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                id="fechaNacimiento"
+                name="fechaNacimiento"
+                value={formData.fechaNacimiento}
+                onChange={handleInputChange}
+                placeholder="Fecha de nacimiento"
+                required
+              />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <label htmlFor="sexo" className="form-label">
+                Sexo:
+              </label>
+              <select
+                className="form-select"
+                id="sexo"
+                name="sexo"
+                value={formData.sexo}
+                onChange={handleInputChange}
+              >
+                <option value="">Seleccionar sexo</option>
+                <option value="m">Masculino</option>
+                <option value="f">Femenino</option>
+                <option value="o">Otro</option>
+              </select>
+            </div>
+
+            <div className="col-md-6 mb-3">
+              <label htmlFor="telefono" className="form-label">
+                Teléfono:
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="telefono"
+                name="telefono"
+                value={formData.telefono}
+                onChange={handleInputChange}
+                placeholder="Teléfono"
+              />
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <label htmlFor="direccion" className="form-label">
+                Dirección:
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="direccion"
+                name="direccion"
+                value={formData.direccion}
+                onChange={handleInputChange}
+                placeholder="Dirección"
+              />
+            </div>
+
+            <div className="col-md-6 mb-3">
+              <label htmlFor="email" className="form-label">
+                Correo:
+              </label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Correo"
+              />
+            </div>
+          </div>
+
+          <div className="d-flex justify-content-around">
+            <button type="submit" className="btn btn-primary w-75">
+              Actualizar persona
             </button>
             <button
               type="reset"
-              className="btn btn-primary d-flex w-50 justify-content-center"
+              className="btn btn-secondary w-45"
               onClick={() => {
                 setFormData({
                   apellidoMaterno: "",
