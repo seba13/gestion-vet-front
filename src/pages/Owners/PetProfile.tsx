@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Pet } from "../../interfaces/Pet";
 
 // Mueve la declaración de función handleFetch fuera del componente
-const handleFetch = async (parametro) => {
+const handleFetch = async (parametro: string) => {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/mascota/${parametro}`
