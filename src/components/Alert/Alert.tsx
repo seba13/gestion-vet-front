@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import styles from "./Alert.module.css";
-
-function Alert({ alertProperties, handlerCloseAlert }) {
+interface IAlertProperties {
+  alertProperties: {
+    typeOf: string;
+    messages: [];
+  };
+  handlerCloseAlert: () => void;
+}
+function Alert({ alertProperties, handlerCloseAlert }: IAlertProperties) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
