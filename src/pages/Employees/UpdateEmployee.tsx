@@ -1,7 +1,9 @@
-const UpdateEmployee = () => {
-  return (
-    <div>UpdateEmployee</div>
-  )
-}
+import FormUpdateClient from "../../components/Forms/FormUpdateClient";
+import FormUpdateEmployee from "../../components/Forms/FormUpdateEmployee";
 
-export default UpdateEmployee
+const UpdateEmployee = () => {
+  // return <FormUpdateClient></FormUpdateClient>;
+  return <FormUpdateEmployee></FormUpdateEmployee>;
+};
+
+export default UpdateEmployee;

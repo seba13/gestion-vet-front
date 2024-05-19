@@ -13,6 +13,7 @@ import PetProfile from "../pages/Owners/PetProfile";
 import SignupNewClient from "../pages/SignupNewClient/SignupNewClient";
 import UpdateEmployee from "../pages/Employees/UpdateEmployee";
 import UserProfilePage from "../pages/UserProfilePage/UserProfile";
+import { ListEmployee } from "../pages/Employees/ListEmployee";
 
 export default function AppRouter() {
   const authContext = useContext(AuthContext)!;
@@ -56,9 +57,17 @@ export default function AppRouter() {
           ),
         },
         {
-          path: "/actualizar-empleado",
+          path: "/ver-empleados",
           element: (
             <ProtectedRoute id={5}>
+              <ListEmployee></ListEmployee>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/actualizar-empleado",
+          element: (
+            <ProtectedRoute id={6}>
               <UpdateEmployee></UpdateEmployee>
             </ProtectedRoute>
           ),
@@ -66,7 +75,7 @@ export default function AppRouter() {
         {
           path: "/mascota/ver/:idMascota",
           element: (
-            <ProtectedRoute id={6}>
+            <ProtectedRoute id={7}>
               <PetProfile></PetProfile>
             </ProtectedRoute>
           ),
@@ -74,7 +83,7 @@ export default function AppRouter() {
         {
           path: "/registrar/titular-mascota",
           element: (
-            <ProtectedRoute id={7}>
+            <ProtectedRoute id={8}>
               <SignupNewClient></SignupNewClient>
             </ProtectedRoute>
           ),

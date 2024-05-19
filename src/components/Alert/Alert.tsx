@@ -7,7 +7,7 @@ export interface AlertProperties {
   messages: string[];
 }
 
-interface AlertProps {
+export interface AlertProps {
   alertProperties: AlertProperties; // Aquí usas la interfaz exportada
   handlerCloseAlert: () => void;
 }
