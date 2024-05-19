@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Alert from "../Alert/Alert";
 
 interface LoginProps {
   onLogin: (username: string, password: string) => void;
@@ -7,6 +8,8 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [formErrors, setFormErrors] = useState<object | null>(null);
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -18,13 +21,35 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Aquí puedes realizar la validación de los datos si es necesario
-
+    let myErrors: string[] = []; // Aquí puedes realizar la validación de los datos si es necesario
+    console.log(myErrors);
+    if (username.trim() === "") {
+      myErrors.push("Falta campo usuario");
+    }
+    if (password.trim() === "") {
+      myErrors.push("Falta campo contraseñas");
+    }
+    if (myErrors.length > 0) {
+      setFormErrors({
+        typeOf: "danger",
+        messages: myErrors,
+      });
+      setShowAlert(true);
+    }
     onLogin(username, password);
   };
-
+  const handlerCloseAlert = () => {
+    setShowAlert(false);
+    setFormErrors(null);
+  };
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
+      {showAlert && (
+        <Alert
+          alertProperties={formErrors}
+          handlerCloseAlert={handlerCloseAlert}
+        />
+      )}
       <div className="card p-4">
         <h2 className="mb-4 text-center">Sistema veterinario 😼</h2>
         <form onSubmit={handleSubmit}>

@@ -1,25 +1,18 @@
 import { useEffect, useState } from "react";
 import styles from "./Alert.module.css";
-
-interface AlertProperties {
-  typeOf: string;
-  messages: string[];
-}
-
-interface AlertProps {
-  alertProperties: AlertProperties;
+interface IAlertProperties {
+  alertProperties: {
+    typeOf: string;
+    messages: string[];
+  };
   handlerCloseAlert: () => void;
 }
-
-const Alert: React.FC<AlertProps> = ({
-  alertProperties,
-  handlerCloseAlert,
-}) => {
+function Alert({ alertProperties, handlerCloseAlert }: IAlertProperties) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setVisible(false); // Oculta el alert después de 3.9 segundos
+      setVisible(false); // Oculta el alert después de 2 segundos
       handlerCloseAlert();
     }, 3900);
 
@@ -41,6 +34,6 @@ const Alert: React.FC<AlertProps> = ({
       })}
     </div>
   ) : null;
-};
+}
 
 export default Alert;
