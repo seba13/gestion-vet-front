@@ -1,23 +1,8 @@
 import { useState } from "react";
-import Alert from "../Alert/Alert";
+import Alert, { AlertProperties } from "../Alert/Alert";
 import { IOwner } from "../../interfaces/Owners";
-import { Form } from "react-router-dom";
 
 const handleApiRequest = (requestBody: any) => {
-  // {
-  //   "idPersona": "6ac11a28-59ce-46e7-a95c-d3f47511d500",
-  //   "nombre": "Ana",
-  //   "apellidoPaterno": "Rodriguez",
-  //   "apellidoMaterno": "Rodriguez",
-  //   "fechaNacimiento": "1990-01-01",
-  //   "rut": 9828745,
-  //   "dv": "k",
-  //   "sexo": "M",
-  //   "telefono": 97878451,
-  //   "direccion": "calle 1",
-  //   "email": "ana@ana123.cl"
-  // }
-  console.log(requestBody);
   return fetch(`${import.meta.env.VITE_API_URL}/persona`, {
     method: "PATCH",
     headers: {
@@ -37,7 +22,7 @@ const handleApiRequest = (requestBody: any) => {
 
 function FormUpdateClient({ actualOwner, showModal }: any) {
   const [formData, setFormData] = useState<IOwner>(actualOwner[0]);
-  const [formErrors, setFormErrors] = useState<object | null>(null);
+  const [formErrors, setFormErrors] = useState<AlertProperties | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
 
   const handleInputChange = (
@@ -92,7 +77,6 @@ function FormUpdateClient({ actualOwner, showModal }: any) {
       });
       setShowAlert(true);
     } else {
-      console.log(formData);
       handleApiRequest(formData).then((result: any) => {
         if (result.success === false) {
           setFormErrors({
@@ -137,13 +121,13 @@ function FormUpdateClient({ actualOwner, showModal }: any) {
 
   return (
     <>
-      {showAlert && (
+      {showAlert && formErrors && (
         <Alert alertProperties={formErrors} handlerCloseAlert={onCloseAlert} />
       )}
       <div className="d-flex justify-content-center align-items-center">
         <form onSubmit={handleSubmit} className="w-100">
           <div className="row">
-            <div className="col-md-6 mb-3 ">
+            <div className="col-md-6 mb-3">
               <label htmlFor="rut" className="form-label">
                 RUT:
               </label>
@@ -218,7 +202,6 @@ function FormUpdateClient({ actualOwner, showModal }: any) {
                 placeholder="Apellido materno"
               />
             </div>
-
             <div className="col-md-6 mb-3">
               <label htmlFor="fechaNacimiento" className="form-label">
                 Fecha de Nacimiento:
@@ -253,7 +236,6 @@ function FormUpdateClient({ actualOwner, showModal }: any) {
                 <option value="o">Otro</option>
               </select>
             </div>
-
             <div className="col-md-6 mb-3">
               <label htmlFor="telefono" className="form-label">
                 Teléfono:
@@ -269,7 +251,6 @@ function FormUpdateClient({ actualOwner, showModal }: any) {
               />
             </div>
           </div>
-
           <div className="row">
             <div className="col-md-6 mb-3">
               <label htmlFor="direccion" className="form-label">
@@ -285,7 +266,6 @@ function FormUpdateClient({ actualOwner, showModal }: any) {
                 placeholder="Dirección"
               />
             </div>
-
             <div className="col-md-6 mb-3">
               <label htmlFor="email" className="form-label">
                 Correo:
@@ -301,7 +281,6 @@ function FormUpdateClient({ actualOwner, showModal }: any) {
               />
             </div>
           </div>
-
           <div className="d-flex justify-content-around">
             <button type="submit" className="btn btn-primary w-75">
               Actualizar persona

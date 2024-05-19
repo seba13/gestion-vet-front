@@ -5,11 +5,16 @@ interface LoginProps {
   onLogin: (username: string, password: string) => void;
 }
 
+interface AlertProperties {
+  typeOf: string;
+  messages: string[];
+}
+
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
-  const [formErrors, setFormErrors] = useState<object | null>(null);
+  const [formErrors, setFormErrors] = useState<AlertProperties | null>(null);
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -21,13 +26,13 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let myErrors: string[] = []; // Aquí puedes realizar la validación de los datos si es necesario
-    console.log(myErrors);
+    let myErrors: string[] = [];
+
     if (username.trim() === "") {
       myErrors.push("Falta campo usuario");
     }
     if (password.trim() === "") {
-      myErrors.push("Falta campo contraseñas");
+      myErrors.push("Falta campo contraseña");
     }
     if (myErrors.length > 0) {
       setFormErrors({
@@ -35,16 +40,19 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         messages: myErrors,
       });
       setShowAlert(true);
+    } else {
+      onLogin(username, password);
     }
-    onLogin(username, password);
   };
+
   const handlerCloseAlert = () => {
     setShowAlert(false);
     setFormErrors(null);
   };
+
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
-      {showAlert && (
+      {showAlert && formErrors && (
         <Alert
           alertProperties={formErrors}
           handlerCloseAlert={handlerCloseAlert}

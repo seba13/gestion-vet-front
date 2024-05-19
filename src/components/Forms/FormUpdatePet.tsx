@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Alert from "../Alert/Alert";
+import Alert, { AlertProperties } from "../Alert/Alert";
 import { Pet } from "../../interfaces/Pet";
-// Función para manejar cambios en los campos del formulario
-const handleApiRequest: any = (requestBody: any) => {
+
+const handleApiRequest = (requestBody: any) => {
   return fetch(`${import.meta.env.VITE_API_URL}/mascota`, {
     method: "PATCH",
     headers: {
@@ -10,23 +10,19 @@ const handleApiRequest: any = (requestBody: any) => {
     },
     body: JSON.stringify(requestBody),
   })
-    .then((response) => {
-      return response.json();
-    })
+    .then((response) => response.json())
     .then((data: any) => {
       console.log("DATA:", data);
       return data;
     })
     .catch((error) => {
-      // Maneja los errores
       console.error("ACA Error:", error.message);
     });
 };
 
 function FormUpdatePet({ actualPet, showModal }: any) {
-  console.log("ACTUAL PET: ", actualPet);
   const [formData, setFormData] = useState<Pet>(actualPet[0]);
-  const [formErrors, setFormErrors] = useState<object | null>(null);
+  const [formErrors, setFormErrors] = useState<AlertProperties | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [confirmarFormulario, setConfirmarFormulario] =
     useState<boolean>(false);
@@ -40,109 +36,31 @@ function FormUpdatePet({ actualPet, showModal }: any) {
       [name]: value,
     });
   };
+
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     setConfirmarFormulario(checked);
   };
 
-  // Función para manejar el envío del formulario
   const handleSubmit = async (event: any) => {
-    // event.preventDefault();
-
-    // let myErrors: string[] = [];
-    // if (!confirmarFormulario) {
-    //   console.error("Debes confirmar el formulario.");
-    //   myErrors.push("Debes confirmar el formulario.");
-    // }
-    // // Aquí puedes agregar la lógica para enviar los datos del formulario
-    // if (formData.nombreMascota.trim() === "") {
-    //   console.error("Error falta campo nombre.");
-    //   myErrors.push("Falta campo nombre.");
-    // }
-
-    // if (formData.edadMascota.toString().trim() === "") {
-    //   console.error("Error falta campo edad.");
-    //   myErrors.push("Falta campo edad.");
-    // }
-    // if (formData.especie.trim() === "") {
-    //   console.error("Error falta campo especie.");
-    //   myErrors.push("Falta campo especie.");
-    // }
-    // if (formData.raza.toString().trim() === "") {
-    //   console.error("Error falta campo raza.");
-    //   myErrors.push("Falta campo raza.");
-    // }
-    // if (formData.genero.toString().trim() === "") {
-    //   console.error("Error falta campo genero.");
-    //   myErrors.push("Falta campo genero.");
-    // }
-
-    // if (myErrors.length > 0) {
-    //   setFormErrors({ typeOf: "danger", messages: myErrors });
-    //   setShowAlert(true);
-    // }
-    // if (myErrors.length === 0) {
-    //   handleApiRequest(formData)
-    //     .then((result: any) => {
-    //       // console.log("API RESPONSE: ", result);
-    //       if (result.success === false) {
-    //         // console.log(result);
-    //         setFormErrors({
-    //           typeOf: "danger",
-    //           messages: [`${result.message} ❌.`],
-    //         });
-    //       } else {
-    //         setFormErrors({
-    //           typeOf: "success",
-    //           messages: ["Mascota actualizada con exito! ✅."],
-    //         });
-    //         setShowAlert(true);
-    //       }
-    //     })
-    //     .finally(() => {
-    //       setFormErrors(null);
-    //       setShowAlert(false);
-    //       setConfirmarFormulario(false);
-    //       setFormData({
-    //         edadMascota: 0,
-    //         especie: "",
-    //         genero: "",
-    //         idMascota: formData.idMascota,
-    //         nombreMascota: "",
-    //         raza: "",
-    //       });
-    //     });
-    //   setTimeout(() => {
-    //     showModal(false);
-    //   }, 3000);
-    //   console.log("Form data: ", formData);
-    // }
     event.preventDefault();
     let errors: Array<string> = [];
     if (!confirmarFormulario) {
-      console.error("Debes confirmar el formulario.");
       errors.push("Debes confirmar el formulario.");
     }
-    // Aquí puedes agregar la lógica para enviar los datos del formulario
     if (formData.nombreMascota.trim() === "") {
-      console.error("Error falta campo nombre.");
       errors.push("Falta campo nombre.");
     }
-
     if (formData.edadMascota.toString().trim() === "") {
-      console.error("Error falta campo edad.");
       errors.push("Falta campo edad.");
     }
     if (formData.especie.trim() === "") {
-      console.error("Error falta campo especie.");
       errors.push("Falta campo especie.");
     }
-    if (formData.raza.toString().trim() === "") {
-      console.error("Error falta campo raza.");
+    if (formData.raza.trim() === "") {
       errors.push("Falta campo raza.");
     }
-    if (formData.genero.toString().trim() === "") {
-      console.error("Error falta campo genero.");
+    if (formData.genero.trim() === "") {
       errors.push("Falta campo genero.");
     }
     if (errors.length > 0) {
@@ -151,11 +69,9 @@ function FormUpdatePet({ actualPet, showModal }: any) {
         messages: errors,
       });
       setShowAlert(true);
-    } else if (errors.length === 0) {
+    } else {
       handleApiRequest(formData).then((result: any) => {
-        // console.log("API RESPONSE: ", result);
         if (result.success === false) {
-          // console.log(result);
           setFormErrors({
             typeOf: "danger",
             messages: [`${result.message} ❌.`],
@@ -168,12 +84,6 @@ function FormUpdatePet({ actualPet, showModal }: any) {
           setShowAlert(true);
         }
       });
-      // .finally(() => {
-      //   setFormErrors(null);
-      //   setShowAlert(false);
-      //   setConfirmarFormulario(false);
-      // });
-      // Cerrar el modal
       setTimeout(() => {
         showModal(false);
         setFormErrors(null);
@@ -190,13 +100,15 @@ function FormUpdatePet({ actualPet, showModal }: any) {
       }, 3500);
     }
   };
+
   const onCloseAlert = () => {
     setShowAlert(false);
     setFormErrors(null);
   };
+
   return (
     <>
-      {showAlert && (
+      {showAlert && formErrors && (
         <Alert alertProperties={formErrors} handlerCloseAlert={onCloseAlert} />
       )}
       <div className={`d-flex justify-content-center align-items-center`}>
@@ -231,7 +143,6 @@ function FormUpdatePet({ actualPet, showModal }: any) {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="especie">Nueva especie:</label>
-
                   <input
                     type="text"
                     className="form-control"
@@ -243,10 +154,8 @@ function FormUpdatePet({ actualPet, showModal }: any) {
                   />
                 </div>
               </div>
-
               <div className="mb-3">
                 <label htmlFor="raza">Nueva raza:</label>
-
                 <input
                   type="text"
                   className="form-control"
@@ -259,7 +168,6 @@ function FormUpdatePet({ actualPet, showModal }: any) {
               </div>
               <div className="mb-3">
                 <label htmlFor="genero">Nuevo genero:</label>
-
                 <select
                   className="form-select"
                   id="genero"
@@ -275,7 +183,6 @@ function FormUpdatePet({ actualPet, showModal }: any) {
               </div>
             </div>
           </div>
-
           <div className="d-flex justify-content-center mt-2">
             <label className="" htmlFor="confirmarForm">
               Confirmar cambios:{" "}

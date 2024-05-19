@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { IFormEmployee } from "../../interfaces/formEmployee";
-import Alert from "../Alert/Alert";
+import Alert, { AlertProperties } from "../Alert/Alert";
+
 const initialFormData: IFormEmployee = {
   apellidoMaterno: "",
   apellidoPaterno: "",
@@ -15,9 +16,10 @@ const initialFormData: IFormEmployee = {
   sexo: "",
   telefono: "",
 };
+
 function FormSignup() {
   const [formData, setFormData] = useState<IFormEmployee>(initialFormData);
-  const [formErrors, setFormErrors] = useState<object | null>(null);
+  const [formErrors, setFormErrors] = useState<AlertProperties | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [confirmarFormulario, setConfirmarFormulario] =
     useState<boolean>(false);
@@ -42,10 +44,10 @@ function FormSignup() {
         return data;
       })
       .catch((error) => {
-        // Maneja los errores
         console.error("ACA Error:", error.message);
       });
   };
+
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -55,80 +57,63 @@ function FormSignup() {
       [name]: value,
     });
   };
+
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     setConfirmarFormulario(checked);
   };
 
-  // Función para manejar el envío del formulario
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-
     let myErrors: string[] = [];
+
     if (!confirmarFormulario) {
-      console.error("Debes confirmar el formulario.");
       myErrors.push("Debes confirmar el formulario.");
     }
-    // Aquí puedes agregar la lógica para enviar los datos del formulario
     if (formData.nombre.trim() === "") {
-      console.error("Error falta campo nombre.");
       myErrors.push("Falta campo nombre.");
     }
     if (formData.apellidoPaterno.trim() === "") {
-      console.error("Error falta campo apellido paterno.");
       myErrors.push("Falta campo apellido paterno.");
     }
     if (formData.apellidoMaterno.trim() === "") {
-      console.error("Error falta campo apellido materno.");
       myErrors.push("Falta campo apellido materno.");
     }
     if (formData.dv.trim() === "") {
-      console.error("Error falta campo dv.");
       myErrors.push("Falta campo dv.");
     }
     if (formData.rut.toString().trim() === "") {
-      console.error("Error falta campo dv.");
-      myErrors.push("Falta campo dv.");
+      myErrors.push("Falta campo rut.");
     }
     if (formData.sexo.trim() === "") {
-      console.error("Error falta campo sexo.");
       myErrors.push("Falta campo sexo.");
     }
     if (formData.telefono.toString().trim() === "") {
-      console.error("Error falta campo telefono.");
       myErrors.push("Falta campo telefono.");
     }
     if (formData.direccion.trim() === "") {
-      console.error("Error falta campo direccion.");
       myErrors.push("Falta campo direccion.");
     }
     if (formData.email.trim() === "") {
-      console.error("Error falta campo email.");
       myErrors.push("Falta campo email.");
     }
     if (formData.codMedico.trim() === "") {
-      console.error("Error falta campo codigo medico.");
       myErrors.push("Falta campo codigo medico.");
     }
     if (formData.nombreUsuario.trim() === "") {
-      console.error("Error falta campo nombre de usuario.");
       myErrors.push("Falta campo nombre de usuario.");
     }
     if (formData.password.trim() === "") {
-      console.error("Error falta campo contraseña de usuario.");
       myErrors.push("Falta campo contraseña de usuario.");
     }
 
     if (myErrors.length > 0) {
       setFormErrors({ typeOf: "danger", messages: myErrors });
       setShowAlert(true);
-    }
-    if (myErrors.length === 0) {
+    } else {
       handleApiRequest(formData)
         .then((result: any) => {
-          // console.log("API RESPONSE: ", result);
           if (result.success === false) {
-            // console.log(result);
             setFormErrors({
               typeOf: "danger",
               messages: [`${result.message} ❌.`],
@@ -142,20 +127,20 @@ function FormSignup() {
         })
         .finally(() => {
           setShowAlert(true);
-          // setFormErrors(null);
-          // setShowAlert(false);
           setConfirmarFormulario(false);
           // setFormData(initialFormData);
         });
     }
   };
+
   const onCloseAlert = () => {
     setShowAlert(false);
     setFormErrors(null);
   };
+
   return (
     <>
-      {showAlert && (
+      {showAlert && formErrors && (
         <Alert alertProperties={formErrors} handlerCloseAlert={onCloseAlert} />
       )}
       <div className={`d-flex justify-content-center align-items-center`}>
@@ -234,9 +219,6 @@ function FormSignup() {
               />
             </div>
           </div>
-
-          {/* /////////////////////////////////// */}
-
           <div className="d-flex gap-3">
             <div className="mb-3">
               <input
@@ -307,7 +289,6 @@ function FormSignup() {
               />
             </div>
           </div>
-
           <div className="d-flex justify-content-center mt-2">
             <label className="" htmlFor="confirmarForm">
               Confirmar registro:{" "}

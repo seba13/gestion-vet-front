@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { IFormEmployee } from "../../interfaces/formEmployee";
-import Alert from "../Alert/Alert";
+import Alert, { AlertProperties } from "../Alert/Alert"; // Importa la interfaz AlertProperties
 import { INewClientForm } from "../../interfaces/formNewClient";
+
 const initialFormData: INewClientForm = {
   apellidoMaterno: "",
   apellidoPaterno: "",
@@ -14,7 +14,7 @@ const initialFormData: INewClientForm = {
   telefono: "",
   fechaNacimiento: "",
 };
-// Función para manejar cambios en los campos del formulario
+
 const handleApiRequest: any = (requestBody: any) => {
   return fetch(`${import.meta.env.VITE_API_URL}/titular-mascota`, {
     method: "POST",
@@ -31,13 +31,13 @@ const handleApiRequest: any = (requestBody: any) => {
       return data;
     })
     .catch((error) => {
-      // Maneja los errores
       console.error("ACA Error:", error.message);
     });
 };
+
 const FormNewClient = () => {
   const [formData, setFormData] = useState<INewClientForm>(initialFormData);
-  const [formErrors, setFormErrors] = useState<object | null>(null);
+  const [formErrors, setFormErrors] = useState<AlertProperties | null>(null); // Usa la interfaz AlertProperties
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [confirmarFormulario, setConfirmarFormulario] =
     useState<boolean>(false);
@@ -51,32 +51,20 @@ const FormNewClient = () => {
       [name]: value,
     });
   };
+
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     setConfirmarFormulario(checked);
   };
 
-  // Función para manejar el envío del formulario
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    // {
-    //   "nombre": "Ana",
-    //   "apellidoPaterno": "Rodriguez",
-    //   "apellidoMaterno": "Rodriguez",
-    //   "fechaNacimiento": "1990-01-01",
-    //   "rut": 9878745,
-    //   "dv": "k",
-    //   "sexo": "M",
-    //   "telefono": 97878451,
-    //   "direccion": "calle 1",
-    //   "email": "ana@ana123.cl"
-    // }
     let myErrors: string[] = [];
     if (!confirmarFormulario) {
       console.error("Debes confirmar el formulario.");
       myErrors.push("Debes confirmar el formulario.");
     }
-    // Aquí puedes agregar la lógica para enviar los datos del formulario
+
     if (formData.nombre.trim() === "") {
       console.error("Error falta campo nombre.");
       myErrors.push("Falta campo nombre.");
@@ -125,9 +113,7 @@ const FormNewClient = () => {
     if (myErrors.length === 0) {
       handleApiRequest(formData)
         .then((result: any) => {
-          // console.log("API RESPONSE: ", result);
           if (result.success === false) {
-            // console.log(result);
             setFormErrors({
               typeOf: "danger",
               messages: [`${result.message} ❌.`],
@@ -141,20 +127,19 @@ const FormNewClient = () => {
         })
         .finally(() => {
           setShowAlert(true);
-          // setFormErrors(null);
-          // setShowAlert(false);
           setConfirmarFormulario(false);
-          // setFormData(initialFormData);
         });
     }
   };
+
   const onCloseAlert = () => {
     setShowAlert(false);
     setFormErrors(null);
   };
+
   return (
     <>
-      {showAlert && (
+      {showAlert && formErrors && (
         <Alert alertProperties={formErrors} handlerCloseAlert={onCloseAlert} />
       )}
       <div className={`d-flex justify-content-center align-items-center`}>
@@ -233,8 +218,6 @@ const FormNewClient = () => {
               </select>
             </div>
           </div>
-
-          {/* /////////////////////////////////// */}
 
           <div className="d-flex gap-3">
             <div className="mb-3">

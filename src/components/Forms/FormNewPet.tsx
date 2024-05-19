@@ -1,7 +1,8 @@
 import { useState } from "react";
 import styles from "./styles/FormPet.module.css";
-import Alert from "../Alert/Alert";
+import Alert, { AlertProperties } from "../Alert/Alert";
 import { IFormNewPet } from "../../interfaces/formNewPet";
+
 const formInitialData: IFormNewPet = {
   nombreMascota: "",
   edadMascota: "",
@@ -10,11 +11,10 @@ const formInitialData: IFormNewPet = {
   raza: "",
   rutDueno: "",
 };
-export default function FormNewPet({ onSubmit }: any) {
-  // Estados para los valores del formulario
 
+export default function FormNewPet({ onSubmit }: any) {
   const [formData, setFormData] = useState<IFormNewPet>(formInitialData);
-  const [formAlert, setFormAlert] = useState<object | null>(null);
+  const [formAlert, setFormAlert] = useState<AlertProperties | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
 
   const handleInputChange = (event: any) => {
@@ -25,33 +25,26 @@ export default function FormNewPet({ onSubmit }: any) {
     });
   };
 
-  // Función para manejar el envío del formulario
   const handleSubmit = (event: any) => {
     event.preventDefault();
     let errors: Array<string> = [];
-    // Aquí puedes agregar la lógica para enviar los datos del formulario
+
     if (formData.nombreMascota.trim() === "") {
-      console.error("Error falta campo nombre.");
       errors.push("Falta campo nombre.");
     }
     if (formData.edadMascota.toString().trim() === "") {
-      console.error("Error falta campo edad.");
       errors.push("Falta campo edad.");
     }
     if (formData.especie.trim() === "") {
-      console.error("Error falta campo especie.");
       errors.push("Falta campo especie.");
     }
     if (formData.raza.trim() === "") {
-      console.error("Error falta campo raza.");
       errors.push("Falta campo raza.");
     }
     if (formData.genero.trim() === "") {
-      console.error("Error falta campo genero.");
       errors.push("Falta campo genero.");
     }
     if (formData.rutDueno.toString().trim() === "") {
-      console.error("Error falta campo rut.");
       errors.push("Falta campo rut.");
     }
     if (errors.length > 0) {
@@ -60,11 +53,12 @@ export default function FormNewPet({ onSubmit }: any) {
         messages: errors,
       });
       setShowAlert(true);
-    } else if (errors.length === 0) {
+    } else {
       onSubmit(formData);
       setFormData(formInitialData);
     }
   };
+
   const onCloseAlert = () => {
     setShowAlert(false);
     setFormAlert(null);
@@ -72,7 +66,7 @@ export default function FormNewPet({ onSubmit }: any) {
 
   return (
     <>
-      {showAlert && (
+      {showAlert && formAlert && (
         <Alert alertProperties={formAlert} handlerCloseAlert={onCloseAlert} />
       )}
       <div
@@ -82,7 +76,7 @@ export default function FormNewPet({ onSubmit }: any) {
         <form onSubmit={handleSubmit} className={`${styles.patientForm}`}>
           <div className="d-flex gap-4">
             <div className="mb-3">
-              <label htmlFor="name" className="form-label">
+              <label htmlFor="rutDueno" className="form-label">
                 Rut dueño:
               </label>
               <input
@@ -96,7 +90,7 @@ export default function FormNewPet({ onSubmit }: any) {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="name" className="form-label">
+              <label htmlFor="nombreMascota" className="form-label">
                 Nombre:
               </label>
               <input
@@ -110,7 +104,7 @@ export default function FormNewPet({ onSubmit }: any) {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="age" className="form-label">
+              <label htmlFor="edadMascota" className="form-label">
                 Edad:
               </label>
               <input
@@ -125,7 +119,7 @@ export default function FormNewPet({ onSubmit }: any) {
             </div>
           </div>
           <div className="mb-3">
-            <label htmlFor="gender" className="form-label">
+            <label htmlFor="genero" className="form-label">
               Género:
             </label>
             <select
@@ -141,7 +135,7 @@ export default function FormNewPet({ onSubmit }: any) {
             </select>
           </div>
           <div className="mb-3">
-            <label htmlFor="gender" className="form-label">
+            <label htmlFor="especie" className="form-label">
               Especie:
             </label>
             <input
@@ -154,7 +148,7 @@ export default function FormNewPet({ onSubmit }: any) {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="gender" className="form-label">
+            <label htmlFor="raza" className="form-label">
               Raza:
             </label>
             <input
