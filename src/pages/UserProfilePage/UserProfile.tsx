@@ -176,9 +176,9 @@ const UserProfilePage: React.FC = () => {
             </div>
           </div>
           <form onSubmit={handlePasswordChange}>
-            <h3 className="mb-3">Cambiar Password</h3>
+            <h3 className="mb-3">Cambiar Contraseña</h3>
             <div className="form-group">
-              <label>Old Password:</label>
+              <label>Contraseña Actual:</label>
               <div className="input-group">
                 <input
                   type={showOldPassword ? "text" : "password"}
@@ -197,7 +197,7 @@ const UserProfilePage: React.FC = () => {
               </div>
             </div>
             <div className="form-group">
-              <label>New Password:</label>
+              <label>Nueva Contraseña:</label>
               <div className="input-group">
                 <input
                   type={showNewPassword ? "text" : "password"}
@@ -216,7 +216,7 @@ const UserProfilePage: React.FC = () => {
               </div>
             </div>
             <div className="form-group">
-              <label>Confirm Password:</label>
+              <label>Confirm Contraseña:</label>
               <div className="input-group">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
@@ -235,12 +235,12 @@ const UserProfilePage: React.FC = () => {
               </div>
             </div>
             <button type="submit" className="btn btn-primary mt-3">
-              Cambiar Password
+              Cambiar Contraseña
             </button>
             {message && <p className="mt-3">{message}</p>}
           </form>
           <button onClick={handleLogout} className="btn btn-danger mt-4">
-            Logout
+            Salir
           </button>
         </div>
       </div>
