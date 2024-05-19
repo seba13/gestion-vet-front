@@ -12,6 +12,7 @@ import NewPet from "../pages/NewPet/NewPet";
 import PetProfile from "../pages/Owners/PetProfile";
 import SignupNewClient from "../pages/SignupNewClient/SignupNewClient";
 import UpdateEmployee from "../pages/Employees/UpdateEmployee";
+import UserProfilePage from "../pages/UserProfilePage/UserProfile";
 
 export default function AppRouter() {
   const authContext = useContext(AuthContext)!;
@@ -75,6 +76,14 @@ export default function AppRouter() {
           element: (
             <ProtectedRoute id={7}>
               <SignupNewClient></SignupNewClient>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/user-profile",
+          element: (
+            <ProtectedRoute id={8}>
+              <UserProfilePage />
             </ProtectedRoute>
           ),
         },

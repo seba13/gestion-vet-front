@@ -1,11 +1,26 @@
 import { useEffect, useState } from "react";
 
-function ModalComponent({ showModal, onClose, modalContent }) {
+//function ModalComponent({ showModal, onClose, modalContent }) {
+// const [show, setShow] = useState(showModal);
+
+interface ModalComponentProps {
+  showModal: boolean;
+  onClose: () => void;
+  modalContent: {
+    title: string;
+    body: React.ReactNode;
+  };
+}
+
+const ModalComponent: React.FC<ModalComponentProps> = ({
+  showModal,
+  onClose,
+  modalContent,
+}) => {
   const [show, setShow] = useState(showModal);
 
   useEffect(() => {
     setShow(showModal);
-    // console.log("PET INFO MODAL: ", petInfo);
   }, [showModal]);
 
   const handleClose = () => {
@@ -14,7 +29,7 @@ function ModalComponent({ showModal, onClose, modalContent }) {
   };
   return (
     <>
-      {show.show && (
+      {show && (
         <div
           className="modal"
           tabIndex={-1}
@@ -47,6 +62,6 @@ function ModalComponent({ showModal, onClose, modalContent }) {
       )}
     </>
   );
-}
+};
 
 export default ModalComponent;

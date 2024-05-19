@@ -7,6 +7,8 @@ export const AuthContext = createContext<AuthenticateUser>(
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [nombreUsuario, setNombreUsuario] = useState<string | null>(null);
+  const [nombreEmpleado, setNombreEmpleado] = useState<string | null>(null);
+  const [apellidoPaterno, setApellidoPaterno] = useState<string | null>(null);
   const [idUsuario, setIdUsuario] = useState<string | null>(null);
   const [idEmpleado, setIdEmpleado] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -16,6 +18,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (storageData) {
       const parsedData = JSON.parse(storageData);
       setNombreUsuario(parsedData.usuario.nombreUsuario);
+      setNombreEmpleado(parsedData.usuario.nombre);
+      setApellidoPaterno(parsedData.usuario.apellidoPaterno);
       setIdEmpleado(parsedData.usuario.idEmpleado);
       setIdUsuario(parsedData.usuario.idUsuario);
       setToken(parsedData.token);
@@ -63,6 +67,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIdEmpleado(null);
     setIdUsuario(null);
     setNombreUsuario(null);
+    setNombreEmpleado(null);
+    setApellidoPaterno(null);
     setToken(null);
   };
 
@@ -72,6 +78,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         validateSession,
         handleChangeSession,
         nombreUsuario,
+        nombreEmpleado,
+        apellidoPaterno,
         idEmpleado,
         idUsuario,
         token,

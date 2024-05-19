@@ -1,0 +1,39 @@
+.user-profile {
+  max-width: 600px;
+  margin: auto;
+}
+
+.user-profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.input-group .btn-outline-secondary {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.input-group input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem; /* Añadir margen inferior a los labels */
+  display: block;
+}
+
+.card-title {
+  text-align: center;
+}
+
+.alert {
+  margin-bottom: 20px;
+}
+
+.btn-primary {
+  margin-top: 1rem;
+}

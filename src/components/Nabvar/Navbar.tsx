@@ -3,8 +3,8 @@ import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
 import styles from "./Nabbar.module.css";
 
-export const NavbarDashboard = ({ inputComponent: Component, handleInput }) => {
-  const { logout, nombreUsuario } = useContext(AuthContext!);
+export const NavbarDashboard: React.FC = () => {
+  const { logout, nombreUsuario } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -151,6 +151,16 @@ export const NavbarDashboard = ({ inputComponent: Component, handleInput }) => {
                     </NavLink>
                   </li>
                 </ul>
+              </li>
+              <li className="nav-item">
+                <NavLink to={"/user-profile"} className="nav-link">
+                  <div>
+                    <span>
+                      <i></i>
+                    </span>
+                    <span>Perfil</span>
+                  </div>
+                </NavLink>
               </li>
               <li className="nav-item">
                 <NavLink to={"/"} className="nav-link" onClick={handleLogout}>
