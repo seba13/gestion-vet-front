@@ -15,7 +15,7 @@ const initialFormData: IFormEmployee = {
   sexo: "",
   telefono: "",
 };
-function FormSignup() {
+function FormUpdateEmployee() {
   const [formData, setFormData] = useState<IFormEmployee>(initialFormData);
   const [formErrors, setFormErrors] = useState<IAlertProperties | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -366,4 +366,4 @@ function FormSignup() {
   );
 }
 
-export default FormSignup;
+export default FormUpdateEmployee;

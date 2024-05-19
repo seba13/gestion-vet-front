@@ -57,6 +57,17 @@ export const NavbarDashboard = ({ inputComponent: Component, handleInput }) => {
                   Empleados
                 </a>
                 <ul className="dropdown-menu">
+                <li className="dropdown-item">
+                    {" "}
+                    <NavLink to={"/ver-empleados"} className="nav-link">
+                      <div>
+                        <span>
+                          <i></i>
+                        </span>
+                        <span>Ver empleados</span>
+                      </div>
+                    </NavLink>
+                  </li>
                   <li className="dropdown-item">
                     {" "}
                     <NavLink to={"/nuevo-empleado"} className="nav-link">

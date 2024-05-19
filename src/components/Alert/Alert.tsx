@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import styles from "./Alert.module.css";
-interface IAlertProperties {
+export interface IAlertProperties {
   alertProperties: {
     typeOf: string;
-    messages: [];
+    messages: Array<any>;
   };
   handlerCloseAlert: () => void;
 }
-function Alert({ alertProperties, handlerCloseAlert }: IAlertProperties) {
+const Alert: React.FC<IAlertProperties> = ({
+  alertProperties,
+  handlerCloseAlert,
+}) => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -34,6 +37,6 @@ function Alert({ alertProperties, handlerCloseAlert }: IAlertProperties) {
       })}
     </div>
   ) : null;
-}
+};
 
 export default Alert;
