@@ -12,4 +12,7 @@ export interface IFormEmployee {
   password: string;
   sexo: string;
   confirmarFormulario?: string;
+  idCargo?: number;
+  idEspecialidad?: number;
+  idEstadoEmpleado?: number;
 }

@@ -3,13 +3,15 @@ import { useEffect, useState } from "react";
 //function ModalComponent({ showModal, onClose, modalContent }) {
 // const [show, setShow] = useState(showModal);
 
-interface ModalComponentProps {
+export interface ModalComponentProps {
   showModal: boolean;
-  onClose: () => void;
-  modalContent: {
-    title: string;
-    body: React.ReactNode;
-  };
+  onClose: (show: boolean) => void;
+  modalContent: IModalContent;
+}
+
+export interface IModalContent {
+  title: string;
+  body: React.ReactNode | any;
 }
 
 const ModalComponent: React.FC<ModalComponentProps> = ({
@@ -25,7 +27,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
 
   const handleClose = () => {
     setShow(false);
-    onClose(); // Llamamos a la función onClose proporcionada por el padre
+    onClose(false); // Llamamos a la función onClose proporcionada por el padre
   };
   return (
     <>

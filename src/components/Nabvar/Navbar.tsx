@@ -57,7 +57,7 @@ export const NavbarDashboard: React.FC = () => {
                   Empleados
                 </a>
                 <ul className="dropdown-menu">
-                <li className="dropdown-item">
+                  <li className="dropdown-item">
                     {" "}
                     <NavLink to={"/ver-empleados"} className="nav-link">
                       <div>
@@ -76,17 +76,6 @@ export const NavbarDashboard: React.FC = () => {
                           <i></i>
                         </span>
                         <span>Nuevo empleado</span>
-                      </div>
-                    </NavLink>
-                  </li>
-                  <li className="dropdown-item">
-                    {" "}
-                    <NavLink to={"/actualizar-empleado"} className="nav-link">
-                      <div>
-                        <span>
-                          <i></i>
-                        </span>
-                        <span>Actualizar empleado</span>
                       </div>
                     </NavLink>
                   </li>

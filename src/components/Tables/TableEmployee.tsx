@@ -1,19 +1,22 @@
-import { IEmployee } from "../../interfaces/Employee";
+import {
+  Cargos,
+  Especialidad,
+  EstadoEmpleado,
+  IEmployee,
+  Sexo,
+} from "../../interfaces/Employee";
+import { NavLink } from "react-router-dom";
 
 export interface ITable {
   heads: Array<string>;
   rows: Array<any>;
-  keys: Array<string>; // Lista de claves para definir el orden de los valores en cada fila
 }
+
 const parseDate = (dateString: string): string => {
   const date = new Date(dateString);
   return date.toISOString().split("T")[0];
 };
-function TableComponent({ heads, rows }: ITable) {
-  // Transformamos las filas dentro del componente TableComponent
-  // const transformedRows = rows.map((row) => keys.map((key) => row[key]));
-  const onClickButtonList = () => {};
-  const onClickButtonEdit = () => {};
+function TableEmployee({ heads, rows }: ITable) {
   return (
     <div className="container-fluid">
       <div className="row justify-content-center">
@@ -40,23 +43,17 @@ function TableComponent({ heads, rows }: ITable) {
                     <td>{row.direccion}</td>
                     <td>{row.telefono}</td>
                     <td>{row.email}</td>
-                    <td>{row.sexo}</td>
-                    <td>{row.idEstadoEmpleado}</td>
-                    <td>{row.idCargo}</td>
-                    <td>{row.idEspecialidad}</td>
+                    <td>{row.sexo === Sexo.Femenino ? "Femenino" : "Masculino"}</td>
+                    <td>{EstadoEmpleado[row.idEstadoEmpleado]}</td>
+                    <td>{Cargos[row.idCargo]}</td>
+                    <td>{Especialidad[row.idEspecialidad]}</td>
                     <td className="d-flex justify-content-center">
-                      <button
+                      <NavLink
                         className={`btn btn-primary m-1`}
-                        onClick={() => onClickButtonList()}
-                      >
-                        Perfil📋
-                      </button>
-                      <button
-                        className={`btn btn-primary m-1`}
-                        onClick={() => onClickButtonEdit()}
+                        to={`/actualizar-empleado/rut/${row.rut}`}
                       >
                         Editar✏️
-                      </button>
+                      </NavLink>
                     </td>
                   </tr>
                 ))}
@@ -69,4 +66,4 @@ function TableComponent({ heads, rows }: ITable) {
   );
 }
 
-export default TableComponent;
+export default TableEmployee;

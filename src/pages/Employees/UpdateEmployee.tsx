@@ -1,9 +1,6 @@
-import FormUpdateClient from "../../components/Forms/FormUpdateClient";
 import FormUpdateEmployee from "../../components/Forms/FormUpdateEmployee";
-
-const UpdateEmployee = () => {
-  // return <FormUpdateClient></FormUpdateClient>;
-  return <FormUpdateEmployee></FormUpdateEmployee>;
+const UpdateEmployee: React.FC = () => {
+  return <FormUpdateEmployee />;
 };
 
 export default UpdateEmployee;

@@ -65,7 +65,7 @@ export default function AppRouter() {
           ),
         },
         {
-          path: "/actualizar-empleado",
+          path: "/actualizar-empleado/rut/:rut",
           element: (
             <ProtectedRoute id={6}>
               <UpdateEmployee></UpdateEmployee>

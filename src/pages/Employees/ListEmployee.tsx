@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import TableComponent from "../../components/Tables/TableEmployee";
+import TableEmployee from "../../components/Tables/TableEmployee";
 import useFetch from "../../hooks/useFetch";
 import { HttpMethods } from "../../interfaces/httpMethods";
 import { IEmployee } from "../../interfaces/Employee";
 
 export const ListEmployee = () => {
   const [rows, setRows] = useState<Array<IEmployee>>([]);
-  const [heads, setHeads] = useState<string[]>([
+  const [heads] = useState<string[]>([
     "Rut",
     "Nombres",
     "Paterno",
@@ -43,7 +43,7 @@ export const ListEmployee = () => {
   return (
     <>
       {loading && <p className="p text-center">Cargando datos...</p>}
-      {!loading && <TableComponent heads={heads} rows={rows} />}
+      {!loading && <TableEmployee heads={heads} rows={rows} />}
     </>
   );
 };
