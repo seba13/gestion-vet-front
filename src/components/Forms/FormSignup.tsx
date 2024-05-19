@@ -109,37 +109,24 @@ function FormSignup() {
 
     if (myErrors.length > 0) {
       setFormErrors({
-        alertProperties: {
-          typeOf: "danger",
-          messages: myErrors,
-        },
-      } as IAlertProperties);
+        typeOf: "danger",
+        messages: myErrors,
+      } as AlertProperties);
+
       setShowAlert(true);
     } else {
       handleApiRequest(formData)
         .then((result: any) => {
           if (result.success === false) {
             setFormErrors({
-              alertProperties: {
-                typeOf: "danger",
-                messages: [`${result.message} ❌.`],
-              },
-              handlerCloseAlert: () => {
-                setShowAlert(false);
-                setFormErrors(null);
-              },
+              typeOf: "danger",
+              messages: [`${result.message} ❌.`],
             } as AlertProperties);
           } else {
             setFormErrors({
-              alertProperties: {
-                typeOf: "success",
-                messages: ["Empleado registrado con exito! ✅."],
-              },
-              handlerCloseAlert: () => {
-                setShowAlert(false);
-                setFormErrors(null);
-              },
-            } as IAlertProperties);
+              typeOf: "success",
+              messages: ["Empleado registrado con exito! ✅."],
+            } as AlertProperties);
           }
         })
         .finally(() => {
