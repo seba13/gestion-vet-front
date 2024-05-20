@@ -34,7 +34,7 @@ const parseDate = (dateString: string): string => {
   return date.toISOString().split("T")[0];
 };
 const FormUpdateEmployee: React.FC = () => {
-  const { rut = "" } = useParams();
+  const { idPersona = "" } = useParams();
   const [formData, setFormData] = useState<IEmployee>(initialFormData);
   const [formErrors, setFormErrors] = useState<AlertProperties | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -44,13 +44,16 @@ const FormUpdateEmployee: React.FC = () => {
   useEffect(() => {
     const handleApiGetRequest = async (rut: string): Promise<void> => {
       setIsLoading(true);
-      await fetch(`${import.meta.env.VITE_API_URL}/empleado/rut/${rut}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // body: JSON.stringify(requestBody),
-      })
+      await fetch(
+        `${import.meta.env.VITE_API_URL}/empleado/id-persona/${idPersona}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // body: JSON.stringify(requestBody),
+        }
+      )
         .then((response) => {
           return response.json();
         })
@@ -67,30 +70,6 @@ const FormUpdateEmployee: React.FC = () => {
     };
     const handleApiUpdateRequest = async (): Promise<void> => {
       setIsLoading(true);
-      // {
-      //   "idPersona": "67a3ef35-f069-49ee-89ac-b668a6382c52",
-      //   "nombre": "Fabian andres",
-      //   "apellidoPaterno": "Niclous",
-      //   "apellidoMaterno": "Rodriguez",
-      //   "fechaNacimiento": "1990-01-01",
-      //   "rut": 9878745,
-      //   "dv": "k",
-      //   "sexo": "M",
-      //   "telefono": 97878451,
-      //   "direccion": "calle 1",
-      //   "email": "fniclous977@gmail.cl"
-      // }
-
-      // Empleado:
-      // {
-      //   "idEmpleado": "###############",
-      //   "codMedico": "AAD",
-      //   "fechaIngreso": "2021-01-01",
-      //   "fechaSalida": "201-01-01",
-      //   "idCargo": 1,
-      //   "idEstadoEmpleado": 5,
-      //   "idEspecialidad": 1
-      // }
       const personData = {
         idPersona: formData.idPersona,
         nombre: formData.nombre,
@@ -123,13 +102,13 @@ const FormUpdateEmployee: React.FC = () => {
           const empData = {
             idEmpleado: formData.idEmpleado,
             codMedico: formData.codMedico,
-            fechaIngreso: formData.fechaIngreso,
-            fechaSalida: formData.fechaSalida,
-            idCargo: formData.idCargo,
-            idEstadoEmpleado: formData.idEstadoEmpleado,
-            idEspecialidad: formData.idEspecialidad,
+            fechaIngreso: parseDate(formData.fechaIngreso),
+            fechaSalida: parseDate(formData.fechaSalida),
+            idCargo: parseInt(formData.idCargo),
+            idEstadoEmpleado: parseInt(formData.idEstadoEmpleado),
+            idEspecialidad: parseInt(formData.idEspecialidad),
           };
-
+          console.log("EMP DATA:", empData);
           fetch(`${import.meta.env.VITE_API_URL}/empleado`, {
             method: "PATCH",
             headers: {
@@ -139,7 +118,7 @@ const FormUpdateEmployee: React.FC = () => {
             body: JSON.stringify(empData),
           })
             .then((response: any) => {
-              if (response.success) {
+              if (!response.success) {
                 setFormErrors({
                   typeOf: "success",
                   messages: ["Empleado actualizado con exito! ✅."],
@@ -147,12 +126,17 @@ const FormUpdateEmployee: React.FC = () => {
               } else {
                 setFormErrors({
                   typeOf: "warning",
-                  messages: ["Error al actualizar empleado❌."],
+                  messages: [`Error al actualizar empleado❌`],
                 } as AlertProperties);
               }
             })
             .catch((error) => {
               console.error("Error al editar empleado: ", error.message);
+
+              setFormErrors({
+                typeOf: "warning",
+                messages: [`Error al actualizar empleado❌`],
+              } as AlertProperties);
             })
             .finally(() => {
               setShowAlert(true);
@@ -160,18 +144,18 @@ const FormUpdateEmployee: React.FC = () => {
               setIsReadyForUpdate(false);
               setTimeout(() => {
                 navigate("/ver-empleados");
-              }, 2500);
+              }, 3000);
             });
         });
     };
     if (!isLoading && !isReadyForUpdate) {
-      handleApiGetRequest(rut);
+      handleApiGetRequest(idPersona);
     }
     if (!isLoading && isReadyForUpdate) {
       handleApiUpdateRequest();
       console.log(formData);
     }
-  }, [rut, isReadyForUpdate]);
+  }, [idPersona, isReadyForUpdate]);
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {

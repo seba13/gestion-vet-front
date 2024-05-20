@@ -43,14 +43,16 @@ function TableEmployee({ heads, rows }: ITable) {
                     <td>{row.direccion}</td>
                     <td>{row.telefono}</td>
                     <td>{row.email}</td>
-                    <td>{row.sexo === Sexo.Femenino ? "Femenino" : "Masculino"}</td>
+                    <td>
+                      {row.sexo === Sexo.Femenino ? "Femenino" : "Masculino"}
+                    </td>
                     <td>{EstadoEmpleado[row.idEstadoEmpleado]}</td>
                     <td>{Cargos[row.idCargo]}</td>
                     <td>{Especialidad[row.idEspecialidad]}</td>
                     <td className="d-flex justify-content-center">
                       <NavLink
                         className={`btn btn-primary m-1`}
-                        to={`/actualizar-empleado/rut/${row.rut}`}
+                        to={`/actualizar-empleado/${row.idPersona}`}
                       >
                         Editar✏️
                       </NavLink>

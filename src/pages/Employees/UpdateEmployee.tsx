@@ -1,6 +1,7 @@
 import FormUpdateEmployee from "../../components/Forms/FormUpdateEmployee";
+
 const UpdateEmployee: React.FC = () => {
-  return <FormUpdateEmployee />;
+  return <FormUpdateEmployee></FormUpdateEmployee>;
 };
 
 export default UpdateEmployee;
