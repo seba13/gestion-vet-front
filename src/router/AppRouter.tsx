@@ -14,6 +14,8 @@ import SignupNewClient from "../pages/SignupNewClient/SignupNewClient";
 import UpdateEmployee from "../pages/Employees/UpdateEmployee";
 import UserProfilePage from "../pages/UserProfilePage/UserProfile";
 import { ListEmployee } from "../pages/Employees/ListEmployee";
+import { Appointment } from "../pages/Appointment/Appointment";
+import { NewAppointment } from "../pages/Appointment/NewAppointment";
 
 export default function AppRouter() {
   const authContext = useContext(AuthContext)!;
@@ -64,14 +66,6 @@ export default function AppRouter() {
             </ProtectedRoute>
           ),
         },
-        // {
-        //   path: "/actualizar-empleado/rut/:rut",
-        //   element: (
-        //     <ProtectedRoute id={6}>
-        //       <UpdateEmployee></UpdateEmployee>
-        //     </ProtectedRoute>
-        //   ),
-        // },
         {
           path: "/actualizar-empleado/:idPersona",
           element: (
@@ -101,6 +95,14 @@ export default function AppRouter() {
           element: (
             <ProtectedRoute id={8}>
               <UserProfilePage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/citas",
+          element: (
+            <ProtectedRoute id={8}>
+              <Appointment></Appointment>
             </ProtectedRoute>
           ),
         },
