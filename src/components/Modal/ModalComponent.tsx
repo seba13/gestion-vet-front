@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 
 //function ModalComponent({ showModal, onClose, modalContent }) {
 // const [show, setShow] = useState(showModal);
@@ -20,7 +21,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
   modalContent,
 }) => {
   const [show, setShow] = useState(showModal);
-
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     setShow(showModal);
   }, [showModal]);
@@ -31,7 +32,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
   };
   return (
     <>
-      {show && (
+      {/* {show && (
         <div
           className="modal"
           tabIndex={-1}
@@ -61,7 +62,21 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
             </div>
           </div>
         </div>
-      )}
+      )} */}
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>{modalContent.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {isLoading && <p className="text-center">Cargando datos....</p>}
+          {!isLoading && modalContent && modalContent.body}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

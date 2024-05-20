@@ -22,10 +22,12 @@ function useFetch(url: string, options: any) {
   }, [url, options]);
 
   useEffect(() => {
-    fetchData();
+    if (loading) {
+      fetchData();
+    }
   }, [loading]);
 
-  return { data, loading, error, fetchData };
+  return { data, loading, error, fetchData, setLoading };
 }
 
 export default useFetch;

@@ -117,6 +117,7 @@ function TablePets({ pets }: PetList) {
         >
           ✏️
         </button>
+        
       </td>
     </tr>
   ));

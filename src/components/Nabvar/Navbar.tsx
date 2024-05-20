@@ -127,6 +127,29 @@ export const NavbarDashboard: React.FC = () => {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
+                  Citas
+                </a>
+                <ul className="dropdown-menu">
+                  <li className="dropdown-item">
+                    <NavLink to={"/citas"} className="nav-link active">
+                      <div>
+                        <span>
+                          <i></i>
+                        </span>
+                        <span>Ver Citas</span>
+                      </div>
+                    </NavLink>
+                  </li>
+                </ul>
+              </li>
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
                   Mascotas
                 </a>
                 <ul className="dropdown-menu">
@@ -152,6 +175,7 @@ export const NavbarDashboard: React.FC = () => {
                   </li>
                 </ul>
               </li>
+
               <li className="nav-item">
                 <NavLink to={"/user-profile"} className="nav-link">
                   <div>
