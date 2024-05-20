@@ -1,3 +1,4 @@
+// components/PetProfileModal/PetProfileModal.tsx
 import { useState, useEffect } from "react";
 import { Pet } from "../../interfaces/Pet";
 import { PetHistory } from "../../interfaces/PetHistory";
@@ -21,18 +22,6 @@ const handleFetchPet = async (parametro: string) => {
     return data;
   } catch (error: any) {
     console.error("Error en: ", error.message);
-  }
-};
-
-const fetchHistorialMedico = async (idMascota: string) => {
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/historial-medico/${idMascota}`
-    );
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    console.error("Error fetching historial medico:", error.message);
   }
 };
 
@@ -61,11 +50,7 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
 
   const handleHistorialClick = () => {
     setIsLoadingHistorial(true);
-    const fetchHistorial = async () => {
-      const response = await fetchHistorialMedico(idMascota);
-      setHistorialMedico(response.data);
-      setIsLoadingHistorial(false);
-    };
+    const fetchHistorial = async () => {};
 
     fetchHistorial();
   };
