@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pet, PetList } from "../../interfaces/Pet";
-
 import FormUpdatePet from "../Forms/FormUpdatePet";
+import PetProfileModal from "../PetProfileModal/PetProfileModal";
 import ModalComponent from "../Modal/ModalComponent";
 
 function TablePets({ pets }: PetList) {
@@ -11,10 +11,15 @@ function TablePets({ pets }: PetList) {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPets = pets!.slice(indexOfFirstItem, indexOfLastItem);
-  const [showModalPetList, setShowModalPetList] = useState({
-    show: false,
-    content: {},
-  });
+  const [showModalPetList, setShowModalPetList] = useState<{
+    show: boolean;
+    content: {
+      title: string;
+      body: React.ReactNode;
+    };
+  }>({ show: false, content: { title: "", body: null } });
+  const [showPetProfileModal, setShowPetProfileModal] = useState(false);
+  const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   const emptyTable = (
@@ -22,6 +27,7 @@ function TablePets({ pets }: PetList) {
       <td colSpan={8}>No existen datos</td>
     </tr>
   );
+
   const handleClickPage = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -51,12 +57,14 @@ function TablePets({ pets }: PetList) {
     }
     return buttons;
   };
-  const handlerModalFormUpdate = (event: any) => {
+
+  const handlerModalFormUpdate = (event: boolean) => {
     // para cerrar el modal
     setIsEditing(!isEditing);
-    setShowModalPetList({ show: event, content: {} });
+    setShowModalPetList({ show: event, content: { title: "", body: null } });
   };
-  const handleOpenModal = (type: any, idParam?: string) => {
+
+  const handleOpenModal = (type: string, idParam?: string) => {
     console.log("opening modal: ", type);
     if (type === "edit") {
       setIsEditing(!isEditing);
@@ -65,7 +73,7 @@ function TablePets({ pets }: PetList) {
       });
 
       setShowModalPetList({
-        show: !showModalPetList.show,
+        show: true,
         content: {
           title: `Editando mascota: ${filter[0].nombreMascota}`,
           body: (
@@ -79,20 +87,19 @@ function TablePets({ pets }: PetList) {
     }
 
     if (type === "profile") {
-      setShowModalPetList({
-        show: !showModalPetList.show,
-        content: { title: "Pet profile", body: "pet profile" },
-      });
+      setSelectedPetId(idParam || "");
+      setShowPetProfileModal(true);
     }
   };
+
   const handleCloseModal = () => {
-    setShowModalPetList({ show: false, content: {} });
+    setShowModalPetList({ show: false, content: { title: "", body: null } });
   };
 
   const dataTable = currentPets.map((pet: Pet, index) => (
     <tr key={index} style={{ textTransform: "capitalize" }}>
       <td>{pet.idMascota}</td>
-      <td>p{pet.nombreMascota}</td>
+      <td>{pet.nombreMascota}</td>
       <td>{pet.edadMascota}</td>
       <td>{pet.especie}</td>
       <td>{pet.raza ? pet.raza : "desconocida"}</td>
@@ -100,7 +107,7 @@ function TablePets({ pets }: PetList) {
       <td className="d-flex justify-content-center">
         <button
           className={`btn btn-success m-1`}
-          onClick={() => handleOpenModal("profile")}
+          onClick={() => handleOpenModal("profile", pet.idMascota.toString())}
         >
           📋
         </button>
@@ -159,9 +166,16 @@ function TablePets({ pets }: PetList) {
       {paginationButtons}
       {showModalPetList.show && (
         <ModalComponent
-          showModal={showModalPetList}
+          showModal={showModalPetList.show}
           onClose={handleCloseModal}
           modalContent={showModalPetList.content}
+        />
+      )}
+      {selectedPetId && (
+        <PetProfileModal
+          idMascota={selectedPetId}
+          show={showPetProfileModal}
+          onHide={() => setShowPetProfileModal(false)}
         />
       )}
     </div>
