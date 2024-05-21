@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react";
 import { Pet } from "../../interfaces/Pet";
-import { PetHistory } from "../../interfaces/PetHistory";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
+<<<<<<< HEAD
+import PetHistoryMedModal from "./PetHistoryMedModal";
+import PetCitasModal from "./PetCitasModal";
+import "./PetProfileModal.css"; // Import the CSS file
+=======
 import { NavLink } from "react-router-dom";
 import { parseDate } from "../../utils/utils";
 import { EstadosCita, IAppointment } from "../../interfaces/Appointment";
 import useFetch from "../../hooks/useFetch";
+>>>>>>> f4744ba7bb947ec09f250bcd24d8fd4a45ad4c66
 
 interface PetProfileModalProps {
   idMascota: string;
@@ -28,6 +33,8 @@ const handleFetchPet = async (parametro: string) => {
   }
 };
 
+<<<<<<< HEAD
+=======
 const fetchHistorialMedico = async (idMascota: string) => {
   try {
     const response = await fetch(
@@ -51,14 +58,17 @@ const fetchHistorialMedico = async (idMascota: string) => {
 //     console.error("Error fetching citas:", error.message);
 //   }
 // };
+>>>>>>> f4744ba7bb947ec09f250bcd24d8fd4a45ad4c66
 const PetProfileModal: React.FC<PetProfileModalProps> = ({
   idMascota,
   show,
   onHide,
 }) => {
   const [petInformation, setPetInformation] = useState<Pet | null>(null);
-  const [historialMedico, setHistorialMedico] = useState<PetHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+<<<<<<< HEAD
+
+=======
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
   const [appointments, setAppointments] = useState<IAppointment[]>([]);
   const { fetchData, loading } = useFetch(
@@ -70,6 +80,7 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
       },
     }
   );
+>>>>>>> f4744ba7bb947ec09f250bcd24d8fd4a45ad4c66
   useEffect(() => {
     if (show) {
       setIsLoading(true);
@@ -83,6 +94,8 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
     }
   }, [idMascota, show]);
 
+<<<<<<< HEAD
+=======
   const handleHistorialClick = () => {
     setIsLoadingHistorial(true);
     const fetchHistorial = async () => {
@@ -99,6 +112,7 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
     });
   };
 
+>>>>>>> f4744ba7bb947ec09f250bcd24d8fd4a45ad4c66
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
@@ -111,6 +125,8 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
             defaultActiveKey="profile"
             id="pet-profile-tabs"
             className="mb-3"
+<<<<<<< HEAD
+=======
             onSelect={(eventKey) => {
               if (eventKey === "historial") {
                 handleHistorialClick();
@@ -118,9 +134,10 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
                 handleAppointmentsClick();
               }
             }}
+>>>>>>> f4744ba7bb947ec09f250bcd24d8fd4a45ad4c66
           >
             <Tab eventKey="profile" title="Perfil">
-              <div>
+              <div className="pet-profile">
                 <h3>{petInformation.nombreMascota}</h3>
                 <p>
                   <strong>Edad:</strong> {petInformation.edadMascota}
@@ -143,33 +160,12 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
               </div>
             </Tab>
             <Tab eventKey="historial" title="Historial Clínico">
-              {isLoadingHistorial && (
-                <p className="text-center">Cargando historial....</p>
-              )}
-              {!isLoadingHistorial && (
-                <div>
-                  {historialMedico.length === 0 ? (
-                    <p>No hay historial médico disponible.</p>
-                  ) : (
-                    historialMedico.map((record, index) => (
-                      <div key={index}>
-                        <p>
-                          <strong>Fecha:</strong> {record.date}
-                        </p>
-                        <p>
-                          <strong>Descripción:</strong> {record.description}
-                        </p>
-                        <p>
-                          <strong>Veterinario:</strong> {record.vetName}
-                        </p>
-                        <hr />
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
+              <PetHistoryMedModal idMascota={idMascota} />
             </Tab>
             <Tab eventKey="citas" title="Citas">
+<<<<<<< HEAD
+              <PetCitasModal idMascota={idMascota} />
+=======
               {loading && <p className="p text-center">Cargando citas....</p>}
               {!loading && (
                 <div className="">
@@ -220,6 +216,7 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
                   </ul>
                 </div>
               )}
+>>>>>>> f4744ba7bb947ec09f250bcd24d8fd4a45ad4c66
             </Tab>
           </Tabs>
         )}
