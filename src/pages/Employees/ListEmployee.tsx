@@ -21,25 +21,6 @@ export const ListEmployee = () => {
     "Especialidad",
     "Operaciones",
   ]);
-
-  // const { data, loading ,} = useFetch(
-  //   `${import.meta.env.VITE_API_URL}/empleados`,
-  //   {
-  //     method: HttpMethods.GET,
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   }
-  // );
-
-  // useEffect(() => {
-  //   if (!loading && data.data) {
-  //     setRows(data.data as IEmployee[]);
-  //     console.log(data.data);
-  //     console.log(data.data as IEmployee[]);
-  //     //   setTableParameters(data);
-  //   }
-  // }, [loading]);
   const { loading, fetchData } = useFetch(
     `${import.meta.env.VITE_API_URL}/empleados`,
     {
@@ -52,10 +33,7 @@ export const ListEmployee = () => {
   useEffect(() => {
     fetchData().then((result) => {
       setRows(result.data);
-      console.log(rows)
     });
-
-    // setRows(data.data);
   }, []);
 
   return (

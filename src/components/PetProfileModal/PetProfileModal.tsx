@@ -63,7 +63,7 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
   const [appointments, setAppointments] = useState<IAppointment[]>([]);
 
   useEffect(() => {
-    if (isLoadingAppointments) {
+    if (!isLoadingAppointments) {
       console.log("AKIII");
       fetchCitas(idMascota).then((response) => {
         console.log(response);
