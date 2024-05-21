@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { Pet } from "../../interfaces/Pet";
-import { PetHistory } from "../../interfaces/PetHistory";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
+import PetHistoryMedModal from "./PetHistoryMedModal";
+import PetCitasModal from "./PetCitasModal";
+import "./PetProfileModal.css"; // Import the CSS file
 
 interface PetProfileModalProps {
   idMascota: string;
@@ -24,27 +26,13 @@ const handleFetchPet = async (parametro: string) => {
   }
 };
 
-const fetchHistorialMedico = async (idMascota: string) => {
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/historial-medico/${idMascota}`
-    );
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    console.error("Error fetching historial medico:", error.message);
-  }
-};
-
 const PetProfileModal: React.FC<PetProfileModalProps> = ({
   idMascota,
   show,
   onHide,
 }) => {
   const [petInformation, setPetInformation] = useState<Pet | null>(null);
-  const [historialMedico, setHistorialMedico] = useState<PetHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
 
   useEffect(() => {
     if (show) {
@@ -59,17 +47,6 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
     }
   }, [idMascota, show]);
 
-  const handleHistorialClick = () => {
-    setIsLoadingHistorial(true);
-    const fetchHistorial = async () => {
-      const response = await fetchHistorialMedico(idMascota);
-      setHistorialMedico(response.data);
-      setIsLoadingHistorial(false);
-    };
-
-    fetchHistorial();
-  };
-
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
@@ -82,12 +59,9 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
             defaultActiveKey="profile"
             id="pet-profile-tabs"
             className="mb-3"
-            onSelect={(eventKey) => {
-              if (eventKey === "historial") handleHistorialClick();
-            }}
           >
             <Tab eventKey="profile" title="Perfil">
-              <div>
+              <div className="pet-profile">
                 <h3>{petInformation.nombreMascota}</h3>
                 <p>
                   <strong>Edad:</strong> {petInformation.edadMascota}
@@ -110,39 +84,10 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
               </div>
             </Tab>
             <Tab eventKey="historial" title="Historial Clínico">
-              {isLoadingHistorial && (
-                <p className="text-center">Cargando historial....</p>
-              )}
-              {!isLoadingHistorial && (
-                <div>
-                  {historialMedico.length === 0 ? (
-                    <p>No hay historial médico disponible.</p>
-                  ) : (
-                    historialMedico.map((record, index) => (
-                      <div key={index}>
-                        <p>
-                          <strong>Fecha:</strong> {record.date}
-                        </p>
-                        <p>
-                          <strong>Descripción:</strong> {record.description}
-                        </p>
-                        <p>
-                          <strong>Veterinario:</strong> {record.vetName}
-                        </p>
-                        <hr />
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
+              <PetHistoryMedModal idMascota={idMascota} />
             </Tab>
             <Tab eventKey="citas" title="Citas">
-              <Button
-                variant="link"
-                onClick={() => (window.location.href = `/citas/${idMascota}`)}
-              >
-                Ver Citas
-              </Button>
+              <PetCitasModal idMascota={idMascota} />
             </Tab>
           </Tabs>
         )}

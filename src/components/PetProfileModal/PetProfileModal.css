@@ -1,0 +1,86 @@
+/* Estilos generales para el modal */
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #343a40;
+  }
+  
+  .modal-body {
+    padding: 1.5rem;
+  }
+  
+  .modal-footer {
+    border-top: 1px solid #dee2e6;
+  }
+  
+  /* Estilos para los tabs */
+  .nav-tabs .nav-link {
+    color: #495057;
+  }
+  
+  .nav-tabs .nav-link.active {
+    background-color: #e9ecef;
+    border-color: #dee2e6 #dee2e6 #fff;
+  }
+  
+  .tab-content > .tab-pane {
+    margin-top: 1rem;
+  }
+  
+  /* Estilos para el accordion */
+  .accordion-button {
+    font-weight: 600;
+    color: #343a40;
+  }
+  
+  .accordion-button:not(.collapsed) {
+    color: #0056b3;
+    background-color: #e9ecef;
+  }
+  
+  .accordion-item {
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .accordion-body {
+    padding: 1rem 1.25rem;
+  }
+  
+  .accordion-header {
+    padding: 0.5rem 1.25rem;
+  }
+  
+  .accordion-header button {
+    background-color: #f8f9fa;
+    border: none;
+    outline: none;
+    box-shadow: none;
+  }
+  
+  /* Estilos específicos para los datos del perfil de la mascota */
+  .pet-profile {
+    text-align: left;
+  }
+  
+  .pet-profile h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  .pet-profile p {
+    margin-bottom: 0.5rem;
+    color: #495057;
+  }
+  
+  .pet-profile strong {
+    color: #343a40;
+  }
+  

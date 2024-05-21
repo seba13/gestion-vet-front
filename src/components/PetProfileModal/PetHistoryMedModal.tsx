@@ -1,144 +1,160 @@
-// components/PetProfileModal/PetProfileModal.tsx
 import { useState, useEffect } from "react";
-import { Pet } from "../../interfaces/Pet";
-import { PetHistory } from "../../interfaces/PetHistory";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Tabs from "react-bootstrap/Tabs";
-import Tab from "react-bootstrap/Tab";
+import {
+  ClinicalRecord,
+  Treatment,
+  AdmissionRecord,
+} from "../../interfaces/PetHistory";
+import Accordion from "react-bootstrap/Accordion";
 
-interface PetProfileModalProps {
+interface PetHistoryMedModalProps {
   idMascota: string;
-  show: boolean;
-  onHide: () => void;
 }
 
-const handleFetchPet = async (parametro: string) => {
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/mascota/${parametro}`
-    );
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    console.error("Error en: ", error.message);
-  }
+const fetchHistorialMedico = async (idMascota: string) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/historial/${idMascota}`
+  );
+  const data = await response.json();
+  return data;
 };
 
-const PetProfileModal: React.FC<PetProfileModalProps> = ({
+const fetchClinicalRecords = async (idMascota: string) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/clinicalrecords/${idMascota}`
+  );
+  const data = await response.json();
+  return data;
+};
+
+const fetchTreatments = async (idMascota: string) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/treatments/${idMascota}`
+  );
+  const data = await response.json();
+  return data;
+};
+
+const fetchAdmissionRecords = async (idFichaClinica: string) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/admissionrecords/${idFichaClinica}`
+  );
+  const data = await response.json();
+  return data;
+};
+
+const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
   idMascota,
-  show,
-  onHide,
 }) => {
-  const [petInformation, setPetInformation] = useState<Pet | null>(null);
-  const [historialMedico, setHistorialMedico] = useState<PetHistory[]>([]);
+  const [clinicalRecords, setClinicalRecords] = useState<ClinicalRecord[]>([]);
+  const [treatments, setTreatments] = useState<Treatment[]>([]);
+  const [admissionRecords, setAdmissionRecords] = useState<AdmissionRecord[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
 
   useEffect(() => {
-    if (show) {
-      setIsLoading(true);
-      const fetchData = async () => {
-        const response = await handleFetchPet(idMascota);
-        setPetInformation(response.data);
+    setIsLoading(true);
+    const fetchData = async () => {
+      try {
+        const historialResponse = await fetchHistorialMedico(idMascota);
+        const clinicalResponse = await fetchClinicalRecords(idMascota);
+        const treatmentsResponse = await fetchTreatments(idMascota);
+        const admissionResponse = await fetchAdmissionRecords(
+          clinicalResponse.data[0]?.idFichaClinica
+        );
+
+        // setHistorialMedico(historialResponse.data); // Eliminado porque no se usa
+        setClinicalRecords(clinicalResponse.data);
+        setTreatments(treatmentsResponse.data);
+        setAdmissionRecords(admissionResponse.data);
+      } catch (error: any) {
+        console.error("Error al cargar los datos: ", error.message);
+      } finally {
         setIsLoading(false);
-      };
+      }
+    };
 
-      fetchData();
-    }
-  }, [idMascota, show]);
-
-  const handleHistorialClick = () => {
-    setIsLoadingHistorial(true);
-    const fetchHistorial = async () => {};
-
-    fetchHistorial();
-  };
+    fetchData();
+  }, [idMascota]);
 
   return (
-    <Modal show={show} onHide={onHide} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Perfil de Mascota</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {isLoading && <p className="text-center">Cargando datos....</p>}
-        {!isLoading && petInformation && (
-          <Tabs
-            defaultActiveKey="profile"
-            id="pet-profile-tabs"
-            className="mb-3"
-            onSelect={(eventKey) => {
-              if (eventKey === "historial") handleHistorialClick();
-            }}
-          >
-            <Tab eventKey="profile" title="Perfil">
-              <div>
-                <h3>{petInformation.nombreMascota}</h3>
-                <p>
-                  <strong>Edad:</strong> {petInformation.edadMascota}
-                </p>
-                <p>
-                  <strong>Especie:</strong> {petInformation.especie}
-                </p>
-                <p>
-                  <strong>Raza:</strong> {petInformation.raza}
-                </p>
-                <p>
-                  <strong>Género:</strong> {petInformation.genero}
-                </p>
-                {petInformation.fecNac && (
+    <div>
+      {isLoading && <p className="text-center">Cargando datos....</p>}
+      {!isLoading && (
+        <Accordion>
+          <Accordion.Item eventKey="0">
+            <Accordion.Header>Ficha Clínica</Accordion.Header>
+            <Accordion.Body>
+              {clinicalRecords.map((record, index) => (
+                <div key={index}>
                   <p>
-                    <strong>Fecha de Nacimiento:</strong>{" "}
-                    {petInformation.fecNac}
+                    <strong>Fecha:</strong> {record.fechaIngreso}
                   </p>
-                )}
-              </div>
-            </Tab>
-            <Tab eventKey="historial" title="Historial Clínico">
-              {isLoadingHistorial && (
-                <p className="text-center">Cargando historial....</p>
-              )}
-              {!isLoadingHistorial && (
-                <div>
-                  {historialMedico.length === 0 ? (
-                    <p>No hay historial médico disponible.</p>
-                  ) : (
-                    historialMedico.map((record, index) => (
-                      <div key={index}>
-                        <p>
-                          <strong>Fecha:</strong> {record.date}
-                        </p>
-                        <p>
-                          <strong>Descripción:</strong> {record.description}
-                        </p>
-                        <p>
-                          <strong>Veterinario:</strong> {record.vetName}
-                        </p>
-                        <hr />
-                      </div>
-                    ))
-                  )}
+                  <p>
+                    <strong>Enfermedades:</strong> {record.enfermedades}
+                  </p>
+                  <p>
+                    <strong>Peso:</strong> {record.peso} kg
+                  </p>
+                  <p>
+                    <strong>Observaciones:</strong> {record.observaciones}
+                  </p>
+                  <hr />
                 </div>
-              )}
-            </Tab>
-            <Tab eventKey="citas" title="Citas">
-              <Button
-                variant="link"
-                onClick={() => (window.location.href = `/citas/${idMascota}`)}
-              >
-                Ver Citas
-              </Button>
-            </Tab>
-          </Tabs>
-        )}
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
-          Cerrar
-        </Button>
-      </Modal.Footer>
-    </Modal>
+              ))}
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="1">
+            <Accordion.Header>Ficha de Ingreso</Accordion.Header>
+            <Accordion.Body>
+              {admissionRecords.map((record, index) => (
+                <div key={index}>
+                  <p>
+                    <strong>Síntomas:</strong> {record.sintomas}
+                  </p>
+                  <p>
+                    <strong>Antecedentes:</strong> {record.antecedentes}
+                  </p>
+                  <p>
+                    <strong>Diagnóstico:</strong> {record.diagnostico}
+                  </p>
+                  <p>
+                    <strong>Fecha de Ingreso:</strong> {record.fechaIngreso}
+                  </p>
+                  <p>
+                    <strong>Fecha de Alta:</strong> {record.fechaAlta}
+                  </p>
+                  <hr />
+                </div>
+              ))}
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="2">
+            <Accordion.Header>Tratamientos</Accordion.Header>
+            <Accordion.Body>
+              {treatments.map((treatment, index) => (
+                <div key={index}>
+                  <p>
+                    <strong>Descripción:</strong> {treatment.descripcion}
+                  </p>
+                  <p>
+                    <strong>Fecha:</strong> {treatment.fecha}
+                  </p>
+                  <p>
+                    <strong>Tipo:</strong> {treatment.tipo}
+                  </p>
+                  <p>
+                    <strong>Costo:</strong> ${treatment.costo}
+                  </p>
+                  <hr />
+                </div>
+              ))}
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+      )}
+    </div>
   );
 };
 
-export default PetProfileModal;
+export default PetHistoryMedModal;
