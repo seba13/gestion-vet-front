@@ -5,6 +5,9 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
+import { NavLink } from "react-router-dom";
+import { IAppointment, IAppointments } from "../../interfaces/Appointment";
+import { Appointment } from "../../pages/Appointment/Appointment";
 
 interface PetProfileModalProps {
   idMascota: string;
@@ -36,6 +39,17 @@ const fetchHistorialMedico = async (idMascota: string) => {
   }
 };
 
+const fetchCitas = async (idMascota: string) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/citas-medicas/mascota/${idMascota}`
+    );
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error fetching citas:", error.message);
+  }
+};
 const PetProfileModal: React.FC<PetProfileModalProps> = ({
   idMascota,
   show,
@@ -45,8 +59,17 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
   const [historialMedico, setHistorialMedico] = useState<PetHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
+  const [isLoadingAppointments, setIsLoadingAppointments] = useState(false);
+  const [appointments, setAppointments] = useState<IAppointment[]>([]);
 
   useEffect(() => {
+    if (isLoadingAppointments) {
+      console.log("AKIII");
+      fetchCitas(idMascota).then((response) => {
+        console.log(response);
+        setAppointments(response);
+      });
+    }
     if (show) {
       setIsLoading(true);
       const fetchData = async () => {
@@ -69,6 +92,17 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
 
     fetchHistorial();
   };
+  const handleAppointmentsClick = () => {
+    setIsLoadingAppointments(true);
+    const fetchHistorial = async () => {
+      const response = await fetchCitas(idMascota);
+      setAppointments(response.data);
+      setIsLoadingAppointments(false);
+      console.log(response);
+    };
+
+    fetchHistorial();
+  };
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -83,7 +117,11 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
             id="pet-profile-tabs"
             className="mb-3"
             onSelect={(eventKey) => {
-              if (eventKey === "historial") handleHistorialClick();
+              if (eventKey === "historial") {
+                handleHistorialClick();
+              } else if (eventKey === "citas") {
+                handleAppointmentsClick();
+              }
             }}
           >
             <Tab eventKey="profile" title="Perfil">
@@ -137,12 +175,22 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
               )}
             </Tab>
             <Tab eventKey="citas" title="Citas">
-              <Button
-                variant="link"
-                onClick={() => (window.location.href = `/citas/${idMascota}`)}
-              >
-                Ver Citas
-              </Button>
+              {isLoadingAppointments && (
+                <p className="p text-center">Cargando datos....</p>
+              )}
+              {!isLoadingAppointments && (
+                <div className="">
+                  <NavLink
+                    to={`/citas/${petInformation.idMascota}`}
+                    className="btn btn-primary d-block w-25 mb-2"
+                  >
+                    Agendar🕛
+                  </NavLink>
+                  <ul className="list-group">
+                    <li className="list-group-item list-group-item-primary"></li>
+                  </ul>{" "}
+                </div>
+              )}
             </Tab>
           </Tabs>
         )}

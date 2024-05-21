@@ -1,20 +1,28 @@
 import { useEffect, useState } from "react";
 import Alert, { AlertProperties } from "../Alert/Alert";
 import { EstadosCita, IAppointment } from "../../interfaces/Appointment";
-import useFetch from "../../hooks/useFetch";
+import { parseDate } from "../../utils/utils";
+import { useNavigate } from "react-router-dom";
 
-const formInitialData: IAppointment = {
-  fechaCitaMedica: "",
-  horaCitaMedica: "",
-  idCitaMedica: "",
-  idEstadoCita: EstadosCita.Ninguno,
-  idMascota: "",
-};
-export const FormNewAppointment = () => {
+export const FormNewAppointment = ({
+  isIncomingId,
+  id,
+}: {
+  isIncomingId: boolean;
+  id: string;
+}) => {
+  const formInitialData: IAppointment = {
+    fechaCitaMedica: "",
+    horaCitaMedica: "",
+    idCitaMedica: "",
+    idEstadoCita: EstadosCita.Agendado,
+    idMascota: "",
+  };
   const [formData, setFormData] = useState<IAppointment>(formInitialData);
   const [formAlert, setFormAlert] = useState<AlertProperties | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [isReadyToSave, setisReadyToSave] = useState(false);
+  const navigate = useNavigate();
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
     setFormData({
@@ -23,27 +31,8 @@ export const FormNewAppointment = () => {
     });
   };
 
-  const { data, loading, setLoading } = useFetch(
-    `${import.meta.env.VITE_API_URL}/cita-medica`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      //   ```json
-      //   {
-      //     "idCitaMedica": "07ee7083-40f1-436c-be07-15f5033e953e",
-      //     "fechaCitaMedica": "2024-01-01",
-      //     "horaCitaMedica": "15:30:00"
-      //   }
-      body: JSON.stringify(formData),
-    }
-  );
   useEffect(() => {
-    if (isReadyToSave) {
-      console.log(data);
-    }
-    if (formData.idMascota.trim() !== "") {
+    if (id) {
       setisReadyToSave(true);
     } else {
       setisReadyToSave(false);
@@ -59,11 +48,11 @@ export const FormNewAppointment = () => {
     event.preventDefault();
     let errors: Array<string> = [];
 
-    if (formData.horaCitaMedica.toString().trim() === "") {
+    if (formData.horaCitaMedica.trim() === "") {
       errors.push("Falta campo hora.");
     }
 
-    if (formData.fechaCitaMedica.toString().trim() === "") {
+    if (formData.horaCitaMedica.trim() === "") {
       errors.push("Falta campo fecha.");
     }
     if (formData.idEstadoCita.toString().trim() === "") {
@@ -77,7 +66,39 @@ export const FormNewAppointment = () => {
       });
       setShowAlert(true);
     } else {
-      setisReadyToSave(true);
+      // delete formData.idCitaMedica;
+      formData.fechaCitaMedica = parseDate(formData.fechaCitaMedica);
+      formData.idMascota = id;
+      const response = fetch(`${import.meta.env.VITE_API_URL}/cita-medica`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+        .then((data) => {
+          return data.json();
+        })
+        .then((json) => {
+          console.log(json);
+          if (json.success) {
+            setFormAlert({
+              typeOf: "success",
+              messages: ["Cita agendada con exito! ✅🕛"],
+            });
+            setShowAlert(true);
+            navigate("/mascotas");
+          } else {
+            setFormAlert({
+              typeOf: "danger",
+              messages: ["Hubo problemas al agendar la cita❌"],
+            });
+            setShowAlert(true);
+          }
+        })
+        .catch((error: any) => {
+          console.error("error: ", error);
+        });
     }
   };
 
@@ -101,10 +122,11 @@ export const FormNewAppointment = () => {
               className="form-control"
               id="idMascota"
               name="idMascota"
-              value={formData.idMascota}
+              value={formData.idMascota || id}
               onChange={handleInputChange}
               placeholder="ID# Mascota"
               required
+              disabled={isIncomingId}
             />
           </label>
           <label htmlFor="rutDueno" className="form-label">
@@ -124,30 +146,31 @@ export const FormNewAppointment = () => {
             Horarios
             <select
               className="form-select"
-              id="sexo"
-              name="sexo"
+              id="horaCitaMedica"
+              name="horaCitaMedica"
               value={formData.horaCitaMedica}
               onChange={handleInputChange}
+              required
             >
               <option value="">Horarios</option>
-              <option value="m">09:00</option>
-              <option value="m">09:30</option>
-              <option value="m">10:00</option>
-              <option value="m">10:30</option>
-              <option value="m">11:00</option>
-              <option value="m">11:30</option>
-              <option value="m">12:00</option>
-              <option value="m">12:30</option>
-              <option value="m">14:00</option>
-              <option value="m">14:30</option>
-              <option value="m">15:00</option>
-              <option value="m">15:30</option>
-              <option value="m">16:00</option>
-              <option value="m">16:30</option>
-              <option value="m">17:00</option>
-              <option value="m">17:30</option>
-              <option value="m">18:00</option>
-              <option value="m">18:30</option>
+              <option value="09:00">09:00</option>
+              <option value="09:30">09:30</option>
+              <option value="10:00">10:00</option>
+              <option value="10:30">10:30</option>
+              <option value="11:00">11:00</option>
+              <option value="11:30">11:30</option>
+              <option value="12:00">12:00</option>
+              <option value="12:30">12:30</option>
+              <option value="14:00">14:00</option>
+              <option value="14:30">14:30</option>
+              <option value="15:00">15:00</option>
+              <option value="15:30">15:30</option>
+              <option value="16:00">16:00</option>
+              <option value="16:30">16:30</option>
+              <option value="17:00">17:00</option>
+              <option value="17:30">17:30</option>
+              <option value="18:00">18:00</option>
+              <option value="18:30">18:30</option>
             </select>
           </label>
 

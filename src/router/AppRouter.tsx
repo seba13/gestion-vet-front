@@ -106,6 +106,14 @@ export default function AppRouter() {
             </ProtectedRoute>
           ),
         },
+        {
+          path: "/citas/:idMascota",
+          element: (
+            <ProtectedRoute id={8}>
+              <Appointment></Appointment>
+            </ProtectedRoute>
+          ),
+        },
       ],
     },
   ]);

@@ -1,8 +1,9 @@
 import { IAppointment } from "../../interfaces/Appointment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalComponent from "../Modal/ModalComponent";
 import { FormUpdateAppointment } from "../Forms/FormUpdateAppointment";
 import { FormNewAppointment } from "../Forms/FormNewAppointment";
+import { useParams } from "react-router-dom";
 export interface ITable {
   heads: Array<string>;
   rows: Array<any>;
@@ -14,11 +15,17 @@ const parseDate = (dateString: string): string => {
 };
 
 export const TableAppointments = ({ heads, rows }: ITable) => {
+  const { idMascota = "" } = useParams();
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const onClickButton = (parameter: any) => {
     setShowModalEdit(true);
   };
+  useEffect(() => {
+    if (idMascota.trim() !== "") {
+      setShowModalAdd(true);
+    }
+  }, [idMascota]);
   return (
     <div className="container-fluid">
       <div className="row justify-content-center">
@@ -67,7 +74,12 @@ export const TableAppointments = ({ heads, rows }: ITable) => {
                 onClose={() => setShowModalAdd(!showModalAdd)}
                 modalContent={{
                   title: "Agendar cita",
-                  body: <FormNewAppointment></FormNewAppointment>,
+                  body: (
+                    <FormNewAppointment
+                      isIncomingId={idMascota.trim() !== ""}
+                      id={idMascota}
+                    ></FormNewAppointment>
+                  ),
                 }}
               ></ModalComponent>
             )}

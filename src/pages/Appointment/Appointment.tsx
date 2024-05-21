@@ -3,7 +3,6 @@ import { TableAppointments } from "../../components/Tables/TableAppointments";
 import useFetch from "../../hooks/useFetch";
 import { HttpMethods } from "../../interfaces/httpMethods";
 import { IAppointment } from "../../interfaces/Appointment";
-import { Button } from "bootstrap";
 export const Appointment: React.ComponentType = () => {
   const { data, loading } = useFetch(
     `${import.meta.env.VITE_API_URL}/citas-medicas`,
