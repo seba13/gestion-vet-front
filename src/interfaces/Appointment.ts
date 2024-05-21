@@ -3,7 +3,7 @@ export interface IAppointment {
   fechaCitaMedica: string;
   horaCitaMedica: string;
   idMascota: string;
-  idEstadoCita: EstadosCita;
+  idEstadoCita: number;
 }
 
 export interface IAppointments {
@@ -11,8 +11,8 @@ export interface IAppointments {
 }
 
 export enum EstadosCita {
-  "Ninguno" = 0,
-  "Agendado" = 1,
-  "Cancelado" = 2,
-  "Finalizado" = 3,
+  Ninguno = 0,
+  Agendado = 1,
+  Cancelado = 2,
+  Finalizado = 3,
 }

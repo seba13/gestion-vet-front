@@ -1,4 +1,4 @@
-import { IAppointment } from "../../interfaces/Appointment";
+import { EstadosCita, IAppointment } from "../../interfaces/Appointment";
 import { useEffect, useState } from "react";
 import ModalComponent from "../Modal/ModalComponent";
 import { FormUpdateAppointment } from "../Forms/FormUpdateAppointment";
@@ -7,19 +7,29 @@ import { useParams } from "react-router-dom";
 export interface ITable {
   heads: Array<string>;
   rows: Array<any>;
+  handleUpdate: () => void;
 }
 
 const parseDate = (dateString: string): string => {
   const date = new Date(dateString);
   return date.toISOString().split("T")[0];
 };
-
-export const TableAppointments = ({ heads, rows }: ITable) => {
+const initialData: IAppointment = {
+  fechaCitaMedica: "",
+  horaCitaMedica: "",
+  idCitaMedica: "",
+  idEstadoCita: 0,
+  idMascota: "",
+};
+export const TableAppointments = ({ heads, rows, handleUpdate }: ITable) => {
   const { idMascota = "" } = useParams();
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
-  const onClickButton = (parameter: any) => {
+  const [filteredData, setFilteredData] = useState<IAppointment>(initialData);
+  const onClickButton = (row: IAppointment) => {
     setShowModalEdit(true);
+    row.fechaCitaMedica = parseDate(row.fechaCitaMedica);
+    setFilteredData(row);
   };
   useEffect(() => {
     if (idMascota.trim() !== "") {
@@ -31,7 +41,7 @@ export const TableAppointments = ({ heads, rows }: ITable) => {
       <div className="row justify-content-center">
         <div className="col-md-10">
           <div className="table-responsive">
-            <table className="table table-striped table-hover table-bordered text-center">
+            <table className="table table-striped table-hover table-bordered text-center ">
               <thead className="table-light">
                 <tr>
                   {heads.map((head: string, index: number) => (
@@ -45,6 +55,17 @@ export const TableAppointments = ({ heads, rows }: ITable) => {
                     <td>{row.idCitaMedica}</td>
                     <td>{parseDate(row.fechaCitaMedica)}</td>
                     <td>{row.horaCitaMedica}</td>
+                    <td
+                      className={
+                        row.idEstadoCita == EstadosCita.Agendado
+                          ? "bg-success"
+                          : row.idEstadoCita == EstadosCita.Cancelado
+                          ? "bg-danger"
+                          : "bg-primary"
+                      }
+                    >
+                      {EstadosCita[row.idEstadoCita]}
+                    </td>
                     <td className="d-flex justify-content-center">
                       <button
                         type="button"
@@ -64,7 +85,12 @@ export const TableAppointments = ({ heads, rows }: ITable) => {
                 onClose={() => setShowModalEdit(!showModalEdit)}
                 modalContent={{
                   title: "Editar cita",
-                  body: <FormUpdateAppointment></FormUpdateAppointment>,
+                  body: (
+                    <FormUpdateAppointment
+                      actualAppointment={filteredData}
+                      handleUpdate={handleUpdate}
+                    ></FormUpdateAppointment>
+                  ),
                 }}
               ></ModalComponent>
             )}

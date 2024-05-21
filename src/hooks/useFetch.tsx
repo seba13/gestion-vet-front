@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 function useFetch(url: string, options: any) {
   const [data, setData] = useState<any>(null);
@@ -14,6 +14,7 @@ function useFetch(url: string, options: any) {
       const result = await response.json();
       setData(result);
       setError(null);
+      return result;
     } catch (err: any) {
       setError(err);
     } finally {
@@ -21,11 +22,12 @@ function useFetch(url: string, options: any) {
     }
   }, [url, options]);
 
-  useEffect(() => {
-    if (loading) {
-      fetchData();
-    }
-  }, [loading]);
+  // useEffect(() => {
+  //   if(loading){
+  //     fetchData();
+
+  //   }
+  // }, [loading]);
 
   return { data, loading, error, fetchData, setLoading };
 }
