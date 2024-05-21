@@ -207,7 +207,7 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
 
                             <div>
                               <NavLink
-                                to={`/citas/editar/${petInformation.idMascota}`}
+                                to={`/citas/editar/${appointment.idCitaMedica}`}
                                 className="btn btn-primary w-10"
                               >
                                 Editar✏️🕛

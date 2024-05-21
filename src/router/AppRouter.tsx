@@ -115,7 +115,7 @@ export default function AppRouter() {
           ),
         },
         {
-          path: "/citas/editar/:idMascota",
+          path: "/citas/editar/:idCitaMedica",
           element: (
             <ProtectedRoute id={12}>
               <Appointment></Appointment>

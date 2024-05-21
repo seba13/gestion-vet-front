@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Alert, { AlertProperties } from "../Alert/Alert";
 import { EstadosCita, IAppointment } from "../../interfaces/Appointment";
-import useFetch from "../../hooks/useFetch";
 import { HttpMethods } from "../../interfaces/httpMethods";
+import { parseDate } from "../../utils/utils";
 
 const formInitialData: IAppointment = {
   fechaCitaMedica: "",
@@ -22,7 +22,6 @@ export const FormUpdateAppointment = ({
   const [formAlert, setFormAlert] = useState<AlertProperties | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [isReadyToUpdate, setisReadyToUpdate] = useState(false);
-  const [isUpdated, setIsUpdated] = useState(false);
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
     setFormData({
@@ -37,11 +36,17 @@ export const FormUpdateAppointment = ({
       [name]: parseInt(value),
     });
   };
-
+  useEffect(() => {
+    console.log({ actualAppointment });
+    if (actualAppointment.idCitaMedica) {
+      actualAppointment.fechaCitaMedica = parseDate(
+        actualAppointment.fechaCitaMedica
+      );
+      setFormData({ ...actualAppointment });
+    }
+  }, [actualAppointment]);
   useEffect(() => {
     if (isReadyToUpdate) {
-      console.log(formData);
-      setisReadyToUpdate(false);
       const results = fetch(`${import.meta.env.VITE_API_URL}/cita-medica`, {
         method: HttpMethods.PATCH,
         headers: {
@@ -70,6 +75,7 @@ export const FormUpdateAppointment = ({
           }
         })
         .catch((error) => console.error("Errror: ", error.message));
+      setisReadyToUpdate(false);
     }
   }, [isReadyToUpdate]);
 
@@ -106,6 +112,7 @@ export const FormUpdateAppointment = ({
 
   return (
     <>
+      {console.log("FORMULARIO", formData)}
       {showAlert && formAlert && (
         <Alert alertProperties={formAlert} handlerCloseAlert={onCloseAlert} />
       )}

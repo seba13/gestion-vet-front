@@ -4,16 +4,15 @@ import ModalComponent from "../Modal/ModalComponent";
 import { FormUpdateAppointment } from "../Forms/FormUpdateAppointment";
 import { FormNewAppointment } from "../Forms/FormNewAppointment";
 import { useLocation, useParams } from "react-router-dom";
+import useFetch from "../../hooks/useFetch";
+import { HttpMethods } from "../../interfaces/httpMethods";
+import { parseDate } from "../../utils/utils";
 export interface ITable {
   heads: Array<string>;
   rows: Array<any>;
   handleUpdate: () => void;
 }
 
-const parseDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toISOString().split("T")[0];
-};
 const initialData: IAppointment = {
   fechaCitaMedica: "",
   horaCitaMedica: "",
@@ -23,21 +22,29 @@ const initialData: IAppointment = {
 };
 export const TableAppointments = ({ heads, rows, handleUpdate }: ITable) => {
   const { idMascota = "" } = useParams(); //si trae parametro de IdMascota busca la citas
+  const { idCitaMedica = "" } = useParams(); //si trae parametro de IdMascota busca la citas
   const location = useLocation();
-  const parameters = location.pathname.split("/")[2]; // parametro url para detectar accion
+  const [parameters, setParameters] = useState<string>(
+    location.pathname.split("/")[2]
+  ); // parametro url para detectar accion
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [filteredData, setFilteredData] = useState<IAppointment>(initialData);
+  const { fetchData, loading } = useFetch(
+    `${import.meta.env.VITE_API_URL}/cita-medica/${idCitaMedica}`,
+    {
+      method: HttpMethods.GET,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
   const onClickButton = (row: IAppointment) => {
     row.fechaCitaMedica = parseDate(row.fechaCitaMedica);
     setFilteredData(row);
-    console.log(row);
     setShowModalEdit(true);
   };
   useEffect(() => {
-    // if (idMascota && idMascota.trim() !== "") {
-    //   setShowModalAdd(true);
-    // }
     if (
       parameters &&
       parameters.trim() !== "" &&
@@ -52,9 +59,18 @@ export const TableAppointments = ({ heads, rows, handleUpdate }: ITable) => {
       location &&
       parameters === "editar"
     ) {
+      //aca logica
+      fetchData().then((result) => {
+        // console.log("result fetch", result.data);
+
+        setFilteredData(result.data);
+      });
       setShowModalEdit(true);
     }
   }, [idMascota]);
+  // console.log("FILTRADOS", filteredData);
+
+  useEffect(() => {}, [filteredData]);
   return (
     <div className="container-fluid">
       <div className="row justify-content-center">
