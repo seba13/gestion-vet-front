@@ -16,6 +16,8 @@ import UserProfilePage from "../pages/UserProfilePage/UserProfile";
 import { ListEmployee } from "../pages/Employees/ListEmployee";
 import { Appointment } from "../pages/Appointment/Appointment";
 import { NewAppointment } from "../pages/Appointment/NewAppointment";
+import { NewClinicalRecord } from "../pages/ClinicalRecors/NewClinicalRecord";
+import { ClinicalRecords } from "../pages/ClinicalRecors/ClinicalRecords";
 
 export default function AppRouter() {
   const authContext = useContext(AuthContext)!;
@@ -119,6 +121,22 @@ export default function AppRouter() {
           element: (
             <ProtectedRoute id={12}>
               <Appointment></Appointment>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/ficha-clinica/registrar/:idMascota",
+          element: (
+            <ProtectedRoute id={13}>
+              <NewClinicalRecord></NewClinicalRecord>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/fichas-clinicas/ver",
+          element: (
+            <ProtectedRoute id={14}>
+              <ClinicalRecords></ClinicalRecords>
             </ProtectedRoute>
           ),
         },
