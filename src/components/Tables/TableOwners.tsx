@@ -6,6 +6,7 @@ import ListPets from "../Forms/Lists/ListPets";
 import { HttpMethods } from "../../interfaces/httpMethods";
 import { NavLink } from "react-router-dom";
 import FormUpdateClient from "../Forms/FormUpdateClient";
+import TablePets from "./TablePets";
 
 function TableOwners({ owners }: any) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -107,7 +108,8 @@ function TableOwners({ owners }: any) {
           title: "Lista de mascotas",
           body:
             results.data.length > 0 ? (
-              <ListPets list={results.data} />
+              // <ListPets list={results.data} />
+              <TablePets pets={results.data}></TablePets>
             ) : (
               <div className="text-center">
                 <p>Este dueño no cuenta con ninguna mascota registrada.</p>

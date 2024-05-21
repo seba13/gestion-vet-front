@@ -63,7 +63,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
           </div>
         </div>
       )} */}
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} className="modal-xl">
         <Modal.Header closeButton>
           <Modal.Title>{modalContent.title}</Modal.Title>
         </Modal.Header>
