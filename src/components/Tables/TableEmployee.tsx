@@ -53,7 +53,7 @@ function TableEmployee({ heads, rows }: ITable) {
                 className="btn btn-success mb-2 "
                 onClick={handleShowModal}
               >
-                ✅ Especialistas
+                Crear Especialista ✅
               </button>
             </div>
 
