@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import ModalComponent from "../Modal/ModalComponent";
 import { FormUpdateAppointment } from "../Forms/FormUpdateAppointment";
 import { FormNewAppointment } from "../Forms/FormNewAppointment";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 export interface ITable {
   heads: Array<string>;
   rows: Array<any>;
@@ -22,18 +22,37 @@ const initialData: IAppointment = {
   idMascota: "",
 };
 export const TableAppointments = ({ heads, rows, handleUpdate }: ITable) => {
-  const { idMascota = "" } = useParams();
+  const { idMascota = "" } = useParams(); //si trae parametro de IdMascota busca la citas
+  const location = useLocation();
+  const parameters = location.pathname.split("/")[2]; // parametro url para detectar accion
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [filteredData, setFilteredData] = useState<IAppointment>(initialData);
   const onClickButton = (row: IAppointment) => {
-    setShowModalEdit(true);
     row.fechaCitaMedica = parseDate(row.fechaCitaMedica);
     setFilteredData(row);
+    console.log(row);
+    setShowModalEdit(true);
   };
   useEffect(() => {
-    if (idMascota.trim() !== "") {
+    // if (idMascota && idMascota.trim() !== "") {
+    //   setShowModalAdd(true);
+    // }
+    if (
+      parameters &&
+      parameters.trim() !== "" &&
+      location &&
+      parameters === "agendar"
+    ) {
       setShowModalAdd(true);
+    }
+    if (
+      parameters &&
+      parameters.trim() !== "" &&
+      location &&
+      parameters === "editar"
+    ) {
+      setShowModalEdit(true);
     }
   }, [idMascota]);
   return (

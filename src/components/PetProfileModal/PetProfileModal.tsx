@@ -6,8 +6,9 @@ import Button from "react-bootstrap/Button";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import { NavLink } from "react-router-dom";
-import { IAppointment, IAppointments } from "../../interfaces/Appointment";
-import { Appointment } from "../../pages/Appointment/Appointment";
+import { parseDate } from "../../utils/utils";
+import { EstadosCita, IAppointment } from "../../interfaces/Appointment";
+import useFetch from "../../hooks/useFetch";
 
 interface PetProfileModalProps {
   idMascota: string;
@@ -39,17 +40,17 @@ const fetchHistorialMedico = async (idMascota: string) => {
   }
 };
 
-const fetchCitas = async (idMascota: string) => {
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/citas-medicas/mascota/${idMascota}`
-    );
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    console.error("Error fetching citas:", error.message);
-  }
-};
+// const fetchCitas = async (idMascota: string) => {
+//   try {
+//     const response = await fetch(
+//       `${import.meta.env.VITE_API_URL}/citas-medicas/mascota/${idMascota}`
+//     );
+//     const data = await response.json();
+//     return data;
+//   } catch (error: any) {
+//     console.error("Error fetching citas:", error.message);
+//   }
+// };
 const PetProfileModal: React.FC<PetProfileModalProps> = ({
   idMascota,
   show,
@@ -59,17 +60,17 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
   const [historialMedico, setHistorialMedico] = useState<PetHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
-  const [isLoadingAppointments, setIsLoadingAppointments] = useState(false);
   const [appointments, setAppointments] = useState<IAppointment[]>([]);
-
-  useEffect(() => {
-    if (!isLoadingAppointments) {
-      console.log("AKIII");
-      fetchCitas(idMascota).then((response) => {
-        console.log(response);
-        setAppointments(response);
-      });
+  const { fetchData, loading } = useFetch(
+    `${import.meta.env.VITE_API_URL}/citas-medicas/mascota/${idMascota}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     }
+  );
+  useEffect(() => {
     if (show) {
       setIsLoading(true);
       const fetchData = async () => {
@@ -93,15 +94,9 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
     fetchHistorial();
   };
   const handleAppointmentsClick = () => {
-    setIsLoadingAppointments(true);
-    const fetchHistorial = async () => {
-      const response = await fetchCitas(idMascota);
-      setAppointments(response.data);
-      setIsLoadingAppointments(false);
-      console.log(response);
-    };
-
-    fetchHistorial();
+    fetchData().then((result) => {
+      setAppointments(result.data);
+    });
   };
 
   return (
@@ -175,20 +170,54 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
               )}
             </Tab>
             <Tab eventKey="citas" title="Citas">
-              {isLoadingAppointments && (
-                <p className="p text-center">Cargando datos....</p>
-              )}
-              {!isLoadingAppointments && (
+              {loading && <p className="p text-center">Cargando citas....</p>}
+              {!loading && (
                 <div className="">
                   <NavLink
-                    to={`/citas/${petInformation.idMascota}`}
+                    to={`/citas/agendar/${petInformation.idMascota}`}
                     className="btn btn-primary d-block w-25 mb-2"
                   >
                     Agendar🕛
                   </NavLink>
-                  <ul className="list-group">
-                    <li className="list-group-item list-group-item-primary"></li>
-                  </ul>{" "}
+                  <ul className="list-group gap-1">
+                    {appointments.map(
+                      (appointment: IAppointment, index: number) => {
+                        return (
+                          <li
+                            key={appointment.idCitaMedica}
+                            className={`d-flex justify-content-between list-group-item list-group-item-${
+                              appointment.idEstadoCita === 1
+                                ? "success"
+                                : appointment.idEstadoCita === 2
+                                ? "danger"
+                                : appointment.idEstadoCita === 3
+                                ? "warning"
+                                : "secondary"
+                            } `}
+                          >
+                            <div>
+                              <p>
+                                Fecha:{" "}
+                                <b>{parseDate(appointment.fechaCitaMedica)}</b>
+                                <br />
+                                Estado cita:{" "}
+                                <b>{EstadosCita[appointment.idEstadoCita]}</b>
+                              </p>
+                            </div>
+
+                            <div>
+                              <NavLink
+                                to={`/citas/editar/${petInformation.idMascota}`}
+                                className="btn btn-primary w-10"
+                              >
+                                Editar✏️🕛
+                              </NavLink>
+                            </div>
+                          </li>
+                        );
+                      }
+                    )}
+                  </ul>
                 </div>
               )}
             </Tab>
