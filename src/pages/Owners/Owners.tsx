@@ -7,7 +7,7 @@ import useFetch from "../../hooks/useFetch";
 function Owners() {
   const [ownersData, setOwnersData] = useState<IOwner[]>([]);
   const [selectedOwner, setSelectedOwner] = useState(""); // Guarda el propietario seleccionado para mostrar en el modal
-  const { data, error, loading } = useFetch(
+  const { error, loading, fetchData } = useFetch(
     `${import.meta.env.VITE_API_URL}/titulares-mascota`,
     {
       method: HttpMethods.GET,
@@ -18,21 +18,18 @@ function Owners() {
   );
 
   useEffect(() => {
-    if (data && data.data) {
-      setOwnersData(data.data);
-    }
-    if (error) {
-      console.error("Error en hook: ", error);
-    }
-  }, [loading, error]);
+    fetchData().then((result) => {
+      setOwnersData(result.data);
+    });
+  }, []);
 
   return (
     <>
       {loading && <p className="p text-center">Cargando datos....</p>}
-      {!loading && !data && (
+      {!loading && !ownersData && (
         <p className="p text-center">Al parecer hubo un error..</p>
       )}
-      {!loading && !error && data && <TableOwners owners={ownersData} />}
+      {!loading && !error && ownersData && <TableOwners owners={ownersData} />}
     </>
   );
 }

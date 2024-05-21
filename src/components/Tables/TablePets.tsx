@@ -98,12 +98,9 @@ function TablePets({ pets }: PetList) {
 
   const dataTable = currentPets.map((pet: Pet, index) => (
     <tr key={index} style={{ textTransform: "capitalize" }}>
-      <td>{pet.idMascota}</td>
       <td>{pet.nombreMascota}</td>
-      <td>{pet.edadMascota}</td>
-      <td>{pet.especie}</td>
-      <td>{pet.raza ? pet.raza : "desconocida"}</td>
-      <td>{pet.genero}</td>
+      <td>{pet.raza || "No definido"}</td>
+
       <td className="d-flex justify-content-center">
         <button
           className={`btn btn-success m-1`}
@@ -117,7 +114,6 @@ function TablePets({ pets }: PetList) {
         >
           ✏️
         </button>
-        
       </td>
     </tr>
   ));
@@ -150,12 +146,8 @@ function TablePets({ pets }: PetList) {
             <table className="table table-striped table-hover table-bordered text-center">
               <thead className="table-light">
                 <tr>
-                  <th>N°ID</th>
                   <th>Nombre</th>
-                  <th>Edad</th>
-                  <th>Especie</th>
                   <th>Raza</th>
-                  <th>Genero</th>
                   <th>Operaciones</th>
                 </tr>
               </thead>

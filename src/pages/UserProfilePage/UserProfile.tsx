@@ -66,35 +66,6 @@ const UserProfilePage: React.FC = () => {
       return false;
     }
 
-    // Verificar la contraseña antigua
-    try {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL
-        }/api/user/${idUsuario}/validate-password`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            oldPassword,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Contraseña incorrecta.");
-      }
-    } catch (error) {
-      setAlertProperties({
-        typeOf: "danger",
-        messages: ["Contraseña incorrecta."],
-      });
-      setShowAlert(true);
-      return false;
-    }
-
     return true;
   };
 
@@ -104,18 +75,23 @@ const UserProfilePage: React.FC = () => {
     if (!(await validateForm())) {
       return;
     }
-
+    console.log({
+      nombreUsuario: nombreUsuario,
+      password: newPassword,
+      oldPassword: oldPassword,
+    });
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/${idUsuario}/change-password`,
+        `${import.meta.env.VITE_API_URL}/update-password`,
         {
-          method: "POST",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            oldPassword,
-            newPassword,
+            nombreUsuario: nombreUsuario,
+            password: newPassword,
+            oldPassword: oldPassword,
           }),
         }
       );
@@ -124,18 +100,18 @@ const UserProfilePage: React.FC = () => {
         throw new Error("Error changing password.");
       }
 
-      setMessage("Password changed successfully.");
+      setMessage("Contraseña cambiada correctamente! ✅.");
       setAlertProperties({
         typeOf: "success",
-        messages: ["Password changed successfully."],
+        messages: ["Contraseña cambiada correctamente! ✅."],
       });
       setShowAlert(true);
       handleChangeSession(); // Update session information if needed
     } catch (error) {
-      setMessage("Error changing password.");
+      setMessage("Error al actualizar contraseña.");
       setAlertProperties({
         typeOf: "danger",
-        messages: ["Error changing password."],
+        messages: ["Error al actualizar contraseña."],
       });
       setShowAlert(true);
       console.error(error);

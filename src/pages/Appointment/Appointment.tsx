@@ -3,9 +3,9 @@ import { TableAppointments } from "../../components/Tables/TableAppointments";
 import useFetch from "../../hooks/useFetch";
 import { HttpMethods } from "../../interfaces/httpMethods";
 import { IAppointment } from "../../interfaces/Appointment";
-import { Button } from "bootstrap";
 export const Appointment: React.ComponentType = () => {
-  const { data, loading } = useFetch(
+  const [isUpdated, setIsUpdated] = useState(true);
+  const { data, loading, fetchData, setLoading } = useFetch(
     `${import.meta.env.VITE_API_URL}/citas-medicas`,
     {
       method: HttpMethods.GET,
@@ -15,15 +15,27 @@ export const Appointment: React.ComponentType = () => {
     }
   );
   useEffect(() => {
-    if (!loading) {
-      setRows(data.data);
+    if (isUpdated) {
+      fetchData().then((result) => {
+        setRows(result.data);
+        setIsUpdated(false);
+      });
     }
-  }, [loading]);
+
+    // setRows(data.data);
+  }, [isUpdated]);
+
+  const handleUpdate = () => {
+    if (!isUpdated) {
+      setIsUpdated(true);
+    }
+  };
   const [rows, setRows] = useState<Array<IAppointment>>([]);
   const [heads] = useState<string[]>([
     "N° Cita",
     "Fecha Cita",
     "Hora Cita",
+    "Estado cita",
     "Operaciones",
   ]);
 
@@ -31,7 +43,11 @@ export const Appointment: React.ComponentType = () => {
     <>
       {loading && <p className="p text-center">Cargando datos....</p>}
       {!loading && data && (
-        <TableAppointments heads={heads} rows={rows}></TableAppointments>
+        <TableAppointments
+          heads={heads}
+          rows={rows}
+          handleUpdate={handleUpdate}
+        ></TableAppointments>
       )}
 
       {!loading && !data && (

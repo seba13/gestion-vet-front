@@ -93,7 +93,7 @@ export default function AppRouter() {
         {
           path: "/user-profile",
           element: (
-            <ProtectedRoute id={8}>
+            <ProtectedRoute id={9}>
               <UserProfilePage />
             </ProtectedRoute>
           ),
@@ -101,7 +101,23 @@ export default function AppRouter() {
         {
           path: "/citas",
           element: (
-            <ProtectedRoute id={8}>
+            <ProtectedRoute id={10}>
+              <Appointment></Appointment>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/citas/agendar/:idMascota",
+          element: (
+            <ProtectedRoute id={11}>
+              <Appointment></Appointment>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/citas/editar/:idCitaMedica",
+          element: (
+            <ProtectedRoute id={12}>
               <Appointment></Appointment>
             </ProtectedRoute>
           ),

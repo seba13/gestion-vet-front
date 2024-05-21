@@ -5,7 +5,7 @@ import { Pet } from "../../interfaces/Pet";
 import { HttpMethods } from "../../interfaces/httpMethods";
 
 function Pets() {
-  const { data, loading, error } = useFetch(
+  const { fetchData, loading, error } = useFetch(
     `${import.meta.env.VITE_API_URL}/mascotas`,
     {
       method: HttpMethods.GET,
@@ -18,14 +18,12 @@ function Pets() {
   const [petsData, setPetsData] = useState<Pet[]>([]);
 
   useEffect(() => {
-    if (data && data.data) {
-      console.log(data);
-      setPetsData(data.data);
-    }
-    if (error) {
-      console.error("Error: ", error);
-    }
-  }, [loading, error]);
+    fetchData().then((result) => {
+      setPetsData(result.data);
+    });
+
+    // setRows(data.data);
+  }, []);
 
   return (
     <>

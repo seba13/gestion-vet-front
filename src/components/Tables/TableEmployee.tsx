@@ -6,22 +6,57 @@ import {
   Sexo,
 } from "../../interfaces/Employee";
 import { NavLink } from "react-router-dom";
+import { parseDate } from "../../utils/utils";
+import { useEffect, useState } from "react";
+import ModalComponent, { IModalContent } from "../Modal/ModalComponent";
+import { FormNewSpecialist } from "../Forms/FormNewSpecialist";
+import useFetch from "../../hooks/useFetch";
+import { HttpMethods } from "../../interfaces/httpMethods";
+import { ISpeciality } from "../../interfaces/specialities";
 
 export interface ITable {
   heads: Array<string>;
   rows: Array<any>;
 }
 
-const parseDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toISOString().split("T")[0];
-};
 function TableEmployee({ heads, rows }: ITable) {
+  const [specialities, setSpecialities] = useState<ISpeciality[]>([]);
+  const { loading, fetchData } = useFetch(
+    `${import.meta.env.VITE_API_URL}/especialidades`,
+    {
+      method: HttpMethods.GET,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  useEffect(() => {
+    fetchData().then((result) => {
+      setSpecialities(result.data);
+      console.log(specialities);
+    });
+  }, [loading]);
+  const hideModal = () => {
+    setShowModal(false);
+  };
+  const [showModal, setShowModal] = useState(false);
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
   return (
     <div className="container-fluid">
       <div className="row justify-content-center">
         <div className="col-md-10">
           <div className="table-responsive">
+            <div className="d-flex justify-content-end">
+              <button
+                className="btn btn-success mb-2 "
+                onClick={handleShowModal}
+              >
+                Crear Especialista ✅
+              </button>
+            </div>
+
             <table className="table table-striped table-hover table-bordered text-center">
               <thead className="table-light">
                 <tr>
@@ -48,7 +83,13 @@ function TableEmployee({ heads, rows }: ITable) {
                     </td>
                     <td>{EstadoEmpleado[row.idEstadoEmpleado]}</td>
                     <td>{Cargos[row.idCargo]}</td>
-                    <td>{Especialidad[row.idEspecialidad]}</td>
+                    <td>
+                      {specialities.map((sp) => {
+                        if (sp.idEspecialidad === row.idEspecialidad) {
+                          return sp.tipo;
+                        }
+                      })}
+                    </td>
                     <td className="d-flex justify-content-center">
                       <NavLink
                         className={`btn btn-primary m-1`}
@@ -61,6 +102,18 @@ function TableEmployee({ heads, rows }: ITable) {
                 ))}
               </tbody>
             </table>
+            {showModal && (
+              <ModalComponent
+                showModal={showModal}
+                onClose={() => setShowModal(false)}
+                modalContent={
+                  {
+                    body: <FormNewSpecialist hideModal={hideModal} />,
+                    title: "Agregar Especialista",
+                  } as IModalContent
+                }
+              ></ModalComponent>
+            )}
           </div>
         </div>
       </div>

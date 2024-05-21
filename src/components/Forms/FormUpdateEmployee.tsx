@@ -8,6 +8,9 @@ import {
   IEmployee,
   Sexo,
 } from "../../interfaces/Employee";
+import useFetch from "../../hooks/useFetch";
+import { ISpeciality } from "../../interfaces/specialities";
+import { HttpMethods } from "../../interfaces/httpMethods";
 
 const initialFormData: IEmployee = {
   apellidoMaterno: "",
@@ -34,6 +37,21 @@ const parseDate = (dateString: string): string => {
   return date.toISOString().split("T")[0];
 };
 const FormUpdateEmployee: React.FC = () => {
+  const [specialities, setSpecialities] = useState<ISpeciality[]>([]);
+  const { loading, fetchData } = useFetch(
+    `${import.meta.env.VITE_API_URL}/especialidades`,
+    {
+      method: HttpMethods.GET,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  useEffect(() => {
+    fetchData().then((result) => {
+      setSpecialities(result.data);
+    });
+  }, [loading]);
   const { idPersona = "" } = useParams();
   const [formData, setFormData] = useState<IEmployee>(initialFormData);
   const [formErrors, setFormErrors] = useState<AlertProperties | null>(null);
@@ -475,23 +493,15 @@ const FormUpdateEmployee: React.FC = () => {
                   onChange={handleInputChange}
                 >
                   <option value="">Seleccionar Especialidad</option>
-                  <option value={Especialidad.Cirugia}>Cirugia</option>
-                  <option value={Especialidad.Dermatologia}>
-                    Dermatologia
-                  </option>
-                  <option value={Especialidad.Cardiologia}>Cardiologia</option>
-                  <option value={Especialidad.Oftalmologia}>
-                    Oftalmología
-                  </option>
-                  <option value={Especialidad.Neurologia}>Neurología</option>
-                  <option value={Especialidad.Oncologia}>Oncología</option>
-                  <option value={Especialidad.Exoticos}>
-                    Medicina Animales Exóticos
-                  </option>
-                  <option value={Especialidad.MedicinaGeneral}>
-                    Medicina General
-                  </option>
-                  <option value={Especialidad.Tens}>Tens</option>
+                  {specialities.map(
+                    (speciality: ISpeciality, index: number) => {
+                      return (
+                        <option key={index} value={speciality.idEspecialidad}>
+                          {speciality.tipo}
+                        </option>
+                      );
+                    }
+                  )}
                 </select>
               </label>
 
