@@ -150,6 +150,45 @@ export const NavbarDashboard: React.FC = () => {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
+                  Ficha clinica
+                </a>
+                <ul className="dropdown-menu">
+                  <li className="dropdown-item">
+                    <NavLink
+                      to={"/ficha-clinica/registrar"}
+                      className="nav-link active"
+                    >
+                      <div>
+                        <span>
+                          <i></i>
+                        </span>
+                        <span>Crear ficha clinica</span>
+                      </div>
+                    </NavLink>
+                  </li>
+                  <li className="dropdown-item">
+                    <NavLink
+                      to={"/fichas-clinicas/ver"}
+                      className="nav-link active"
+                    >
+                      <div>
+                        <span>
+                          <i></i>
+                        </span>
+                        <span>Ver todas fichas clinicas</span>
+                      </div>
+                    </NavLink>
+                  </li>
+                </ul>
+              </li>
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
                   Mascotas
                 </a>
                 <ul className="dropdown-menu">
