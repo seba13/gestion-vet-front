@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import ModalComponent from "../Modal/ModalComponent";
+import ModalComponent, { IModalContent } from "../Modal/ModalComponent";
 import { IOwner } from "../../interfaces/Owners";
 import ListPets from "../Forms/Lists/ListPets";
 import { HttpMethods } from "../../interfaces/httpMethods";
@@ -210,9 +210,9 @@ function TableOwners({ owners }: any) {
       {paginationButtons}
       {showModal.show && (
         <ModalComponent
-          showModal={showModal}
+          showModal={showModal.show}
           onClose={handleCloseModal}
-          modalContent={showModal.content}
+          modalContent={showModal.content as IModalContent}
         />
       )}
     </div>

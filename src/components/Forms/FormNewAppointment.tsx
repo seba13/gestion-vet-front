@@ -87,7 +87,9 @@ export const FormNewAppointment = ({
               messages: ["Cita agendada con exito! ✅🕛"],
             });
             setShowAlert(true);
-            navigate("/mascotas");
+            setTimeout(() => {
+              navigate("/mascotas");
+            }, 1500);
           } else {
             setFormAlert({
               typeOf: "danger",
