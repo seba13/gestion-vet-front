@@ -5,7 +5,6 @@ import Button from "react-bootstrap/Button";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import PetHistoryMedModal from "./PetHistoryMedModal";
-import PetCitasModal from "./PetCitasModal";
 import "./PetProfileModal.css"; // Import the CSS file
 import { NavLink } from "react-router-dom";
 import { parseDate } from "../../utils/utils";
@@ -18,27 +17,21 @@ interface PetProfileModalProps {
   onHide: () => void;
 }
 
-const handleFetchPet = async (parametro: string) => {
+const handleFetchPet = async (parametro: string): Promise<Pet> => {
+  console.log({ parametro });
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/mascota/${parametro}`
     );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     const data = await response.json();
+    console.log("Datos de la mascota recibidos:", data); // Log para verificar datos
     return data;
   } catch (error: any) {
     console.error("Error en: ", error.message);
-  }
-};
-
-const fetchHistorialMedico = async (idMascota: string) => {
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/historial-medico/${idMascota}`
-    );
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    console.error("Error fetching historial medico:", error.message);
+    throw error;
   }
 };
 
@@ -47,10 +40,9 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
   show,
   onHide,
 }) => {
+  console.log({ idMascota });
   const [petInformation, setPetInformation] = useState<Pet | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
   const [appointments, setAppointments] = useState<IAppointment[]>([]);
   const { fetchData, loading } = useFetch(
     `${import.meta.env.VITE_API_URL}/citas-medicas/mascota/${idMascota}`,
@@ -61,33 +53,36 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
       },
     }
   );
+
   useEffect(() => {
     if (show) {
       setIsLoading(true);
-      const fetchData = async () => {
-        const response = await handleFetchPet(idMascota);
-        setPetInformation(response.data);
-        setIsLoading(false);
-      };
-
-      fetchData();
+      handleFetchPet(idMascota)
+        .then((data) => {
+          setPetInformation(data);
+          console.log("Información de la mascota establecida:", data); // Log para verificar estado
+        })
+        .catch((error) => {
+          console.error(
+            "Error al cargar los datos de la mascota:",
+            error.message
+          );
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   }, [idMascota, show]);
 
-  const handleHistorialClick = () => {
-    setIsLoadingHistorial(true);
-    const fetchHistorial = async () => {
-      const response = await fetchHistorialMedico(idMascota);
-
-      setIsLoadingHistorial(false);
-    };
-
-    fetchHistorial();
-  };
   const handleAppointmentsClick = () => {
-    fetchData().then((result) => {
-      setAppointments(result.data);
-    });
+    fetchData()
+      .then((result) => {
+        console.log("Datos de citas recibidos:", result.data); // Log para verificar datos de citas
+        setAppointments(result.data);
+      })
+      .catch((error) => {
+        console.error("Error al cargar las citas:", error.message);
+      });
   };
 
   return (
@@ -96,16 +91,14 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
         <Modal.Title>Perfil de Mascota</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {isLoading && <p className="text-center">Cargando datos....</p>}
+        {isLoading && <p className="text-center">Cargando datos...</p>}
         {!isLoading && petInformation && (
           <Tabs
             defaultActiveKey="profile"
             id="pet-profile-tabs"
             className="mb-3"
             onSelect={(eventKey) => {
-              if (eventKey === "historial") {
-                handleHistorialClick();
-              } else if (eventKey === "citas") {
+              if (eventKey === "citas") {
                 handleAppointmentsClick();
               }
             }}
@@ -137,52 +130,48 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
               <PetHistoryMedModal idMascota={idMascota} />
             </Tab>
             <Tab eventKey="citas" title="Citas">
-              {/* <PetCitasModal idMascota={idMascota} /> */}
-              {loading && <p className="p text-center">Cargando citas....</p>}
+              {loading && <p className="text-center">Cargando citas...</p>}
               {!loading && (
-                <div className="">
+                <div>
                   <NavLink
-                    to={`/citas/agendar/${petInformation.idMascota}`}
+                    to={`/citas/agendar/${petInformation?.idMascota}`}
                     className="btn btn-primary d-block w-25 mb-2"
                   >
                     Agendar🕛
                   </NavLink>
                   <ul className="list-group gap-1">
-                    {appointments.map((appointment: IAppointment) => {
-                      return (
-                        <li
-                          key={appointment.idCitaMedica}
-                          className={`d-flex justify-content-between list-group-item list-group-item-${
-                            appointment.idEstadoCita === 1
-                              ? "success"
-                              : appointment.idEstadoCita === 2
-                              ? "danger"
-                              : appointment.idEstadoCita === 3
-                              ? "warning"
-                              : "secondary"
-                          } `}
-                        >
-                          <div>
-                            <p>
-                              Fecha:{" "}
-                              <b>{parseDate(appointment.fechaCitaMedica)}</b>
-                              <br />
-                              Estado cita:{" "}
-                              <b>{EstadosCita[appointment.idEstadoCita]}</b>
-                            </p>
-                          </div>
-
-                          <div>
-                            <NavLink
-                              to={`/citas/editar/${appointment.idCitaMedica}`}
-                              className="btn btn-primary w-10"
-                            >
-                              Editar✏️🕛
-                            </NavLink>
-                          </div>
-                        </li>
-                      );
-                    })}
+                    {appointments.map((appointment: IAppointment) => (
+                      <li
+                        key={appointment.idCitaMedica}
+                        className={`d-flex justify-content-between list-group-item list-group-item-${
+                          appointment.idEstadoCita === 1
+                            ? "success"
+                            : appointment.idEstadoCita === 2
+                            ? "danger"
+                            : appointment.idEstadoCita === 3
+                            ? "warning"
+                            : "secondary"
+                        }`}
+                      >
+                        <div>
+                          <p>
+                            Fecha:{" "}
+                            <b>{parseDate(appointment.fechaCitaMedica)}</b>
+                            <br />
+                            Estado cita:{" "}
+                            <b>{EstadosCita[appointment.idEstadoCita]}</b>
+                          </p>
+                        </div>
+                        <div>
+                          <NavLink
+                            to={`/citas/editar/${appointment.idCitaMedica}`}
+                            className="btn btn-primary w-10"
+                          >
+                            Editar✏️🕛
+                          </NavLink>
+                        </div>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               )}

@@ -5,52 +5,82 @@ import {
   AdmissionRecord,
   PetHistory,
 } from "../../interfaces/PetHistory";
-import { IAppointment, EstadosCita } from "../../interfaces/Appointment";
 import Accordion from "react-bootstrap/Accordion";
-import Table from "react-bootstrap/Table";
 
 interface PetHistoryMedModalProps {
   idMascota: string;
 }
 
 const fetchClinicalRecord = async (idMascota: string) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/clinical-record/${idMascota}`
-  );
-  const data = await response.json();
-  return data;
+  console.log({ idMascota });
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/ficha-clinica/mascota/${idMascota}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log("Datos de la ficha clínica recibidos:", data); // Log para verificar datos
+    return data;
+  } catch (error: any) {
+    console.error("Error al cargar el registro clínico:", error.message);
+    throw error;
+  }
 };
 
-const fetchRecentPrescriptions = async (idMascota: string) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/recent-prescriptions/${idMascota}`
-  );
-  const data = await response.json();
-  return data;
+const fetchRecentPrescriptions = async (idFichaClinica: string) => {
+  try {
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_API_URL
+      }/recetas-mascota/ficha-ingreso/${idFichaClinica}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error al cargar las recetas recientes:", error.message);
+    throw error;
+  }
 };
 
-const fetchRecentTreatments = async (idMascota: string) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/recent-treatments/${idMascota}`
-  );
-  const data = await response.json();
-  return data;
+const fetchRecentTreatments = async (idFichaClinica: string) => {
+  try {
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_API_URL
+      }/tratamientos-mascotas/ficha-clinica/${idFichaClinica}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error al cargar los tratamientos recientes:", error.message);
+    throw error;
+  }
 };
 
-const fetchAdmissionRecords = async (idMascota: string) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/admission-records/${idMascota}`
-  );
-  const data = await response.json();
-  return data;
-};
-
-const fetchAppointments = async (idMascota: string) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/appointments/${idMascota}`
-  );
-  const data = await response.json();
-  return data;
+const fetchAdmissionRecords = async (idFichaClinica: string) => {
+  try {
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_API_URL
+      }/ficha-ingreso/Ficha-clinica/${idFichaClinica}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error al cargar los registros de admisión:", error.message);
+    throw error;
+  }
 };
 
 const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
@@ -66,27 +96,33 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
   const [admissionRecords, setAdmissionRecords] = useState<AdmissionRecord[]>(
     []
   );
-  const [appointments, setAppointments] = useState<IAppointment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const clinicalRecordData = await fetchClinicalRecord(idMascota);
+        const idFichaClinica = clinicalRecordData.data.idFichaClinica;
+
         const recentPrescriptionsData = await fetchRecentPrescriptions(
-          idMascota
+          idFichaClinica
         );
-        const recentTreatmentsData = await fetchRecentTreatments(idMascota);
-        const admissionRecordsData = await fetchAdmissionRecords(idMascota);
-        const appointmentsData = await fetchAppointments(idMascota);
+        const recentTreatmentsData = await fetchRecentTreatments(
+          idFichaClinica
+        );
+        const admissionRecordsData = await fetchAdmissionRecords(
+          idFichaClinica
+        );
 
         setClinicalRecord(clinicalRecordData.data);
         setRecentPrescriptions(recentPrescriptionsData.data);
         setRecentTreatments(recentTreatmentsData.data);
         setAdmissionRecords(admissionRecordsData.data);
-        setAppointments(appointmentsData.data);
+        setError(null);
       } catch (error: any) {
         console.error("Error al cargar los datos:", error.message);
+        setError(`Error al cargar los datos: ${error.message}`);
       } finally {
         setIsLoading(false);
       }
@@ -99,10 +135,12 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
     <div>
       {isLoading ? (
         <p className="text-center">Cargando datos...</p>
+      ) : error ? (
+        <p className="text-center text-danger">{error}</p>
       ) : (
         <Accordion>
           <Accordion.Item eventKey="0">
-            <Accordion.Header>Ficha Clínica</Accordion.Header>
+            <Accordion.Header>Ficha Clínica Principal</Accordion.Header>
             <Accordion.Body>
               {clinicalRecord && (
                 <div>
@@ -129,7 +167,7 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
                   </p>
                 </div>
               )}
-              <h6>Ficha</h6>
+              <h5>Ficha de Ingreso</h5>
               {admissionRecords.map((record, index) => (
                 <div key={index}>
                   <p>
