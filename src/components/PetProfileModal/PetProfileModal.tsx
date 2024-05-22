@@ -40,13 +40,7 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
   show,
   onHide,
 }) => {
-<<<<<<< HEAD
-
-  
-
-=======
   console.log({ idMascota });
->>>>>>> f74d9f9aea6d69220315d1445b87a7aecbe4ed62
   const [petInformation, setPetInformation] = useState<Pet | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [appointments, setAppointments] = useState<IAppointment[]>([]);

@@ -50,7 +50,7 @@ const fetchRecentTreatments = async (idFichaClinica: string) => {
     }
     const data = await response.json();
     return data;
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error al cargar los tratamientos recientes:", error.message);
     throw error;
   }
