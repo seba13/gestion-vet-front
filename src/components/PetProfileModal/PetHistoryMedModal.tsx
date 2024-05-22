@@ -12,7 +12,6 @@ interface PetHistoryMedModalProps {
 }
 
 const fetchClinicalRecord = async (idMascota: string) => {
-  console.log({ idMascota });
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/ficha-clinica/mascota/${idMascota}`
@@ -103,22 +102,27 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
     const fetchData = async () => {
       try {
         const clinicalRecordData = await fetchClinicalRecord(idMascota);
-        const idFichaClinica = clinicalRecordData.data.idFichaClinica;
+        const idFichaClinica = clinicalRecordData.data?.idFichaClinica;
 
-        const recentPrescriptionsData = await fetchRecentPrescriptions(
-          idFichaClinica
-        );
-        const recentTreatmentsData = await fetchRecentTreatments(
-          idFichaClinica
-        );
-        const admissionRecordsData = await fetchAdmissionRecords(
-          idFichaClinica
-        );
+        if (idFichaClinica) {
+          const recentPrescriptionsData = await fetchRecentPrescriptions(
+            idFichaClinica
+          );
+          const recentTreatmentsData = await fetchRecentTreatments(
+            idFichaClinica
+          );
+          const admissionRecordsData = await fetchAdmissionRecords(
+            idFichaClinica
+          );
+
+          setRecentPrescriptions(recentPrescriptionsData.data);
+          setRecentTreatments(recentTreatmentsData.data);
+          setAdmissionRecords(admissionRecordsData.data);
+        } else {
+          console.error("No se encontró idFichaClinica en los datos clínicos");
+        }
 
         setClinicalRecord(clinicalRecordData.data);
-        setRecentPrescriptions(recentPrescriptionsData.data);
-        setRecentTreatments(recentTreatmentsData.data);
-        setAdmissionRecords(admissionRecordsData.data);
         setError(null);
       } catch (error: any) {
         console.error("Error al cargar los datos:", error.message);
@@ -231,37 +235,6 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
                   </p>
                   <p>
                     <strong>Costo:</strong> ${treatment.costo}
-                  </p>
-                  <hr />
-                </div>
-              ))}
-            </Accordion.Body>
-          </Accordion.Item>
-          <Accordion.Item eventKey="3">
-            <Accordion.Header>Fichas de Ingreso</Accordion.Header>
-            <Accordion.Body>
-              {admissionRecords.map((record, index) => (
-                <div key={index}>
-                  <p>
-                    <strong>Síntomas:</strong> {record.sintomas}
-                  </p>
-                  <p>
-                    <strong>Antecedentes:</strong> {record.antecedentes}
-                  </p>
-                  <p>
-                    <strong>Diagnóstico:</strong> {record.diagnostico}
-                  </p>
-                  <p>
-                    <strong>Fecha de Ingreso:</strong> {record.fechaIngreso}
-                  </p>
-                  <p>
-                    <strong>Fecha de Alta:</strong> {record.fechaAlta}
-                  </p>
-                  <p>
-                    <strong>Observaciones:</strong> {record.observaciones}
-                  </p>
-                  <p>
-                    <strong>Temperatura:</strong> {record.temperatura} °C
                   </p>
                   <hr />
                 </div>
