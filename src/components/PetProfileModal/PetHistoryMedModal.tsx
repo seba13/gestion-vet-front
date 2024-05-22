@@ -5,9 +5,7 @@ import {
   AdmissionRecord,
   PetHistory,
 } from "../../interfaces/PetHistory";
-import { IAppointment, EstadosCita } from "../../interfaces/Appointment";
 import Accordion from "react-bootstrap/Accordion";
-import Table from "react-bootstrap/Table";
 
 interface PetHistoryMedModalProps {
   idMascota: string;
@@ -22,36 +20,58 @@ const fetchClinicalRecord = async (idMascota: string) => {
   return data;
 };
 
-const fetchRecentPrescriptions = async (idMascota: string) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/recent-prescriptions/${idMascota}`
-  );
-  const data = await response.json();
-  return data;
+const fetchRecentPrescriptions = async (idFichaClinica: string) => {
+  try {
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_API_URL
+      }/recetas-mascota/ficha-ingreso/${idFichaClinica}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error al cargar las recetas recientes:", error.message);
+    throw error;
+  }
 };
 
-const fetchRecentTreatments = async (idMascota: string) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/recent-treatments/${idMascota}`
-  );
-  const data = await response.json();
-  return data;
+const fetchRecentTreatments = async (idFichaClinica: string) => {
+  try {
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_API_URL
+      }/tratamientos-mascotas/ficha-clinica/${idFichaClinica}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error al cargar los tratamientos recientes:", error.message);
+    throw error;
+  }
 };
 
-const fetchAdmissionRecords = async (idMascota: string) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/admission-records/${idMascota}`
-  );
-  const data = await response.json();
-  return data;
-};
-
-const fetchAppointments = async (idMascota: string) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/appointments/${idMascota}`
-  );
-  const data = await response.json();
-  return data;
+const fetchAdmissionRecords = async (idFichaClinica: string) => {
+  try {
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_API_URL
+      }/ficha-ingreso/Ficha-clinica/${idFichaClinica}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error al cargar los registros de admisión:", error.message);
+    throw error;
+  }
 };
 
 const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
@@ -65,8 +85,8 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
   const [admissionRecords, setAdmissionRecords] = useState<AdmissionRecord[]>(
     []
   );
-  const [appointments, setAppointments] = useState<IAppointment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -112,10 +132,12 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
     <div>
       {isLoading ? (
         <p className="text-center">Cargando datos...</p>
+      ) : error ? (
+        <p className="text-center text-danger">{error}</p>
       ) : (
         <Accordion>
           <Accordion.Item eventKey="0">
-            <Accordion.Header>Ficha Clínica</Accordion.Header>
+            <Accordion.Header>Ficha Clínica Principal</Accordion.Header>
             <Accordion.Body>
               {clinicalRecord &&
                 clinicalRecord.length > 0 &&
@@ -209,37 +231,6 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
                   </p>
                   <p>
                     <strong>Costo:</strong> ${treatment.costo}
-                  </p>
-                  <hr />
-                </div>
-              ))}
-            </Accordion.Body>
-          </Accordion.Item>
-          <Accordion.Item eventKey="3">
-            <Accordion.Header>Fichas de Ingreso</Accordion.Header>
-            <Accordion.Body>
-              {admissionRecords.map((record, index) => (
-                <div key={index}>
-                  <p>
-                    <strong>Síntomas:</strong> {record.sintomas}
-                  </p>
-                  <p>
-                    <strong>Antecedentes:</strong> {record.antecedentes}
-                  </p>
-                  <p>
-                    <strong>Diagnóstico:</strong> {record.diagnostico}
-                  </p>
-                  <p>
-                    <strong>Fecha de Ingreso:</strong> {record.fechaIngreso}
-                  </p>
-                  <p>
-                    <strong>Fecha de Alta:</strong> {record.fechaAlta}
-                  </p>
-                  <p>
-                    <strong>Observaciones:</strong> {record.observaciones}
-                  </p>
-                  <p>
-                    <strong>Temperatura:</strong> {record.temperatura} °C
                   </p>
                   <hr />
                 </div>
