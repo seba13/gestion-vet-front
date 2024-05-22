@@ -52,7 +52,10 @@ export default function FormNewClinicalRecord({ onSubmit }: any) {
     if (formData.observaciones.trim() === "") {
       errors.push("Falta campo observaciones.");
     }
-    if (formData.peso.toString().trim() === "") {
+    if (
+      formData.peso.toString().trim() === "" ||
+      formData.peso.toString().trim() === "0"
+    ) {
       errors.push("Falta campo peso.");
     }
     if (errors.length > 0) {
@@ -68,7 +71,11 @@ export default function FormNewClinicalRecord({ onSubmit }: any) {
             typeOf: "success",
             messages: ["Registro ficha clinica ingresada con exito! 🕛✅"],
           });
+          setFormData(formInitialData);
           setShowAlert(true);
+          setTimeout(() => {
+            navigate("/mascotas");
+          }, 2000);
         } else {
           setFormAlert({
             typeOf: "warning",
@@ -77,9 +84,6 @@ export default function FormNewClinicalRecord({ onSubmit }: any) {
           setShowAlert(true);
         }
       });
-      setTimeout(() => {
-        navigate("/mascotas");
-      }, 2500);
     }
   };
 

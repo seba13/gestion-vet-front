@@ -133,9 +133,17 @@ export default function AppRouter() {
           ),
         },
         {
-          path: "/fichas-clinicas/ver",
+          path: "/ficha-clinica/registrar",
           element: (
             <ProtectedRoute id={14}>
+              <NewClinicalRecord></NewClinicalRecord>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/fichas-clinicas/ver",
+          element: (
+            <ProtectedRoute id={15}>
               <ClinicalRecords></ClinicalRecords>
             </ProtectedRoute>
           ),
