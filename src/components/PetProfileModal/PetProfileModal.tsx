@@ -78,7 +78,7 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
     setIsLoadingHistorial(true);
     const fetchHistorial = async () => {
       const response = await fetchHistorialMedico(idMascota);
-      setHistorialMedico(response.data);
+
       setIsLoadingHistorial(false);
     };
 
