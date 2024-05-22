@@ -167,12 +167,12 @@ export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
                     >
                       <Tab eventKey="tratamientos" title="Tratamientos">
                         <div className="d-flex flex-column gap-3">
-                          <div className="d-flex gap-2 justify-content-end">
+                          <div className="d-flex gap-2 justify-content-end me-5 pe-5">
                             <button
                               className="btn btn-primary"
                               onClick={() => handleClickAddTreatment()}
                             >
-                              Agregar
+                              Ingresar tratamiento💊
                             </button>
                           </div>
                           <TableTreatments

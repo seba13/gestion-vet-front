@@ -78,7 +78,6 @@ export const FormUpdateTreatment = ({
           return results.json();
         })
         .then((json) => {
-          console.log({ json });
           if (json.success) {
             setFormAlert({
               typeOf: "success",
@@ -90,7 +89,7 @@ export const FormUpdateTreatment = ({
             setTimeout(() => {
               onUpdate();
               hideModal();
-            }, 2000);
+            }, 1500);
           } else {
             setFormAlert({
               typeOf: "danger",
