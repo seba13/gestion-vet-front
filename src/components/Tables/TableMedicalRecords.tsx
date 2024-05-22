@@ -4,6 +4,12 @@ import { IMedicalRecord } from "../../interfaces/MedicalRecord";
 import PetProfileModal from "../PetProfileModal/PetProfileModal";
 import ModalComponent from "../Modal/ModalComponent";
 import FormUpdateClinicalRecord from "../Forms/FormUpdateClinicalRecord";
+import { Tab, Tabs } from "react-bootstrap";
+import { TableTreatments } from "./TableTreatments";
+import useFetch from "../../hooks/useFetch";
+import { HttpMethods } from "../../interfaces/httpMethods";
+import { Tratamiento } from "../../interfaces/Tratamiento";
+import { FormNewTreatment } from "../Forms/FormNewTreatment";
 export interface ITable {
   heads: Array<string>;
   rows: Array<any>;
@@ -12,16 +18,54 @@ export interface ITable {
 
 export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
   const [selectedId, setSelectedId] = useState<string>("");
-  const [filteredRecord, setFilteredRecord] = useState({});
+  const [filteredRecord, setFilteredRecord] = useState<IMedicalRecord>({
+    antecedentes: "",
+    enfermedades: "",
+    fechaIngreso: "",
+    idFichaClinica: "",
+    idMascota: "",
+    observaciones: "",
+    peso: 0,
+    idCitaMedica: "",
+  });
   const [showModalPets, setShowModalPets] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
-  const onClickButtonEdit = (row: IMedicalRecord) => {
-    setFilteredRecord(row);
+  const [treatmentsList, setTreatmentsList] = useState<Tratamiento[]>([]);
+  const [showModalTreatment, setShowModalTreatment] = useState(false);
+  const [showModalAddTreatment, setShowModalAddTreatment] = useState(false);
+  const { fetchData } = useFetch(
+    `${
+      import.meta.env.VITE_API_URL
+    }/tratamientos-mascotas/ficha-clinica/${selectedId}'`,
+    {
+      method: HttpMethods.GET,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const onClickButtonEdit = (clinicalRecord: IMedicalRecord) => {
+    setFilteredRecord(clinicalRecord);
     setShowModalEdit(!showModalEdit);
   };
   const onClickButtonProfile = (row: IMedicalRecord) => {
     setSelectedId(row.idMascota);
     setShowModalPets(!showModalPets);
+  };
+  const onClickButtonTreatments = (row: IMedicalRecord) => {
+    setSelectedId(row.idFichaClinica);
+    setFilteredRecord(row);
+    setShowModalTreatment(!showModalTreatment);
+  };
+  const handleTreatmentClick = () => {
+    fetchData().then((data) => {
+      if (data.success) {
+        setTreatmentsList(data.data);
+      }
+    });
+  };
+  const handleClickAddTreatment = () => {
+    setShowModalAddTreatment(true);
   };
 
   return (
@@ -38,34 +82,48 @@ export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row: IMedicalRecord, rowIndex: number) => (
-                  <tr key={row.idFichaClinica}>
-                    <td>{rowIndex + 1}</td>
-                    <td>{row.idMascota || "Sin ID Mascota"}</td>
-                    <td>{row.idCitaMedica || "Atencion normal"}</td>
-                    <td>{row.fechaIngreso}</td>
-                    <td>{row.enfermedades}</td>
-                    <td>{row.peso}</td>
-                    <td>{row.observaciones}</td>
+                {rows.length > 0 ? (
+                  rows.map((row: IMedicalRecord, rowIndex: number) => (
+                    <tr key={row.idFichaClinica}>
+                      <td>{rowIndex + 1}</td>
+                      <td>{row.idMascota.split("-") || "Sin ID Mascota"}</td>
+                      <td>{row.idCitaMedica || "Atencion normal"}</td>
+                      <td>{row.fechaIngreso}</td>
+                      <td>{row.enfermedades}</td>
+                      <td>{row.peso}</td>
+                      <td>{row.observaciones}</td>
 
-                    <td className="d-flex justify-content-center gap-2">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={() => onClickButtonProfile(row)}
-                      >
-                        Ver mascota👁️
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={() => onClickButtonEdit(row)}
-                      >
-                        Editar✏️
-                      </button>
-                    </td>
+                      <td className="d-flex justify-content-center gap-2">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={() => onClickButtonProfile(row)}
+                        >
+                          Mascota
+                        </button>
+
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={() => onClickButtonTreatments(row)}
+                        >
+                          Tratamientos
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={() => onClickButtonEdit(row)}
+                        >
+                          Editar
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8}>Cargando datos...</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
             {showModalPets && (
@@ -88,6 +146,63 @@ export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
                     ></FormUpdateClinicalRecord>
                   ),
                 }}
+              ></ModalComponent>
+            )}
+            {showModalTreatment && (
+              <ModalComponent
+                showModal={showModalTreatment}
+                modalContent={{
+                  title: "Tratamientos",
+                  size: "xl",
+                  body: (
+                    <Tabs
+                      defaultActiveKey="tratamientos"
+                      id="pet-profile-tabs"
+                      className="mb-3"
+                      onSelect={(eventKey) => {
+                        if (eventKey === "tratamientos") {
+                          handleTreatmentClick();
+                        }
+                      }}
+                    >
+                      <Tab eventKey="tratamientos" title="Tratamientos">
+                        <div className="d-flex flex-column gap-3">
+                          <div className="d-flex gap-2 justify-content-end">
+                            <button
+                              className="btn btn-primary"
+                              onClick={() => handleClickAddTreatment()}
+                            >
+                              Agregar
+                            </button>
+                          </div>
+                          <TableTreatments
+                            selectedId={selectedId}
+                            filteredRecord={filteredRecord}
+                          />
+                        </div>
+                      </Tab>
+                    </Tabs>
+                  ),
+                }}
+                onClose={() => setShowModalTreatment(false)}
+              ></ModalComponent>
+            )}
+            {showModalAddTreatment && (
+              <ModalComponent
+                modalContent={{
+                  title: "Agregar Tratamiento💊",
+                  body: (
+                    <FormNewTreatment
+                      hideModal={() =>
+                        setShowModalAddTreatment(!showModalAddTreatment)
+                      }
+                      idMedicalRecord={selectedId}
+                    ></FormNewTreatment>
+                  ),
+                  size: "s",
+                }}
+                onClose={() => setShowModalAddTreatment(false)}
+                showModal={showModalAddTreatment}
               ></ModalComponent>
             )}
           </div>

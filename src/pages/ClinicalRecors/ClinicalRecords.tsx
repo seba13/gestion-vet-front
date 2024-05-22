@@ -6,7 +6,7 @@ import { IMedicalRecord } from "../../interfaces/MedicalRecord";
 
 export const ClinicalRecords = () => {
   const [rows, setRows] = useState<IMedicalRecord[]>([] as IMedicalRecord[]);
-  const [heads, setHeads] = useState([
+  const [heads] = useState([
     "N° Ficha Clinica",
     "ID Mascota",
     "Tipo de atencion",

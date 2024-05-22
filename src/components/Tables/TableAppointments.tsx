@@ -7,11 +7,7 @@ import { useLocation, useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import { HttpMethods } from "../../interfaces/httpMethods";
 import { parseDate } from "../../utils/utils";
-export interface ITable {
-  heads: Array<string>;
-  rows: Array<any>;
-  handleUpdate: () => void;
-}
+import { ITable } from "../../interfaces/Table";
 
 const initialData: IAppointment = {
   fechaCitaMedica: "",
@@ -21,56 +17,21 @@ const initialData: IAppointment = {
   idMascota: "",
 };
 export const TableAppointments = ({ heads, rows, handleUpdate }: ITable) => {
-  const { idMascota = "" } = useParams(); //si trae parametro de IdMascota busca la citas
-  const { idCitaMedica = "" } = useParams(); //si trae parametro de IdMascota busca la citas
-  const location = useLocation();
-  const [parameters, setParameters] = useState<string>(
-    location.pathname.split("/")[2]
-  ); // parametro url para detectar accion
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [filteredData, setFilteredData] = useState<IAppointment>(initialData);
-  const { fetchData, loading } = useFetch(
-    `${import.meta.env.VITE_API_URL}/cita-medica/${idCitaMedica}`,
-    {
-      method: HttpMethods.GET,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const { fetchData, loading } = useFetch(`${import.meta.env.VITE_API_URL}`, {
+    method: HttpMethods.GET,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   const onClickButton = (row: IAppointment) => {
     row.fechaCitaMedica = parseDate(row.fechaCitaMedica);
     setFilteredData(row);
     setShowModalEdit(true);
   };
-  useEffect(() => {
-    if (
-      parameters &&
-      parameters.trim() !== "" &&
-      location &&
-      parameters === "agendar"
-    ) {
-      setShowModalAdd(true);
-    }
-    if (
-      parameters &&
-      parameters.trim() !== "" &&
-      location &&
-      parameters === "editar"
-    ) {
-      //aca logica
-      fetchData().then((result) => {
-        // console.log("result fetch", result.data);
 
-        setFilteredData(result.data);
-      });
-      setShowModalEdit(true);
-    }
-  }, [idMascota]);
-  // console.log("FILTRADOS", filteredData);
-
-  useEffect(() => {}, [filteredData]);
   return (
     <div className="container-fluid">
       <div className="row justify-content-center">

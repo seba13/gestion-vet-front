@@ -3,9 +3,7 @@ import styles from "./styles/FormPet.module.css";
 import Alert, { AlertProperties } from "../Alert/Alert";
 import { IFormNewRecord } from "../../interfaces/formNewRecord";
 import { getCurrentDateTimeLocal } from "../../utils/utils";
-import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
-
 import { IMedicalRecord } from "../../interfaces/MedicalRecord";
 
 export default function FormUpdateClinicalRecord({
@@ -15,7 +13,6 @@ export default function FormUpdateClinicalRecord({
   medicalRecord: IMedicalRecord;
   handleUpdate: () => void;
 }) {
-  const navigate = useNavigate();
   const formInitialData: IMedicalRecord = {
     antecedentes: "" || medicalRecord.antecedentes,
     enfermedades: "" || medicalRecord.enfermedades,
@@ -24,6 +21,7 @@ export default function FormUpdateClinicalRecord({
     observaciones: "" || medicalRecord.observaciones,
     peso: 0 || medicalRecord.peso,
     idFichaClinica: "" || medicalRecord.idFichaClinica,
+    idCitaMedica: "" || medicalRecord.idCitaMedica,
   };
   const [formData, setFormData] = useState<IFormNewRecord>(formInitialData);
   const [formAlert, setFormAlert] = useState<AlertProperties | null>(null);
@@ -100,11 +98,8 @@ export default function FormUpdateClinicalRecord({
   };
 
   useEffect(() => {
-    console.log({ medicalRecord });
     if (medicalRecord.idCitaMedica) {
-      // medicalRecord.fechaIngreso = parseDate(medicalRecord.fechaCitaMedica);
       setFormData(medicalRecord);
-      console.log({ formData });
     }
   }, [medicalRecord]);
   return (
