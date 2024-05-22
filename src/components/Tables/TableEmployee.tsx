@@ -33,7 +33,6 @@ function TableEmployee({ heads, rows }: ITable) {
   useEffect(() => {
     fetchData().then((result) => {
       setSpecialities(result.data);
-      console.log(specialities);
     });
   }, [loading]);
   const hideModal = () => {

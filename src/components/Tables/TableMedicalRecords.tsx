@@ -1,22 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IMedicalRecord } from "../../interfaces/MedicalRecord";
 
 import PetProfileModal from "../PetProfileModal/PetProfileModal";
+import ModalComponent from "../Modal/ModalComponent";
+import FormUpdateClinicalRecord from "../Forms/FormUpdateClinicalRecord";
 export interface ITable {
   heads: Array<string>;
   rows: Array<any>;
-  // handleUpdate: () => void;
+  handleUpdate: () => void;
 }
 
-export const TableMedicalRecords = ({ heads, rows }: ITable) => {
+export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
   const [selectedId, setSelectedId] = useState<string>("");
-  const [show, setShow] = useState(false);
+  const [filteredRecord, setFilteredRecord] = useState({});
+  const [showModalPets, setShowModalPets] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
   const onClickButtonEdit = (row: IMedicalRecord) => {
-    console.log("click");
+    setFilteredRecord(row);
+    setShowModalEdit(!showModalEdit);
   };
   const onClickButtonProfile = (row: IMedicalRecord) => {
     setSelectedId(row.idMascota);
-    setShow(!show);
+    setShowModalPets(!showModalPets);
   };
 
   return (
@@ -63,12 +68,27 @@ export const TableMedicalRecords = ({ heads, rows }: ITable) => {
                 ))}
               </tbody>
             </table>
-            {show && (
+            {showModalPets && (
               <PetProfileModal
                 idMascota={selectedId}
-                show={show}
-                onHide={() => setShow(false)}
+                show={showModalPets}
+                onHide={() => setShowModalPets(false)}
               ></PetProfileModal>
+            )}
+            {showModalEdit && (
+              <ModalComponent
+                showModal={showModalEdit}
+                onClose={() => setShowModalEdit(false)}
+                modalContent={{
+                  title: "Editar Ficha Clinica",
+                  body: (
+                    <FormUpdateClinicalRecord
+                      medicalRecord={filteredRecord}
+                      handleUpdate={handleUpdate}
+                    ></FormUpdateClinicalRecord>
+                  ),
+                }}
+              ></ModalComponent>
             )}
           </div>
         </div>

@@ -16,7 +16,7 @@ export const ClinicalRecords = () => {
     "Observaciones",
     "Operaciones",
   ]);
-  const { fetchData, loading } = useFetch(
+  const { fetchData, loading, setLoading } = useFetch(
     `${import.meta.env.VITE_API_URL}/fichas-clinicas`,
     {
       method: HttpMethods.GET,
@@ -27,15 +27,21 @@ export const ClinicalRecords = () => {
   );
   useEffect(() => {
     fetchData().then((data) => {
-      console.log(data.data);
       setRows(data.data);
     });
   }, [loading]);
+  const handleUpdate = () => {
+    setLoading(!loading);
+  };
   return (
     <>
       {loading && <p className="text-center">Cargando datos...</p>}{" "}
       {!loading && (
-        <TableMedicalRecords rows={rows} heads={heads}></TableMedicalRecords>
+        <TableMedicalRecords
+          rows={rows}
+          heads={heads}
+          handleUpdate={handleUpdate}
+        ></TableMedicalRecords>
       )}
     </>
   );
