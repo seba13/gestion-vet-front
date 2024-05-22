@@ -4,8 +4,11 @@ import Alert, { AlertProperties } from "../Alert/Alert";
 import { IFormNewRecord } from "../../interfaces/formNewRecord";
 import { getCurrentDateTimeLocal } from "../../utils/utils";
 import { useNavigate, useParams } from "react-router-dom";
-import { HttpMethods } from "../../interfaces/httpMethods";
 import useFetch from "../../hooks/useFetch";
+import { Pet } from "../../interfaces/Pet";
+import ListPets from "./Lists/ListPets";
+import ModalComponent from "../Modal/ModalComponent";
+import { ListPetsMR } from "./Lists/ListPetsMR";
 
 export default function FormNewClinicalRecord({ onSubmit }: any) {
   const { idMascota = "" } = useParams();
@@ -21,7 +24,10 @@ export default function FormNewClinicalRecord({ onSubmit }: any) {
   const [formData, setFormData] = useState<IFormNewRecord>(formInitialData);
   const [formAlert, setFormAlert] = useState<AlertProperties | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
-  const { fetchData, loading } = useFetch(
+  const [rutToSearch, setRutToSearch] = useState("");
+  const [show, setShow] = useState(false);
+  const [listOfPets, setlistOfPets] = useState<Pet[]>([]);
+  const { fetchData } = useFetch(
     `${import.meta.env.VITE_API_URL}/ficha-clinica`,
     {
       method: "POST",
@@ -39,6 +45,10 @@ export default function FormNewClinicalRecord({ onSubmit }: any) {
     });
   };
 
+  const handleInputChangeSearch = (event: any) => {
+    const { value } = event.target;
+    setRutToSearch(value);
+  };
   const handleSubmit = (event: any) => {
     event.preventDefault();
     let errors: Array<string> = [];
@@ -87,11 +97,41 @@ export default function FormNewClinicalRecord({ onSubmit }: any) {
     }
   };
 
+  const onClickButtonSearch = async () => {
+    console.log("click");
+    console.log(rutToSearch);
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_API_URL
+      }/titular-mascota/rut/${rutToSearch}/mascotas`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((data) => {
+        return data.json();
+      })
+      .then((json) => {
+        setlistOfPets(json.data);
+        setShow(true);
+      });
+  };
   const onCloseAlert = () => {
     setShowAlert(false);
     setFormAlert(null);
   };
-
+  const handleClickSubmit = (idMascota: string) => {
+    // console.log({ idMascota });
+    formData.idMascota = idMascota;
+    setFormData(formData);
+    setShow(false);
+  };
+  useEffect(() => {
+    console.log(listOfPets);
+  }, [listOfPets, show]);
   return (
     <>
       {showAlert && formAlert && (
@@ -100,6 +140,26 @@ export default function FormNewClinicalRecord({ onSubmit }: any) {
       <div
         className={`d-flex justify-content-center align-items-center flex-column`}
       >
+        <div className="d-flex gap-3 mb-3 align-items-center">
+          <label htmlFor="buscador">
+            Buscar RUT{" "}
+            <input
+              className="form-control"
+              id="buscador"
+              name="buscador"
+              type="text"
+              value={rutToSearch}
+              onChange={handleInputChangeSearch}
+              min={7}
+              max={10}
+              required
+            />
+          </label>{" "}
+          <button className="btn btn-primary" onClick={onClickButtonSearch}>
+            Buscar Dueño
+          </button>
+        </div>
+
         <form onSubmit={handleSubmit} className={`${styles.patientForm}`}>
           <h5 className="text-center mb-4">Identificacion</h5>
 
@@ -198,6 +258,22 @@ export default function FormNewClinicalRecord({ onSubmit }: any) {
             </button>
           </div>
         </form>
+        {show && listOfPets && (
+          <ModalComponent
+            showModal={show}
+            onClose={() => setShow(false)}
+            modalContent={{
+              title: "Lista de mascotas",
+              size: "m",
+              body: (
+                <ListPetsMR
+                  list={listOfPets}
+                  handleClickSubmit={handleClickSubmit}
+                ></ListPetsMR>
+              ),
+            }}
+          ></ModalComponent>
+        )}
       </div>
     </>
   );

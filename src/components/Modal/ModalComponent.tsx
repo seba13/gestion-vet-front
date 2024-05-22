@@ -12,6 +12,7 @@ export interface ModalComponentProps {
 
 export interface IModalContent {
   title: string;
+  size?: string;
   body: React.ReactNode | any;
 }
 
@@ -32,38 +33,11 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
   };
   return (
     <>
-      {/* {show && (
-        <div
-          className="modal"
-          tabIndex={-1}
-          role="dialog"
-          style={{ display: "block" }}
-        >
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">{modalContent.title}</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={handleClose}
-                ></button>
-              </div>
-              <div className="modal-body">{modalContent.body}</div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleClose}
-                >
-                  Cerrar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )} */}
-      <Modal show={show} onHide={handleClose} className="modal-xl">
+      <Modal
+        show={show}
+        onHide={handleClose}
+        className={`modal-${modalContent.size ? modalContent.size : "xl"}`}
+      >
         <Modal.Header closeButton>
           <Modal.Title>{modalContent.title}</Modal.Title>
         </Modal.Header>

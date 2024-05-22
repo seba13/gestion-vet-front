@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { IMedicalRecord } from "../../interfaces/MedicalRecord";
 
-import ModalComponent from "../Modal/ModalComponent";
 import PetProfileModal from "../PetProfileModal/PetProfileModal";
-import { NavLink } from "react-router-dom";
 export interface ITable {
   heads: Array<string>;
   rows: Array<any>;
