@@ -1,10 +1,4 @@
 import { useState, useEffect } from "react";
-import {
-  ClinicalRecord,
-  Treatment,
-  AdmissionRecord,
-  PetHistory,
-} from "../../interfaces/PetHistory";
 import Accordion from "react-bootstrap/Accordion";
 
 interface PetHistoryMedModalProps {
@@ -20,7 +14,7 @@ const fetchClinicalRecord = async (idMascota: string) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    console.log("Datos de la ficha clínica recibidos:", data); // Log para verificar datos
+    console.log("Datos de la ficha clínica recibidos:", data);
     return data;
   } catch (error: any) {
     console.error("Error al cargar el registro clínico:", error.message);
@@ -85,24 +79,17 @@ const fetchAdmissionRecords = async (idFichaClinica: string) => {
 const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
   idMascota,
 }) => {
-  const [clinicalRecord, setClinicalRecord] = useState<ClinicalRecord | null>(
-    null
-  );
-  const [recentPrescriptions, setRecentPrescriptions] = useState<PetHistory[]>(
-    []
-  );
-  const [recentTreatments, setRecentTreatments] = useState<Treatment[]>([]);
-  const [admissionRecords, setAdmissionRecords] = useState<AdmissionRecord[]>(
-    []
-  );
+  const [clinicalRecord, setClinicalRecord] = useState<any>(null);
+  const [recentPrescriptions, setRecentPrescriptions] = useState<any[]>([]);
+  const [recentTreatments, setRecentTreatments] = useState<any[]>([]);
+  const [admissionRecords, setAdmissionRecords] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const clinicalRecordData = await fetchClinicalRecord(idMascota);
-        const idFichaClinica = clinicalRecordData.data?.idFichaClinica;
+        const idFichaClinica = clinicalRecordData?.data?.idFichaClinica;
 
         if (idFichaClinica) {
           const recentPrescriptionsData = await fetchRecentPrescriptions(
@@ -115,18 +102,15 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
             idFichaClinica
           );
 
+          setClinicalRecord(clinicalRecordData.data);
           setRecentPrescriptions(recentPrescriptionsData.data);
           setRecentTreatments(recentTreatmentsData.data);
           setAdmissionRecords(admissionRecordsData.data);
         } else {
-          console.error("No se encontró idFichaClinica en los datos clínicos");
+          console.log("No se encontró idFichaClinica en los datos clínicos");
         }
-
-        setClinicalRecord(clinicalRecordData.data);
-        setError(null);
       } catch (error: any) {
         console.error("Error al cargar los datos:", error.message);
-        setError(`Error al cargar los datos: ${error.message}`);
       } finally {
         setIsLoading(false);
       }
@@ -139,14 +123,12 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
     <div>
       {isLoading ? (
         <p className="text-center">Cargando datos...</p>
-      ) : error ? (
-        <p className="text-center text-danger">{error}</p>
       ) : (
-        <Accordion>
-          <Accordion.Item eventKey="0">
-            <Accordion.Header>Ficha Clínica Principal</Accordion.Header>
-            <Accordion.Body>
-              {clinicalRecord && (
+        clinicalRecord && (
+          <Accordion>
+            <Accordion.Item eventKey="0">
+              <Accordion.Header>Ficha Clínica Principal</Accordion.Header>
+              <Accordion.Body>
                 <div>
                   <p>
                     <strong>Fecha de Ingreso:</strong>{" "}
@@ -170,78 +152,82 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
                     {clinicalRecord.idFichaClinica}
                   </p>
                 </div>
-              )}
-              <h5>Ficha de Ingreso</h5>
-              {admissionRecords.map((record, index) => (
-                <div key={index}>
-                  <p>
-                    <strong>Síntomas:</strong> {record.sintomas}
-                  </p>
-                  <p>
-                    <strong>Antecedentes:</strong> {record.antecedentes}
-                  </p>
-                  <p>
-                    <strong>Diagnóstico:</strong> {record.diagnostico}
-                  </p>
-                  <p>
-                    <strong>Fecha de Ingreso:</strong> {record.fechaIngreso}
-                  </p>
-                  <p>
-                    <strong>Fecha de Alta:</strong> {record.fechaAlta}
-                  </p>
-                  <p>
-                    <strong>Observaciones:</strong> {record.observaciones}
-                  </p>
-                  <p>
-                    <strong>Temperatura:</strong> {record.temperatura} °C
-                  </p>
-                  <hr />
-                </div>
-              ))}
-            </Accordion.Body>
-          </Accordion.Item>
-          <Accordion.Item eventKey="1">
-            <Accordion.Header>Recetas Recientes</Accordion.Header>
-            <Accordion.Body>
-              {recentPrescriptions.map((prescription, index) => (
-                <div key={index}>
-                  <p>
-                    <strong>Medicamento:</strong> {prescription.description}
-                  </p>
-                  <p>
-                    <strong>Veterinario:</strong> {prescription.vetName}
-                  </p>
-                  <p>
-                    <strong>Fecha:</strong> {prescription.date}
-                  </p>
-                  <hr />
-                </div>
-              ))}
-            </Accordion.Body>
-          </Accordion.Item>
-          <Accordion.Item eventKey="2">
-            <Accordion.Header>Tratamientos Recientes</Accordion.Header>
-            <Accordion.Body>
-              {recentTreatments.map((treatment, index) => (
-                <div key={index}>
-                  <p>
-                    <strong>Descripción:</strong> {treatment.descripcion}
-                  </p>
-                  <p>
-                    <strong>Fecha:</strong> {treatment.fecha}
-                  </p>
-                  <p>
-                    <strong>Tipo:</strong> {treatment.tipo}
-                  </p>
-                  <p>
-                    <strong>Costo:</strong> ${treatment.costo}
-                  </p>
-                  <hr />
-                </div>
-              ))}
-            </Accordion.Body>
-          </Accordion.Item>
-        </Accordion>
+              </Accordion.Body>
+            </Accordion.Item>
+            <Accordion.Item eventKey="1">
+              <Accordion.Header>Recetas Recientes</Accordion.Header>
+              <Accordion.Body>
+                {recentPrescriptions.map((prescription, index) => (
+                  <div key={index}>
+                    <p>
+                      <strong>Medicamento:</strong> {prescription.descripcion}
+                    </p>
+                    <p>
+                      <strong>Veterinario:</strong> {prescription.medico}
+                    </p>
+                    <p>
+                      <strong>Fecha:</strong> {prescription.fechaEmision}
+                    </p>
+                    <hr />
+                  </div>
+                ))}
+              </Accordion.Body>
+            </Accordion.Item>
+            <Accordion.Item eventKey="2">
+              <Accordion.Header>Tratamientos Recientes</Accordion.Header>
+              <Accordion.Body>
+                {recentTreatments.map((treatment, index) => (
+                  <div key={index}>
+                    <p>
+                      <strong>Descripción:</strong> {treatment.descripcion}
+                    </p>
+                    <p>
+                      <strong>Fecha:</strong> {treatment.fecha}
+                    </p>
+                    <p>
+                      <strong>Tipo:</strong> {treatment.tipo}
+                    </p>
+                    <p>
+                      <strong>Costo:</strong> ${treatment.costo}
+                    </p>
+                    <hr />
+                  </div>
+                ))}
+              </Accordion.Body>
+            </Accordion.Item>
+            <Accordion.Item eventKey="3">
+              <Accordion.Header>Fichas de Ingreso</Accordion.Header>
+              <Accordion.Body>
+                {admissionRecords.map((record, index) => (
+                  <div key={index}>
+                    <p>
+                      <strong>Síntomas:</strong> {record.sintomas}
+                    </p>
+                    <p>
+                      <strong>Antecedentes:</strong> {record.antecedentes}
+                    </p>
+                    <p>
+                      <strong>Diagnóstico:</strong> {record.diagnostico}
+                    </p>
+                    <p>
+                      <strong>Fecha de Ingreso:</strong> {record.fechaIngreso}
+                    </p>
+                    <p>
+                      <strong>Fecha de Alta:</strong> {record.fechaAlta}
+                    </p>
+                    <p>
+                      <strong>Observaciones:</strong> {record.observaciones}
+                    </p>
+                    <p>
+                      <strong>Temperatura:</strong> {record.temperatura} °C
+                    </p>
+                    <hr />
+                  </div>
+                ))}
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+        )
       )}
     </div>
   );

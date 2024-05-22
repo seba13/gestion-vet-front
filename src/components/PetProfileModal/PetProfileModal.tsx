@@ -18,7 +18,6 @@ interface PetProfileModalProps {
 }
 
 const handleFetchPet = async (parametro: string): Promise<Pet> => {
-  console.log({ parametro });
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/mascota/${parametro}`
@@ -27,7 +26,7 @@ const handleFetchPet = async (parametro: string): Promise<Pet> => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    console.log("Datos de la mascota recibidos:", data); // Log para verificar datos
+    console.log("Datos de la mascota recibidos:", data);
     return data;
   } catch (error: any) {
     console.error("Error en: ", error.message);
@@ -40,7 +39,6 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
   show,
   onHide,
 }) => {
-  console.log({ idMascota });
   const [petInformation, setPetInformation] = useState<Pet | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [appointments, setAppointments] = useState<IAppointment[]>([]);
