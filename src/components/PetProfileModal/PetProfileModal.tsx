@@ -47,6 +47,9 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
   show,
   onHide,
 }) => {
+
+  
+
   const [petInformation, setPetInformation] = useState<Pet | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
