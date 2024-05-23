@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Accordion from "react-bootstrap/Accordion";
-
 import {
   ClinicalRecord,
   Treatment,
@@ -26,8 +25,6 @@ const fetchClinicalRecord = async (idMascota: string) => {
   }
 };
 
-// OBTENER RECETAS MEDICAS MASCOTA POR IdFichaIngreso
-// GET /recetas-mascota/ficha-ingreso/:idFichaIngreso
 const fetchRecentPrescriptions = async (idFichaIngreso: string) => {
   try {
     const response = await fetch(
@@ -46,8 +43,6 @@ const fetchRecentPrescriptions = async (idFichaIngreso: string) => {
   }
 };
 
-// OBTENER TRATAMIENTOS MASCOTA POR ID FICHA CLINICA
-// GET /tratamientos-mascotas/ficha-clinica/:idFichaClinica
 const fetchRecentTreatments = async (idFichaClinica: string) => {
   try {
     const response = await fetch(
@@ -66,8 +61,6 @@ const fetchRecentTreatments = async (idFichaClinica: string) => {
   }
 };
 
-// OBTENER FICHA INGRESO POR idFichaIngreso
-// GET /ficha-ingreso/:idFichaIngreso
 const fetchAdmissionRecords = async (idFichaClinica: string) => {
   try {
     const response = await fetch(
@@ -113,13 +106,17 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
           const recentTreatmentsData = await fetchRecentTreatments(
             idFichaClinica
           );
+          setRecentTreatments(recentTreatmentsData);
+
           const admissionRecordsData = await fetchAdmissionRecords(
             idFichaClinica
           );
 
           setRecentPrescriptions(recentPrescriptionsData);
-          setRecentTreatments(recentTreatmentsData);
+
           setAdmissionRecords(admissionRecordsData);
+        } else {
+          console.warn("No se encontró idFichaClinica en el registro clínico");
         }
       } catch (error) {
         console.error("Error al cargar los datos:", error);
@@ -130,6 +127,15 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
 
     fetchData();
   }, [idMascota]);
+
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   return (
     <div>
@@ -144,11 +150,13 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
                 <Accordion key={index} className="mb-3">
                   <Accordion.Item eventKey={String(index)}>
                     <Accordion.Header>
-                      Ficha Clínica #{index + 1} - {record.fechaIngreso}
+                      Ficha Clínica #{index + 1} -{" "}
+                      {formatDate(record.fechaIngreso)}
                     </Accordion.Header>
                     <Accordion.Body>
                       <p>
-                        <strong>Fecha de Ingreso:</strong> {record.fechaIngreso}
+                        <strong>Fecha de Ingreso:</strong>{" "}
+                        {formatDate(record.fechaIngreso)}
                       </p>
                       <p>
                         <strong>Enfermedades:</strong> {record.enfermedades}
@@ -185,10 +193,12 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
                       <strong>Diagnóstico:</strong> {record.diagnostico}
                     </p>
                     <p>
-                      <strong>Fecha de Ingreso:</strong> {record.fechaIngreso}
+                      <strong>Fecha de Ingreso:</strong>{" "}
+                      {formatDate(record.fechaIngreso)}
                     </p>
                     <p>
-                      <strong>Fecha de Alta:</strong> {record.fechaAlta}
+                      <strong>Fecha de Alta:</strong>{" "}
+                      {formatDate(record.fechaAlta)}
                     </p>
                     <p>
                       <strong>Observaciones:</strong> {record.observaciones}
@@ -213,7 +223,7 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
                     <strong>Veterinario:</strong> {prescription.vetName}
                   </p>
                   <p>
-                    <strong>Fecha:</strong> {prescription.date}
+                    <strong>Fecha:</strong> {formatDate(prescription.date)}
                   </p>
                   <hr />
                 </div>
@@ -224,21 +234,27 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
             <Accordion.Header>Tratamientos Recientes</Accordion.Header>
             <Accordion.Body>
               {recentTreatments.map((treatment, index) => (
-                <div key={index}>
-                  <p>
-                    <strong>Descripción:</strong> {treatment.descripcion}
-                  </p>
-                  <p>
-                    <strong>Fecha:</strong> {treatment.fecha}
-                  </p>
-                  <p>
-                    <strong>Tipo:</strong> {treatment.tipo}
-                  </p>
-                  <p>
-                    <strong>Costo:</strong> ${treatment.costo}
-                  </p>
-                  <hr />
-                </div>
+                <Accordion key={index} className="mb-3">
+                  <Accordion.Item eventKey={String(index)}>
+                    <Accordion.Header>
+                      Tratamiento #{index + 1} - {formatDate(treatment.fecha)}
+                    </Accordion.Header>
+                    <Accordion.Body>
+                      <p>
+                        <strong>Descripción:</strong> {treatment.descripcion}
+                      </p>
+                      <p>
+                        <strong>Fecha:</strong> {formatDate(treatment.fecha)}
+                      </p>
+                      <p>
+                        <strong>Tipo:</strong> {treatment.tipo}
+                      </p>
+                      <p>
+                        <strong>Costo:</strong> ${treatment.costo}
+                      </p>
+                    </Accordion.Body>
+                  </Accordion.Item>
+                </Accordion>
               ))}
             </Accordion.Body>
           </Accordion.Item>
