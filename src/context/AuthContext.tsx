@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useMemo, useState } from "react";
 import { AuthenticateUser } from "../interfaces/authenticateUser";
+import { parseDate } from "../utils/utils";
 
 export const AuthContext = createContext<AuthenticateUser>(
   {} as AuthenticateUser
@@ -17,6 +18,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const storageData = localStorage.getItem("session-info");
     if (storageData) {
       const parsedData = JSON.parse(storageData);
+
+      console.log({ parsedData });
 
       setNombreUsuario(parsedData.usuario.nombreUsuario);
       setNombreEmpleado(parsedData.usuario.nombre);

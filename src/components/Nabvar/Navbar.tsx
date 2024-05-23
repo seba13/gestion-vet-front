@@ -52,7 +52,7 @@ export const NavbarDashboard: React.FC = () => {
                   role="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
-                  style={{ display: nombreUsuario !== "admin" ? "" : "none" }}
+                  style={{ display: nombreUsuario === "admin" ? "" : "none" }}
                 >
                   Empleados
                 </a>
@@ -214,7 +214,7 @@ export const NavbarDashboard: React.FC = () => {
                   </li>
                 </ul>
               </li>
-             
+
               <li className="nav-item">
                 <NavLink to={"/user-profile"} className="nav-link">
                   <div>
