@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IMedicalRecord } from "../../interfaces/MedicalRecord";
 
 import PetProfileModal from "../PetProfileModal/PetProfileModal";
@@ -9,9 +9,9 @@ import { TableTreatments } from "./TableTreatments";
 import useFetch from "../../hooks/useFetch";
 import { HttpMethods } from "../../interfaces/httpMethods";
 import { Tratamiento } from "../../interfaces/Tratamiento";
-import { FormNewTreatment } from "../Forms/FormNewPrescription";
 import { FormUpdateEntryForm } from "../Forms/FormUpdateEntryForm";
 import { FormNewEntryForm } from "../Forms/FormNewEntryForm";
+import { FormNewTreatment } from "../Forms/FormNewTreatment";
 export interface ITable {
   heads: Array<string>;
   rows: Array<any>;
@@ -244,7 +244,7 @@ export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
                       hideModal={() =>
                         setShowModalAddTreatment(!showModalAddTreatment)
                       }
-                      idMedicalRecord={selectedId}
+                      filteredRecord={filteredRecord}
                     ></FormNewTreatment>
                   ),
                   size: "s",

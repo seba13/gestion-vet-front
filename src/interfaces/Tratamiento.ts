@@ -3,6 +3,6 @@ export interface Tratamiento {
   descripcion: string;
   fecha: string;
   tipo: string;
-  costo: number | string;
+  costo: number;
   idFichaClinica?: string;
 }

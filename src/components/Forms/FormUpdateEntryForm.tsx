@@ -5,7 +5,7 @@ import useFetch from "../../hooks/useFetch";
 import { IMedicalRecord } from "../../interfaces/MedicalRecord";
 import { getCurrentDateTimeLocal, parseDate } from "../../utils/utils";
 import ModalComponent from "../Modal/ModalComponent";
-import { FormNewTreatment } from "./FormNewPrescription";
+import { FormNewPrescription } from "./FormNewPrescription";
 import { TablePrescriptions } from "../Tables/TablePrescriptions";
 
 export const FormUpdateEntryForm = ({

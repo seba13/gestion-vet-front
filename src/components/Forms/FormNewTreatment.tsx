@@ -1,45 +1,42 @@
 import { useEffect, useState } from "react";
 import Alert, { AlertProperties } from "../Alert/Alert";
-import { IPrescription } from "../../interfaces/Prescription";
+
+import { Tratamiento } from "../../interfaces/Tratamiento";
 import { getCurrentDateTimeLocal, parseDate } from "../../utils/utils";
+import { IMedicalRecord } from "../../interfaces/MedicalRecord";
+import useFetch from "../../hooks/useFetch";
 
-const formInitialData: IPrescription = {
-  descripcion: "",
-  fechaEmision: parseDate(getCurrentDateTimeLocal()),
-  medico: "",
-  retieneReceta: 0,
-  vigencia: 7,
-  idReceta: "",
-  idFichaIngreso: "",
-};
-
-export const FormNewPrescription = ({
-  idFichaIngreso,
+export const FormNewTreatment = ({
+  filteredRecord,
   formSaved,
 }: {
   formSaved: () => void;
-  idFichaIngreso: string;
+  filteredRecord: IMedicalRecord;
 }) => {
-  const tempId = localStorage.getItem("session-info");
+  const formInitialData: Tratamiento = {
+    costo: 0,
+    descripcion: "",
+    fecha: parseDate(getCurrentDateTimeLocal()),
+    idTratamiento: "",
+    tipo: "",
+    idFichaClinica: "" || filteredRecord?.idFichaClinica,
+  };
   const [formData, setFormData] = useState(formInitialData);
   const [formAlert, setFormAlert] = useState<AlertProperties | null>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [isReady, setIsReady] = useState(false);
-  const [doctorId, setDoctorId] = useState("");
-
-  useEffect(() => {
-    if (tempId) {
-      let parsed = JSON.parse(tempId);
-      setDoctorId(parsed.usuario.idEmpleado);
+  const { fetchData } = useFetch(
+    `${import.meta.env.VITE_API_URL}/tratamiento-mascota/ficha-clinica/${
+      filteredRecord?.idFichaClinica
+    }`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
     }
-  }, [tempId]);
-
-  useEffect(() => {
-    if (idFichaIngreso) {
-      setFormData((prevFormData) => ({ ...prevFormData, idFichaIngreso }));
-    }
-  }, [idFichaIngreso]);
-
+  );
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
     setFormData({
@@ -51,17 +48,21 @@ export const FormNewPrescription = ({
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     let errors: Array<string> = [];
+
+    if (formData.costo.toString().trim() === "") {
+      errors.push("Falta campo costo.");
+    }
     if (formData.descripcion.trim() === "") {
       errors.push("Falta campo descripcion.");
     }
-    if (formData.retieneReceta.toString().trim() === "") {
-      errors.push("Falta campo retieneReceta.");
+    if (formData.fecha.trim() === "") {
+      errors.push("Falta campo fecha.");
     }
-    if (formData.vigencia.toString().trim() === "") {
-      errors.push("Falta campo vigencia.");
+    if (formData.tipo.trim() === "") {
+      errors.push("Falta campo tipo.");
     }
-    if (formData.fechaEmision.trim() === "") {
-      errors.push("Falta campo fechaEmision.");
+    if (filteredRecord.idFichaClinica?.trim() === "") {
+      errors.push("Falta campo idFichaIngreso.");
     }
     if (errors.length > 0) {
       setFormAlert({
@@ -70,45 +71,22 @@ export const FormNewPrescription = ({
       });
       setShowAlert(true);
     } else {
-      const updatedFormData = { ...formData, idFichaIngreso, medico: doctorId };
-      setFormData(updatedFormData);
-
-      try {
-        const response = await fetch(
-          `${
-            import.meta.env.VITE_API_URL
-          }/receta-mascota/ficha-ingreso/${idFichaIngreso}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedFormData),
-          }
-        );
-        const data = await response.json();
+      fetchData().then((data) => {
         if (data.success) {
           setFormAlert({
             typeOf: "success",
-            messages: ["Receta generada con exito! ✅🧾"],
+            messages: ["Tratamiento generada con exito! ✅🧾"],
           });
           setIsReady(true);
           setShowAlert(true);
-          formSaved();
         } else {
           setFormAlert({
             typeOf: "danger",
-            messages: ["Hubo problemas al generar la receta❌"],
+            messages: ["Hubo problemas al generar Tratamiento❌"],
           });
           setShowAlert(true);
         }
-      } catch (error) {
-        setFormAlert({
-          typeOf: "danger",
-          messages: ["Error en la comunicación con el servidor❌"],
-        });
-        setShowAlert(true);
-      }
+      });
     }
   };
 
@@ -126,58 +104,58 @@ export const FormNewPrescription = ({
       <form onSubmit={handleSubmit}>
         <div className="d-flex justify-content-around gap-2">
           <label htmlFor="medico" className="form-label w-50 ">
-            ID Medico
+            ID Ficha Clinica
             <input
               type="text"
               className="form-control bg-warning"
               id="medico"
               name="medico"
-              value={formData.medico || doctorId}
-              placeholder="#ID Medico"
+              value={formData.idFichaClinica || idFichaIngreso}
+              placeholder="#"
               disabled
             />
           </label>
-          <label htmlFor="retieneReceta" className="form-label w-50 ">
-            Retencion de receta
-            <select
-              className="form-select"
-              id="retieneReceta"
-              name="retieneReceta"
-              value={formData.retieneReceta}
-              onChange={handleInputChange}
-            >
-              <option value="">Seleccionar género</option>
-              <option value="1">Receta retenida</option>
-              <option value="0">Receta liberada</option>
-            </select>
-          </label>
-        </div>
-
-        <div className="d-flex justify-content-around gap-2">
-          <label htmlFor="vigencia" className="form-label w-50 ">
-            Vigencia (Dias)
-            <input
-              type="number"
-              className="form-control"
-              id="vigencia"
-              name="vigencia"
-              value={formData.vigencia}
-              onChange={handleInputChange}
-              placeholder="Vigencia receta"
-              required
-              disabled={isReady}
-            />
-          </label>
-          <label htmlFor="fechaEmision" className="form-label w-50 ">
+          <label htmlFor="fecha" className="form-label w-50 ">
             Fecha Emision
             <input
               type="date"
               className="form-control"
-              id="fechaEmision"
-              name="fechaEmision"
-              value={formData.fechaEmision}
+              id="fecha"
+              name="fecha"
+              value={formData.fecha}
               onChange={handleInputChange}
               placeholder="Fecha emision"
+              required
+              disabled={isReady}
+            />
+          </label>
+        </div>
+
+        <div className="d-flex justify-content-around gap-2">
+          <label htmlFor="tipo" className="form-label w-50 ">
+            Tipo tratamiento💊
+            <input
+              type="text"
+              className="form-control"
+              id="tipo"
+              name="tipo"
+              value={formData.tipo}
+              onChange={handleInputChange}
+              placeholder="Tipo de tratamiento"
+              required
+              disabled={isReady}
+            />
+          </label>
+          <label htmlFor="costo" className="form-label w-50 ">
+            Costo 💵
+            <input
+              type="number"
+              className="form-control"
+              id="costo"
+              name="costo"
+              value={formData.costo}
+              onChange={handleInputChange}
+              placeholder="Costo tratamiento"
               required
               disabled={isReady}
             />
@@ -209,7 +187,7 @@ export const FormNewPrescription = ({
             className="btn btn-success w-100 mt-3"
             disabled={isReady}
           >
-            Generar receta🧾
+            Generar Tratamiento🧾
           </button>
           <button
             type="button"
