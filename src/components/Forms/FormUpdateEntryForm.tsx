@@ -129,7 +129,9 @@ export const FormUpdateEntryForm = ({
   const onClickNewPrescription = () => {
     setShowModalNewTreatment(true);
   };
-  const onClickListPrescription = () => {
+  const onClickListPrescription = (filterdRecordId: string) => {
+    // setFilteredId(filterdRecordId);
+
     setSetShowModalListPrescription(true);
   };
   useEffect(() => {
@@ -162,7 +164,7 @@ export const FormUpdateEntryForm = ({
               type="button"
               className="btn btn-primary"
               onClick={() => {
-                onClickListPrescription();
+                onClickListPrescription(filteredRecord?.idFichaClinica);
               }}
             >
               Ver Recetas🧾
@@ -403,7 +405,11 @@ export const FormUpdateEntryForm = ({
               }}
               modalContent={{
                 title: "Lista de recetas",
-                body: <TablePrescriptions></TablePrescriptions>,
+                body: (
+                  <TablePrescriptions
+                    idFichaIngreso={filteredId}
+                  ></TablePrescriptions>
+                ),
               }}
             ></ModalComponent>
           )}

@@ -4,7 +4,6 @@ function useFetch(url: string, options: any) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
-
   const fetchData = useCallback(async () => {
     try {
       const response = await fetch(url, options);
@@ -21,13 +20,6 @@ function useFetch(url: string, options: any) {
       setLoading(false);
     }
   }, [url, options]);
-
-  // useEffect(() => {
-  //   if(loading){
-  //     fetchData();
-
-  //   }
-  // }, [loading]);
 
   return { data, loading, error, fetchData, setLoading };
 }
