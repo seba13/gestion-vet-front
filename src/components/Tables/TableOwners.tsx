@@ -23,7 +23,7 @@ function TableOwners({ owners }: any) {
 
   const emptyTable = (
     <tr>
-      <td colSpan={8}>No existen datos</td>
+      <td colSpan={10}>No existen datos</td>
     </tr>
   );
   const handleClickPage = (pageNumber: number) => {

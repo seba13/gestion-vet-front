@@ -75,33 +75,39 @@ export const TableAppointments = ({ heads, rows, handleUpdate }: ITable) => {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row: IAppointment, rowIndex: number) => (
-                  <tr key={rowIndex}>
-                    <td>{row.idCitaMedica}</td>
-                    <td>{parseDate(row.fechaCitaMedica)}</td>
-                    <td>{row.horaCitaMedica}</td>
-                    <td
-                      className={
-                        row.idEstadoCita == EstadosCita.Agendado
-                          ? "bg-success"
-                          : row.idEstadoCita == EstadosCita.Cancelado
-                          ? "bg-danger"
-                          : "bg-primary"
-                      }
-                    >
-                      {EstadosCita[row.idEstadoCita]}
-                    </td>
-                    <td className="d-flex justify-content-center">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={() => onClickButton(row)}
+                {rows!.length > 0 ? (
+                  rows.map((row: IAppointment, rowIndex: number) => (
+                    <tr key={rowIndex}>
+                      <td>{row.idCitaMedica}</td>
+                      <td>{parseDate(row.fechaCitaMedica)}</td>
+                      <td>{row.horaCitaMedica}</td>
+                      <td
+                        className={
+                          row.idEstadoCita == EstadosCita.Agendado
+                            ? "bg-success"
+                            : row.idEstadoCita == EstadosCita.Cancelado
+                            ? "bg-danger"
+                            : "bg-primary"
+                        }
                       >
-                        Editar✏️
-                      </button>
-                    </td>
+                        {EstadosCita[row.idEstadoCita]}
+                      </td>
+                      <td className="d-flex justify-content-center">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={() => onClickButton(row)}
+                        >
+                          Editar✏️
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8}>No existen datos...</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
             {showModalEdit && !showModalAdd && (
