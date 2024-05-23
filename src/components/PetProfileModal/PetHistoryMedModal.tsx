@@ -171,32 +171,34 @@ const PetHistoryMedModal: React.FC<PetHistoryMedModalProps> = ({
                 </Accordion>
               ))}
               <h6>Ficha de Ingreso</h6>
-              {admissionRecords.map((record, index) => (
-                <div key={index}>
-                  <p>
-                    <strong>Síntomas:</strong> {record.sintomas}
-                  </p>
-                  <p>
-                    <strong>Antecedentes:</strong> {record.antecedentes}
-                  </p>
-                  <p>
-                    <strong>Diagnóstico:</strong> {record.diagnostico}
-                  </p>
-                  <p>
-                    <strong>Fecha de Ingreso:</strong> {record.fechaIngreso}
-                  </p>
-                  <p>
-                    <strong>Fecha de Alta:</strong> {record.fechaAlta}
-                  </p>
-                  <p>
-                    <strong>Observaciones:</strong> {record.observaciones}
-                  </p>
-                  <p>
-                    <strong>Temperatura:</strong> {record.temperatura} °C
-                  </p>
-                  <hr />
-                </div>
-              ))}
+              {admissionRecords &&
+                admissionRecords.length > 0 &&
+                admissionRecords.map((record, index) => (
+                  <div key={index}>
+                    <p>
+                      <strong>Síntomas:</strong> {record.sintomas}
+                    </p>
+                    <p>
+                      <strong>Antecedentes:</strong> {record.antecedentes}
+                    </p>
+                    <p>
+                      <strong>Diagnóstico:</strong> {record.diagnostico}
+                    </p>
+                    <p>
+                      <strong>Fecha de Ingreso:</strong> {record.fechaIngreso}
+                    </p>
+                    <p>
+                      <strong>Fecha de Alta:</strong> {record.fechaAlta}
+                    </p>
+                    <p>
+                      <strong>Observaciones:</strong> {record.observaciones}
+                    </p>
+                    <p>
+                      <strong>Temperatura:</strong> {record.temperatura} °C
+                    </p>
+                    <hr />
+                  </div>
+                ))}
             </Accordion.Body>
           </Accordion.Item>
           <Accordion.Item eventKey="1">
