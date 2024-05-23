@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import { Pet } from "../../interfaces/Pet";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import PetHistoryMedModal from "./PetHistoryMedModal";
-import PetCitasModal from "./PetCitasModal";
-import "./PetProfileModal.css"; // Import the CSS file
+//import PetCitasModal from "./PetCitasModal";
 import { NavLink } from "react-router-dom";
 import { parseDate } from "../../utils/utils";
 import { EstadosCita, IAppointment } from "../../interfaces/Appointment";
 import useFetch from "../../hooks/useFetch";
+import { Pet } from "../../interfaces/Pet";
+import "./PetHistoryMedModal.css";
 
 interface PetProfileModalProps {
   idMascota: string;
@@ -30,18 +30,6 @@ const handleFetchPet = async (parametro: string) => {
   }
 };
 
-const fetchHistorialMedico = async (idMascota: string) => {
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/historial-medico/${idMascota}`
-    );
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    console.error("Error fetching historial medico:", error.message);
-  }
-};
-
 const PetProfileModal: React.FC<PetProfileModalProps> = ({
   idMascota,
   show,
@@ -49,8 +37,6 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
 }) => {
   const [petInformation, setPetInformation] = useState<Pet | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  const [isLoadingHistorial, setIsLoadingHistorial] = useState(false);
   const [appointments, setAppointments] = useState<IAppointment[]>([]);
   const { fetchData, loading } = useFetch(
     `${import.meta.env.VITE_API_URL}/citas-medicas/mascota/${idMascota}`,
@@ -61,11 +47,13 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
       },
     }
   );
+
   useEffect(() => {
     if (show) {
       setIsLoading(true);
       const fetchData = async () => {
         const response = await handleFetchPet(idMascota);
+        console.log("Datos de la mascota recibidos:", response);
         setPetInformation(response.data);
         setIsLoading(false);
       };
@@ -74,16 +62,6 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
     }
   }, [idMascota, show]);
 
-  const handleHistorialClick = () => {
-    setIsLoadingHistorial(true);
-    const fetchHistorial = async () => {
-      const response = await fetchHistorialMedico(idMascota);
-
-      setIsLoadingHistorial(false);
-    };
-
-    fetchHistorial();
-  };
   const handleAppointmentsClick = () => {
     fetchData().then((result) => {
       setAppointments(result.data);
@@ -96,60 +74,59 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
         <Modal.Title>Perfil de Mascota</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {isLoading && <p className="text-center">Cargando datos....</p>}
-        {!isLoading && petInformation && (
-          <Tabs
-            defaultActiveKey="profile"
-            id="pet-profile-tabs"
-            className="mb-3"
-            onSelect={(eventKey) => {
-              if (eventKey === "historial") {
-                handleHistorialClick();
-              } else if (eventKey === "citas") {
-                handleAppointmentsClick();
-              }
-            }}
-          >
-            <Tab eventKey="profile" title="Perfil">
-              <div className="pet-profile">
-                <h3>{petInformation.nombreMascota}</h3>
-                <p>
-                  <strong>Edad:</strong> {petInformation.edadMascota}
-                </p>
-                <p>
-                  <strong>Especie:</strong> {petInformation.especie}
-                </p>
-                <p>
-                  <strong>Raza:</strong> {petInformation.raza}
-                </p>
-                <p>
-                  <strong>Género:</strong> {petInformation.genero}
-                </p>
-                {petInformation.fecNac && (
+        {isLoading ? (
+          <p className="text-center">Cargando datos....</p>
+        ) : (
+          petInformation && (
+            <Tabs
+              defaultActiveKey="profile"
+              id="pet-profile-tabs"
+              className="mb-3"
+              onSelect={(eventKey) => {
+                if (eventKey === "citas") {
+                  handleAppointmentsClick();
+                }
+              }}
+            >
+              <Tab eventKey="profile" title="Perfil">
+                <div className="pet-profile">
+                  <h3>{petInformation.nombreMascota}</h3>
                   <p>
-                    <strong>Fecha de Nacimiento:</strong>{" "}
-                    {petInformation.fecNac}
+                    <strong>Edad:</strong> {petInformation.edadMascota}
                   </p>
-                )}
-              </div>
-            </Tab>
-            <Tab eventKey="historial" title="Historial Clínico">
-              <PetHistoryMedModal idMascota={idMascota} />
-            </Tab>
-            <Tab eventKey="citas" title="Citas">
-              {/* <PetCitasModal idMascota={idMascota} /> */}
-              {loading && <p className="p text-center">Cargando citas....</p>}
-              {!loading && (
-                <div className="">
-                  <NavLink
-                    to={`/citas/agendar/${petInformation.idMascota}`}
-                    className="btn btn-primary d-block w-25 mb-2"
-                  >
-                    Agendar🕛
-                  </NavLink>
-                  <ul className="list-group gap-1">
-                    {appointments.map((appointment: IAppointment) => {
-                      return (
+                  <p>
+                    <strong>Especie:</strong> {petInformation.especie}
+                  </p>
+                  <p>
+                    <strong>Raza:</strong> {petInformation.raza}
+                  </p>
+                  <p>
+                    <strong>Género:</strong> {petInformation.genero}
+                  </p>
+                  {petInformation.fecNac && (
+                    <p>
+                      <strong>Fecha de Nacimiento:</strong>{" "}
+                      {petInformation.fecNac}
+                    </p>
+                  )}
+                </div>
+              </Tab>
+              <Tab eventKey="historial" title="Historial Clínico">
+                <PetHistoryMedModal idMascota={idMascota} />
+              </Tab>
+              <Tab eventKey="citas" title="Citas">
+                {loading ? (
+                  <p className="text-center">Cargando citas....</p>
+                ) : (
+                  <div>
+                    <NavLink
+                      to={`/citas/agendar/${petInformation.idMascota}`}
+                      className="btn btn-primary d-block w-25 mb-2"
+                    >
+                      Agendar🕛
+                    </NavLink>
+                    <ul className="list-group gap-1">
+                      {appointments.map((appointment: IAppointment) => (
                         <li
                           key={appointment.idCitaMedica}
                           className={`d-flex justify-content-between list-group-item list-group-item-${
@@ -171,7 +148,6 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
                               <b>{EstadosCita[appointment.idEstadoCita]}</b>
                             </p>
                           </div>
-
                           <div>
                             <NavLink
                               to={`/citas/editar/${appointment.idCitaMedica}`}
@@ -181,13 +157,13 @@ const PetProfileModal: React.FC<PetProfileModalProps> = ({
                             </NavLink>
                           </div>
                         </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
-            </Tab>
-          </Tabs>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </Tab>
+            </Tabs>
+          )
         )}
       </Modal.Body>
       <Modal.Footer>

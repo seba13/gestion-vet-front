@@ -17,12 +17,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const storageData = localStorage.getItem("session-info");
     if (storageData) {
       const parsedData = JSON.parse(storageData);
+
       setNombreUsuario(parsedData.usuario.nombreUsuario);
       setNombreEmpleado(parsedData.usuario.nombre);
       setApellidoPaterno(parsedData.usuario.apellidoPaterno);
       setIdEmpleado(parsedData.usuario.idEmpleado);
       setIdUsuario(parsedData.usuario.idUsuario);
       setToken(parsedData.token);
+
+      console.log("entra en store data");
+      console.log(nombreEmpleado);
       // console.log(sessionInfo)
     }
   }, [token]); // Solo se ejecuta una vez al montar el componente
