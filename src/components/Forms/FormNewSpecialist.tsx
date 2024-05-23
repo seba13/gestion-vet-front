@@ -104,7 +104,7 @@ export const FormNewSpecialist = ({ hideModal }: { hideModal: () => void }) => {
             className="btn btn-success w-100 mt-3"
             disabled={formData.tipo.length < 4 ? true : false}
           >
-            Agendar cita 🕛
+            Registar especialidad 👨‍⚕️
           </button>
           <button
             type="button"
