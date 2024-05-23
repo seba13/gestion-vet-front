@@ -37,18 +37,8 @@ export const TableAppointments = ({ heads, rows, handleUpdate }: ITable) => {
     setFilteredData(row);
     setShowModalEdit(true);
   };
-  // useEffect(() => {
-  //   if (idMascota.trim() !== "") {
-  //     if (location === "agendar") {
-  //       setShowModalAdd(!showModalAdd);
-  //     }else if(location === "")
-  //   }
-  // }, [idMascota, location]);
 
   useEffect(() => {
-    // if (idMascota && idMascota.trim() !== "") {
-    //   setShowModalAdd(true);
-    // }
     if (
       parameters &&
       parameters.trim() !== "" &&
@@ -124,6 +114,11 @@ export const TableAppointments = ({ heads, rows, handleUpdate }: ITable) => {
                     <FormUpdateAppointment
                       actualAppointment={filteredData}
                       handleUpdate={handleUpdate}
+                      closeModal={() => {
+                        setTimeout(() => {
+                          setShowModalEdit(false);
+                        }, 2000);
+                      }}
                     ></FormUpdateAppointment>
                   ),
                 }}

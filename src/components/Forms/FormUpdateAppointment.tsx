@@ -14,9 +14,11 @@ const formInitialData: IAppointment = {
 export const FormUpdateAppointment = ({
   actualAppointment,
   handleUpdate,
+  closeModal,
 }: {
   actualAppointment: IAppointment;
   handleUpdate: () => void;
+  closeModal: () => void;
 }) => {
   const [formData, setFormData] = useState<IAppointment>(actualAppointment);
   const [formAlert, setFormAlert] = useState<AlertProperties | null>(null);
@@ -66,6 +68,7 @@ export const FormUpdateAppointment = ({
             });
             setShowAlert(true);
             handleUpdate();
+            closeModal();
           } else {
             setFormAlert({
               typeOf: "warning",
