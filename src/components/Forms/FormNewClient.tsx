@@ -121,7 +121,7 @@ const FormNewClient = () => {
           } else {
             setFormErrors({
               typeOf: "success",
-              messages: ["Empleado registrado con exito! ✅."],
+              messages: ["Nuevo dueño registado con exito! ✅."],
             });
           }
         })
@@ -284,7 +284,7 @@ const FormNewClient = () => {
               type="submit"
               className="btn btn-success d-flex w-50 justify-content-center"
             >
-              Ingresar paciente
+              Registrar Nuevo Dueño
             </button>
             <button
               type="reset"
