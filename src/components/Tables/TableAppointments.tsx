@@ -17,21 +17,60 @@ const initialData: IAppointment = {
   idMascota: "",
 };
 export const TableAppointments = ({ heads, rows, handleUpdate }: ITable) => {
+  const { idMascota = "", idCitaMedica = "" } = useParams();
+  const location = useLocation().pathname.split("/")[2];
+  const [parameters, setParameters] = useState<string>(location); // parametro url para detectar accion
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [filteredData, setFilteredData] = useState<IAppointment>(initialData);
-  const { fetchData, loading } = useFetch(`${import.meta.env.VITE_API_URL}`, {
-    method: HttpMethods.GET,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const { fetchData, loading } = useFetch(
+    `${import.meta.env.VITE_API_URL}/cita-medica/${idCitaMedica}`,
+    {
+      method: HttpMethods.GET,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
   const onClickButton = (row: IAppointment) => {
     row.fechaCitaMedica = parseDate(row.fechaCitaMedica);
     setFilteredData(row);
     setShowModalEdit(true);
   };
+  // useEffect(() => {
+  //   if (idMascota.trim() !== "") {
+  //     if (location === "agendar") {
+  //       setShowModalAdd(!showModalAdd);
+  //     }else if(location === "")
+  //   }
+  // }, [idMascota, location]);
 
+  useEffect(() => {
+    // if (idMascota && idMascota.trim() !== "") {
+    //   setShowModalAdd(true);
+    // }
+    if (
+      parameters &&
+      parameters.trim() !== "" &&
+      location &&
+      parameters === "agendar"
+    ) {
+      setShowModalAdd(true);
+    }
+    if (
+      parameters &&
+      parameters.trim() !== "" &&
+      location &&
+      parameters === "editar"
+    ) {
+      //aca logica
+      fetchData().then((result) => {
+        // console.log("result fetch", result.data);
+        setFilteredData(result.data);
+      });
+      setShowModalEdit(true);
+    }
+  }, [idMascota]);
   return (
     <div className="container-fluid">
       <div className="row justify-content-center">
