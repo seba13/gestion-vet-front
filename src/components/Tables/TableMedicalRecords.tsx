@@ -10,6 +10,9 @@ import useFetch from "../../hooks/useFetch";
 import { HttpMethods } from "../../interfaces/httpMethods";
 import { Tratamiento } from "../../interfaces/Tratamiento";
 import { FormNewTreatment } from "../Forms/FormNewTreatment";
+import { IEntryForm } from "../../interfaces/EntryForm";
+import { FormUpdateEntryForm } from "../Forms/FormUpdateEntryForm";
+import { FormNewEntryForm } from "../Forms/FormNewEntryForm";
 export interface ITable {
   heads: Array<string>;
   rows: Array<any>;
@@ -33,6 +36,8 @@ export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
   const [treatmentsList, setTreatmentsList] = useState<Tratamiento[]>([]);
   const [showModalTreatment, setShowModalTreatment] = useState(false);
   const [showModalAddTreatment, setShowModalAddTreatment] = useState(false);
+  const [showModalFicha, setShowModalFicha] = useState(false);
+  const [existsEntryForm, setExistsEntryForm] = useState(false);
   const { fetchData } = useFetch(
     `${
       import.meta.env.VITE_API_URL
@@ -67,7 +72,39 @@ export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
   const handleClickAddTreatment = () => {
     setShowModalAddTreatment(true);
   };
+  const onClickButtonFormEntry = async (medicalRecord: IMedicalRecord) => {
+    setFilteredRecord(medicalRecord);
 
+    try {
+      await fetch(
+        `${import.meta.env.VITE_API_URL}/ficha-ingreso/Ficha-clinica/${
+          medicalRecord?.idFichaClinica
+        }`,
+        {
+          method: HttpMethods.GET,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then((data) => {
+          return data.json();
+        })
+        .then((json) => {
+          if (json.success) {
+            console.log({ json });
+            setExistsEntryForm(true);
+            setShowModalFicha(!showModalFicha);
+          } else {
+            setExistsEntryForm(false);
+            setShowModalFicha(!showModalFicha);
+          }
+        })
+        .catch((error) => console.error(error));
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
   return (
     <div className="container-fluid">
       <div className="row justify-content-center">
@@ -108,6 +145,15 @@ export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
                           onClick={() => onClickButtonTreatments(row)}
                         >
                           Tratamientos
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={() => {
+                            onClickButtonFormEntry(row);
+                          }}
+                        >
+                          Ficha
                         </button>
                         <button
                           type="button"
@@ -203,6 +249,21 @@ export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
                 }}
                 onClose={() => setShowModalAddTreatment(false)}
                 showModal={showModalAddTreatment}
+              ></ModalComponent>
+            )}
+            {showModalFicha && (
+              <ModalComponent
+                modalContent={{
+                  title: "Ficha de Ingreso 📝💊",
+                  body: existsEntryForm ? (
+                    <FormUpdateEntryForm filteredRecord={filteredRecord} />
+                  ) : (
+                    <FormNewEntryForm filteredRecord={filteredRecord} />
+                  ),
+                  size: "s",
+                }}
+                onClose={() => setShowModalFicha(false)}
+                showModal={showModalFicha}
               ></ModalComponent>
             )}
           </div>

@@ -15,7 +15,7 @@ export const NavbarDashboard: React.FC = () => {
   return (
     <>
       <nav
-        className={`navbar navbar-expand-lg navbar-light bg-light mb-4 ${styles.principalNav}`}
+        className={`navbar navbar-expand-lg navbar-light bg-light mb-4 ${styles.principalNav} text-capitalize`}
       >
         <div className="container-fluid">
           <NavLink to={"/"} className="navbar-brand">
@@ -155,19 +155,6 @@ export const NavbarDashboard: React.FC = () => {
                 <ul className="dropdown-menu">
                   <li className="dropdown-item">
                     <NavLink
-                      to={"/ficha-clinica/registrar"}
-                      className="nav-link active"
-                    >
-                      <div>
-                        <span>
-                          <i></i>
-                        </span>
-                        <span>Crear ficha clinica</span>
-                      </div>
-                    </NavLink>
-                  </li>
-                  <li className="dropdown-item">
-                    <NavLink
                       to={"/fichas-clinicas/ver"}
                       className="nav-link active"
                     >
@@ -175,7 +162,20 @@ export const NavbarDashboard: React.FC = () => {
                         <span>
                           <i></i>
                         </span>
-                        <span>Ver todas fichas clinicas</span>
+                        <span>Ver todas las fichas clinicas</span>
+                      </div>
+                    </NavLink>
+                  </li>
+                  <li className="dropdown-item">
+                    <NavLink
+                      to={"/ficha-clinica/registrar"}
+                      className="nav-link active"
+                    >
+                      <div>
+                        <span>
+                          <i></i>
+                        </span>
+                        <span>Crear Ficha Clinica</span>
                       </div>
                     </NavLink>
                   </li>

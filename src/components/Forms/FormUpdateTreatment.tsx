@@ -17,7 +17,7 @@ export const FormUpdateTreatment = ({
 }) => {
   const initialForm: Tratamiento = {
     tipo: "",
-    costo: 0,
+    costo: "",
     descripcion: "",
     fecha: parseDate(new Date().toString()),
     idTratamiento: "",
@@ -65,6 +65,7 @@ export const FormUpdateTreatment = ({
       setShowAlert(true);
     } else {
       formData.fecha = parseDate(formData.fecha);
+      formData.costo = parseInt(formData.costo);
       setFormData({ ...formData });
       console.log(formData);
       await fetch(`${import.meta.env.VITE_API_URL}/tratamiento-mascota`, {
@@ -175,7 +176,7 @@ export const FormUpdateTreatment = ({
               className="form-control"
               id="costo"
               name="costo"
-              value={parseInt(formData.costo)}
+              value={formData.costo}
               onChange={handleInputChange}
               placeholder="Costo tratamiento"
               min={1}

@@ -15,9 +15,9 @@ import UpdateEmployee from "../pages/Employees/UpdateEmployee";
 import UserProfilePage from "../pages/UserProfilePage/UserProfile";
 import { ListEmployee } from "../pages/Employees/ListEmployee";
 import { Appointment } from "../pages/Appointment/Appointment";
-import { NewAppointment } from "../pages/Appointment/NewAppointment";
-import { NewClinicalRecord } from "../pages/ClinicalRecors/NewClinicalRecord";
-import { ClinicalRecords } from "../pages/ClinicalRecors/ClinicalRecords";
+import { NewClinicalRecord } from "../pages/ClinicalRecords/NewClinicalRecord";
+import { ClinicalRecords } from "../pages/ClinicalRecords/ClinicalRecords";
+import { EntryForm } from "../pages/EntryForms/EntryForm";
 
 export default function AppRouter() {
   const authContext = useContext(AuthContext)!;
