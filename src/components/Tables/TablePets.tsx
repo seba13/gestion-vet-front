@@ -4,6 +4,8 @@ import FormUpdatePet from "../Forms/FormUpdatePet";
 import PetProfileModal from "../PetProfileModal/PetProfileModal";
 import ModalComponent from "../Modal/ModalComponent";
 import { NavLink } from "react-router-dom";
+import { title } from "process";
+import { FormNewTreatment } from "../Forms/FormNewPrescription";
 
 function TablePets({ pets }: PetList) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,6 +24,7 @@ function TablePets({ pets }: PetList) {
   const [showPetProfileModal, setShowPetProfileModal] = useState(false);
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [showModalPrescription, setShowModalPrescription] = useState(false);
 
   const emptyTable = (
     <tr>
@@ -115,17 +118,13 @@ function TablePets({ pets }: PetList) {
         >
           ✏️
         </button>
-        {/* <button
-          className={`btn btn-primary m-1`}
-          onClick={() =>
-            handleOpenModal("ficha.clinica", pet.idMascota.toString())
-          }
-        >
-          🆕
-        </button> */}
-        <NavLink className={"btn btn-primary m-1"}
+
+        <NavLink
+          className={"btn btn-primary m-1"}
           to={`/ficha-clinica/registrar/${pet.idMascota.toString()}`}
-        >📝</NavLink>
+        >
+          📝
+        </NavLink>
       </td>
     </tr>
   ));

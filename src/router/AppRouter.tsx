@@ -18,6 +18,7 @@ import { Appointment } from "../pages/Appointment/Appointment";
 import { NewClinicalRecord } from "../pages/ClinicalRecords/NewClinicalRecord";
 import { ClinicalRecords } from "../pages/ClinicalRecords/ClinicalRecords";
 import { EntryForm } from "../pages/EntryForms/EntryForm";
+import { Prescriptions } from "../pages/Prescriptions/Prescriptions";
 
 export default function AppRouter() {
   const authContext = useContext(AuthContext)!;
@@ -145,6 +146,14 @@ export default function AppRouter() {
           element: (
             <ProtectedRoute id={15}>
               <ClinicalRecords></ClinicalRecords>
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/receta-mascota",
+          element: (
+            <ProtectedRoute id={16}>
+              <Prescriptions></Prescriptions>
             </ProtectedRoute>
           ),
         },

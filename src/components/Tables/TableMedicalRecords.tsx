@@ -9,8 +9,7 @@ import { TableTreatments } from "./TableTreatments";
 import useFetch from "../../hooks/useFetch";
 import { HttpMethods } from "../../interfaces/httpMethods";
 import { Tratamiento } from "../../interfaces/Tratamiento";
-import { FormNewTreatment } from "../Forms/FormNewTreatment";
-import { IEntryForm } from "../../interfaces/EntryForm";
+import { FormNewTreatment } from "../Forms/FormNewPrescription";
 import { FormUpdateEntryForm } from "../Forms/FormUpdateEntryForm";
 import { FormNewEntryForm } from "../Forms/FormNewEntryForm";
 export interface ITable {
@@ -38,6 +37,7 @@ export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
   const [showModalAddTreatment, setShowModalAddTreatment] = useState(false);
   const [showModalFicha, setShowModalFicha] = useState(false);
   const [existsEntryForm, setExistsEntryForm] = useState(false);
+  const [idFichaIngreso, setidFichaIngreso] = useState("");
   const { fetchData } = useFetch(
     `${
       import.meta.env.VITE_API_URL
@@ -94,6 +94,7 @@ export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
           if (json.success) {
             console.log({ json });
             setExistsEntryForm(true);
+            setidFichaIngreso(json.data.idFichaIngreso);
             setShowModalFicha(!showModalFicha);
           } else {
             setExistsEntryForm(false);
@@ -155,6 +156,7 @@ export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
                         >
                           Ficha
                         </button>
+
                         <button
                           type="button"
                           className="btn btn-primary"
@@ -256,7 +258,10 @@ export const TableMedicalRecords = ({ heads, rows, handleUpdate }: ITable) => {
                 modalContent={{
                   title: "Ficha de Ingreso 📝💊",
                   body: existsEntryForm ? (
-                    <FormUpdateEntryForm filteredRecord={filteredRecord} />
+                    <FormUpdateEntryForm
+                      filteredRecord={filteredRecord}
+                      idFichaIngreso={idFichaIngreso}
+                    />
                   ) : (
                     <FormNewEntryForm filteredRecord={filteredRecord} />
                   ),

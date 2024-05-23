@@ -5,11 +5,15 @@ import useFetch from "../../hooks/useFetch";
 import { IMedicalRecord } from "../../interfaces/MedicalRecord";
 import { getCurrentDateTimeLocal, parseDate } from "../../utils/utils";
 import ModalComponent from "../Modal/ModalComponent";
+import { FormNewTreatment } from "./FormNewPrescription";
+import { TablePrescriptions } from "../Tables/TablePrescriptions";
 
 export const FormUpdateEntryForm = ({
   filteredRecord,
+  idFichaIngreso,
 }: {
   filteredRecord: IMedicalRecord;
+  idFichaIngreso: string;
 }) => {
   const formInitialData: IEntryForm = {
     antecedentes: "",
@@ -27,7 +31,10 @@ export const FormUpdateEntryForm = ({
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [isSaved, setIsSaved] = useState(false);
   const [existsEntryForm, setExistsEntryForm] = useState(false);
-
+  const [showModalNewTreatment, setShowModalNewTreatment] = useState(false);
+  const [filteredId, setFilteredId] = useState(idFichaIngreso);
+  const [setShowModalListPrescription, setSetShowModalListPrescription] =
+    useState(false);
   const { fetchData } = useFetch(
     `${import.meta.env.VITE_API_URL}/ficha-ingreso/Ficha-clinica/${
       filteredRecord?.idFichaClinica
@@ -78,7 +85,6 @@ export const FormUpdateEntryForm = ({
       });
       setShowAlert(true);
     } else {
-      formData.idFichaClinica = filteredRecord!.idFichaClinica;
       formData.fechaAlta = parseDate(formData.fechaAlta);
       formData.fechaIngreso = parseDate(formData.fechaIngreso);
       setFormData({ ...formData });
@@ -120,6 +126,12 @@ export const FormUpdateEntryForm = ({
     setShowAlert(false);
     setFormAlert(null);
   };
+  const onClickNewPrescription = () => {
+    setShowModalNewTreatment(true);
+  };
+  const onClickListPrescription = () => {
+    setSetShowModalListPrescription(true);
+  };
   useEffect(() => {
     if (filteredRecord) {
       fetchData().then((data) => {
@@ -131,6 +143,11 @@ export const FormUpdateEntryForm = ({
     }
   }, [filteredRecord]);
 
+  useEffect(() => {
+    if (idFichaIngreso) {
+      setFilteredId(idFichaIngreso);
+    }
+  }, [idFichaIngreso]);
   return (
     <>
       {showAlert && formAlert && (
@@ -140,6 +157,27 @@ export const FormUpdateEntryForm = ({
         className={`d-flex justify-content-center align-items-center flex-column`}
       >
         <div>
+          <div className=" d-flex gap-3 justify-content-end">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {
+                onClickListPrescription();
+              }}
+            >
+              Ver Recetas🧾
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {
+                onClickNewPrescription();
+              }}
+            >
+              Nueva Receta🧾
+            </button>
+          </div>
+          <hr />
           <form onSubmit={handleSubmit} className="p-2">
             <div className="mb-3 d-flex justify-content-around gap-3">
               <div className="row">
@@ -324,7 +362,6 @@ export const FormUpdateEntryForm = ({
               <button
                 type="submit"
                 className="btn btn-primary w-100 mt-3"
-                value={"Guardar"}
                 disabled={isSaved}
               >
                 Actualizar 📋
@@ -339,6 +376,37 @@ export const FormUpdateEntryForm = ({
               </button>
             </div>
           </form>
+          {showModalNewTreatment && (
+            <ModalComponent
+              showModal={showModalNewTreatment}
+              onClose={() => setShowModalNewTreatment(false)}
+              modalContent={{
+                title: "Nueva receta 🧾💊✅",
+                body: (
+                  <FormNewTreatment
+                    idFichaIngreso={filteredId}
+                    formSaved={() => {
+                      setTimeout(() => {
+                        setShowModalNewTreatment(false);
+                      }, 2000);
+                    }}
+                  ></FormNewTreatment>
+                ),
+              }}
+            ></ModalComponent>
+          )}
+          {setShowModalListPrescription && (
+            <ModalComponent
+              showModal={setShowModalListPrescription}
+              onClose={() => {
+                setSetShowModalListPrescription(false);
+              }}
+              modalContent={{
+                title: "Lista de recetas",
+                body: <TablePrescriptions></TablePrescriptions>,
+              }}
+            ></ModalComponent>
+          )}
         </div>
       </div>
     </>
