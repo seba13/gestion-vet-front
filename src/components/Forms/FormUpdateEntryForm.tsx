@@ -7,6 +7,7 @@ import { getCurrentDateTimeLocal, parseDate } from "../../utils/utils";
 import ModalComponent from "../Modal/ModalComponent";
 import { FormNewPrescription } from "./FormNewPrescription";
 import { TablePrescriptions } from "../Tables/TablePrescriptions";
+import { FormNewTreatment } from "./FormNewTreatment";
 
 export const FormUpdateEntryForm = ({
   filteredRecord,
@@ -385,14 +386,14 @@ export const FormUpdateEntryForm = ({
               modalContent={{
                 title: "Nueva receta 🧾💊✅",
                 body: (
-                  <FormNewTreatment
-                    idFichaIngreso={filteredId}
+                  <FormNewPrescription
                     formSaved={() => {
                       setTimeout(() => {
                         setShowModalNewTreatment(false);
                       }, 2000);
                     }}
-                  ></FormNewTreatment>
+                    idFichaIngreso={filteredId}
+                  />
                 ),
               }}
             ></ModalComponent>

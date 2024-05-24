@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Alert, { AlertProperties } from "../Alert/Alert";
 
 import { Tratamiento } from "../../interfaces/Tratamiento";
@@ -8,7 +8,6 @@ import useFetch from "../../hooks/useFetch";
 
 export const FormNewTreatment = ({
   filteredRecord,
-  formSaved,
 }: {
   formSaved: () => void;
   filteredRecord: IMedicalRecord;
